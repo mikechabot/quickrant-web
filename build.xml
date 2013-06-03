@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<project name="QuickRant" default="build" basedir=".">
+    <!-- Init -->
+    <tstamp prefix="BUILD"/>
+    
+    <!-- Properties -->
+    <property name="SRC"             value="src"/>
+    <property name="WEB"             value="web"/>
+    <property name="LIB"             value="${WEB}/WEB-INF/lib"/>
+    <property name="LIB.LOCAL"       value="lib-local"/>
+    
+    <property name="DIST"            value="build"/>
+    <property name="DIST.CLASSES"    value="${DIST}/classes"/>
+    <property name="DIST.BASE"       value="QuickRant"/>
+    <property name="DIST.PREFIX"     value="QuickRant"/>
+    
+    <property name="WEBAPPS"     value="D:/Development/apache-tomcat-7.0.34/webapps"/>
+    
+    <property name="BUILD.BRANCH"    value="DEV"/>
+    <property name="BUILD.STAMP"     value="${BUILD.DSTAMP}_${BUILD.TSTAMP}"/>
+    <property name="BUILD.TAG"       value="${BUILD.BRANCH}-${BUILD.STAMP}"/>
+    
+    <!-- Paths -->
+    <path id="project.classpath">
+	<fileset dir="${LIB.LOCAL}">
+		<include name="*.zip"/>
+		<include name="*.jar"/>
+	</fileset>
+        <fileset dir="${LIB}">
+	       <include name="*.zip"/>
+        	<include name="*.jar"/>
+        </fileset>
+    </path>
+    
+    <!-- Build targets -->
+    <target name="build" description="Build project" depends="clean,compile,package"/>
+    
+    <!-- Worker targets -->
+    <target name="clean" description="Clean project">
+        <delete dir="${DIST}"/>
+        <mkdir dir="${DIST}"/>
+    </target>
+    
+    <target name="compile" description="Compile project">
+        <mkdir dir="${DIST.CLASSES}" />
+        <javac destdir="${DIST.CLASSES}" debug="true" source="1.5" target="1.5">
+            <src path="${SRC}" />
+            <classpath refid="project.classpath" />
+        </javac>
+        <copy todir="${DIST.CLASSES}" filtering="true">
+            <fileset dir="${SRC}" includes="*.properties *.xml"/>
+            <filterset>
+                <filter token="BRANCH"  value="${BUILD.BRANCH}"/>
+                <filter token="BUILD"   value="${BUILD.STAMP}"/>
+                <filter token="TAG"     value="${BUILD.TAG}"/>
+            </filterset>
+        </copy>
+    </target>
+    
+    <target name="package" description="Package project" depends="compress-jar,compress-war"/>
+    
+    <target name="compress-jar" description="Compress project into JAR">
+        <jar jarfile="${DIST}/${DIST.PREFIX}.jar" basedir="${DIST.CLASSES}"/>
+    </target>
+    
+    <target name="compress-war" description="Compress project into WAR">
+        <war destfile="${DIST}/${DIST.PREFIX}.war" webxml="${WEB}/WEB-INF/web.xml">
+            <fileset dir="${WEB}" excludes="WEB-INF/web.xml"/>
+            <lib dir="${DIST}" includes="*.jar"/>
+            <classes dir="${DIST.CLASSES}" includes="*.properties *.xml" excludes="version.properties"/>
+        </war>
+        <copy file="${DIST}/${DIST.PREFIX}.war" tofile="${DIST}/ROOT.war"/>
+        <copy file="${DIST}/${DIST.PREFIX}.war" tofile="${DIST}/QuickRant.war"/>
+        <copy file="${DIST}/${DIST.PREFIX}.war" tofile="${WEBAPPS}/ROOT.war"/>        
+    </target>
+</project>
