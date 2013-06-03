@@ -21,11 +21,6 @@
       color: #5a5a5a;
     }
     
-    .buffer {
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
-    
     /* CUSTOMIZE THE NAVBAR
     -------------------------------------------------- */
 
@@ -75,6 +70,7 @@
       text-align: center;
       display: none;
       width: 60%;
+      margin-bottom: 10px;
     }
     
     button.question {
@@ -86,7 +82,7 @@
 
     .stream {    
       width: 40%;
-      margin: 0 auto;
+      margin-top: 30px;
     }
 
     /* TEXTING CONTENT
@@ -96,14 +92,16 @@
       text-align: center;
       display: none; 
       width: 35%;
-    }
-
-    .texting textarea{   
-    	width: 75%;
+      margin-bottom: 10px;
     }
     
     .texting label {
       font-style:italic;
+      font-weight: bold;
+    }
+
+    .texting textarea{   
+    	width: 75%;
     }
 
     /* EMOTION CONTENT
@@ -113,6 +111,7 @@
 
     .emotion {
       margin-top: 90px;
+      margin-bottom: 10px;
     }
 
     .emotion .span4 {
@@ -206,8 +205,6 @@
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
     <div class="container emotion">
-
-      <!-- Three columns of text below the carousel -->
       <div class="row">
         <div class="span4">
            <a class="emotion" id="happy" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/happy.gif"></a>
@@ -222,9 +219,8 @@
           <h2><a class="emotion" id="sad" href="#">I'm sad</a></h2>
         </div><!-- /.span4 -->
       </div><!-- /.row -->
-
     </div><!-- /.container -->
-
+    
     <div class="container questions" id="happy">
       <button class="btn btn-success question" type="button">You know what I love?</button>
       <button class="btn btn-success question" type="button">You know what I like?</button>
@@ -250,39 +246,65 @@
       <button class="btn btn-inverse question" type="button">You know what sucks?</button>   
       <button class="btn btn-inverse question" type="button">You know what I regret?</button>
     </div>
-    <div class="buffer">
+
     <div class="container texting" id="texting">
       <form>
         <fieldset>
-          <label></label>
+        <legend>Say anything to everyone.</legend>
           <textarea rows="4" maxlength="280"></textarea>
-          <br>
+           <span class="help-block">280 characters left</span>
           <button type="submit" class="btn">Submit</button>
         </fieldset>
       </form>
-    </div>	
-    </div>
-    
-	<div class="buffer">
+    </div>	       
+
     <div class="container stream">
       <blockquote class="pull-right">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
           <small>Someone famous <cite title="Source Title">Source Title</cite></small>
-        </blockquote><br>
+        </blockquote>
         <blockquote class="pull-right">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
           <small>Someone famous <cite title="Source Title">Source Title</cite></small>
-        </blockquote><br>
-              <blockquote class="pull-right">
+        </blockquote>
+        <blockquote class="pull-right">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
           <small>Someone famous <cite title="Source Title">Source Title</cite></small>
-        </blockquote><br>
-              <blockquote class="pull-right">
+        </blockquote>
+        <blockquote class="pull-right">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+          <small>Someone famous <cite title="Source Title">Source Title</cite></small>
+        </blockquote>
+        <blockquote class="pull-right">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+          <small>Someone famous <cite title="Source Title">Source Title</cite></small>
+        </blockquote>
+        <blockquote class="pull-right">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+          <small>Someone famous <cite title="Source Title">Source Title</cite></small>
+        </blockquote>
+        <blockquote class="pull-right">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+          <small>Someone famous <cite title="Source Title">Source Title</cite></small>
+        </blockquote>
+        <blockquote class="pull-right">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+          <small>Someone famous <cite title="Source Title">Source Title</cite></small>
+        </blockquote>
+        <blockquote class="pull-right">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+          <small>Someone famous <cite title="Source Title">Source Title</cite></small>
+        </blockquote>
+        <blockquote class="pull-right">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+          <small>Someone famous <cite title="Source Title">Source Title</cite></small>
+        </blockquote>
+        <blockquote class="pull-right">
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
           <small>Someone famous <cite title="Source Title">Source Title</cite></small>
         </blockquote>
     </div>
-	</div>
+
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
