@@ -1,0 +1,58 @@
+    <!-- emotion messaging and featurettes
+    ================================================== -->
+    <!-- Wrap the rest of the page in another container to center all the content. -->
+
+    <div class="container emotion">
+      <div class="row">
+        <div class="span4">
+           <a class="emotion" id="happy" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/happy.gif"></a>
+          <h2><a class="emotion" id="happy" href="#">I'm happy</a></h2>
+        </div><!-- /.span4 -->
+        <div class="span4">
+          <a class="emotion" id="angry" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/angry.gif"></a>
+          <h2><a class="emotion" id="angry" href="#">I'm angry</a></h2>
+        </div><!-- /.span4 -->
+        <div class="span4">
+          <a class="emotion" id="sad" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/sad.gif"></a>
+          <h2><a class="emotion" id="sad" href="#">I'm sad</a></h2>
+        </div><!-- /.span4 -->
+      </div><!-- /.row -->
+    </div><!-- /.container -->
+    
+    <div class="container questions" id="happy">
+      <button class="btn btn-success question" type="button">You know what I love?</button>
+      <button class="btn btn-success question" type="button">You know what I like?</button>
+      <button class="btn btn-success question" type="button">You know what's cool?</button>
+      <button class="btn btn-success question" type="button">You know what make me happy?</button>  
+      <button class="btn btn-success question" type="button">You know what I can't live without?</button>
+      <button class="btn btn-success question" type="button">You know what's pretty good?</button>      
+    </div>
+    <div class="container questions" id="angry">
+      <button class="btn btn-danger question" type="button">You know what I hate?</button>
+      <button class="btn btn-danger question" type="button">You know what pisses me off?</button>
+      <button class="btn btn-danger question" type="button">You know what's bullshit?</button>
+      <button class="btn btn-danger question" type="button">You know what I don't like?</button>
+      <button class="btn btn-danger question" type="button">You know what I can't stand?</button>      
+      <button class="btn btn-danger question" type="button">You know what makes me angry?</button> 
+    </div>
+    <div class="container questions" id="sad">
+      <button class="btn btn-inverse question" type="button">You know what makes me cry?</button>
+      <button class="btn btn-inverse question" type="button">You know what's depressing?</button>
+      <button class="btn btn-inverse question" type="button">You know what makes me sad?</button>
+      <button class="btn btn-inverse question" type="button">You know what I wish had happened?</button>
+      <button class="btn btn-inverse question" type="button">You know what I miss?</button>   
+      <button class="btn btn-inverse question" type="button">You know what sucks?</button>   
+      <button class="btn btn-inverse question" type="button">You know what I regret?</button>
+    </div>
+
+    <div class="container comment" id="comment">
+      <form method="post" action="/comment/post" onSubmit="return validate()">
+        <fieldset>
+        <legend id="legend"></legend>
+          <input type="text" id="commenter" name="commenter" value="Name (optional)" class="optional">&nbsp;&nbsp;<input type="text" id="location" name="location" value="Location (optional)" class="optional">
+          <textarea name="comment" id="commentText" rows="5">Say something...</textarea>
+           <span class="help-block"><span id="counter"></span> characters left.</span>
+          <button type="submit" class="btn">Submit</button>
+        </fieldset>
+      </form>
+    </div>
