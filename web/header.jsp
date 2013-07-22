@@ -1,1 +1,1 @@
-<jsp:include page="/WEB-INF/views/header.html"/>
+<jsp:include page="/WEB-INF/views/header.jsp"/>

@@ -10,9 +10,9 @@ public class Comment extends Model<Comment> {
 		
 	private String id;
 	private String emotion;
-	private Date created;
 	private String commenter;
 	private String location;
+	private Date created;
 
 	@Require
 	private String comment;

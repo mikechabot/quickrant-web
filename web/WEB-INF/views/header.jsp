@@ -1,8 +1,10 @@
+<% String success = (String) request.getSession().getAttribute("success"); %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <title>quickrant | say anything to everyone</title>
+    <script src="/js/jquery.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -24,8 +26,7 @@
     .over {
       color: red;
     }
-    
-    
+       
     /* CUSTOMIZE THE NAVBAR
     -------------------------------------------------- */
 
@@ -196,9 +197,8 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
               </ul>
-            </div><!--/.nav-collapse -->
+            </div><!--/.nav-collapse -->        
           </div><!-- /.navbar-inner -->
         </div><!-- /.navbar -->
-
       </div> <!-- /.container -->
     </div><!-- /.navbar-wrapper -->

@@ -79,7 +79,7 @@ public class CommentController extends Controller {
 			
 			if (comment.isValid()) {				
 				CommentService.create(comment);
-				request.getSession().setAttribute("flash", comment.getCommenter() + "just said something.");
+				request.getSession().setAttribute("success", "true");
 				response.sendRedirect(request.getContextPath()+"/"+basePath());
 				return null;				
 			}
