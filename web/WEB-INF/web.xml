@@ -9,11 +9,11 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>  
   	<servlet>
-		<servlet-name>CommentController</servlet-name>
-		<servlet-class>com.chabot.quickrant.controller.CommentController</servlet-class>
+		<servlet-name>RantController</servlet-name>
+		<servlet-class>com.chabot.quickrant.controller.RantController</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>CommentController</servlet-name>
-		<url-pattern>/comment/*</url-pattern>
+		<servlet-name>RantController</servlet-name>
+		<url-pattern>/rant/*</url-pattern>
 	</servlet-mapping>
 </web-app>

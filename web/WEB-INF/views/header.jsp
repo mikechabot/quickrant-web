@@ -4,7 +4,6 @@
   <head>
     <meta charset="utf-8">
     <title>quickrant | say anything to everyone</title>
-    <script src="/js/jquery.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -86,29 +85,53 @@
     /* STREAM CONTENT
     -------------------------------------------------- */
 
-    .stream {    
-      width: 40%;
+    .stream { 
       margin-top: 30px;
+      width: 550px;  
     }
 
-    /* COMMENT CONTENT
+    /* RANT CONTENT
     -------------------------------------------------- */
 
-    .comment {
+    .rant {
       text-align: center;
       display: none; 
       width: 35%;
       margin-bottom: 10px;
     }
     
-    .comment label {
-      font-style:italic;
+    .rant label {
+      font-style: italic;
       font-weight: bold;
     }
 
-    .comment textarea{   
+    .rant textarea{   
     	width: 75%;
+    }       
+    
+    .rant-display-container {
+        padding: 5px;
+        margin: 10px;
+        clear: both;
     }
+        
+    .rant-display-container:hover {
+        background: #f2f2f2;
+        background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+        background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);	
+    }  
+    
+    .rant-display-text {  
+        overflow:hidden; 
+        text-overflow:hidden;
+        margin-bottom: -20px;
+    }
+    .rant-display-details {
+       float:right;
+       width: 90px;
+       margin-left: 5px;
+       font-size: 10px;
+}
 
     /* EMOTION CONTENT
     -------------------------------------------------- */

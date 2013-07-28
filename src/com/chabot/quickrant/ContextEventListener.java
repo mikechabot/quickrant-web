@@ -32,7 +32,7 @@ public class ContextEventListener implements ServletContextListener {
             QuickQuery query = new QuickQuery();           
             ResultSet resultSet =  query.execute(sql);
             if (resultSet.next()) {
-                log.info("Database reached: " + resultSet.getString(1));
+                log.info(resultSet.getString(1));
             }
             query.close();
             
