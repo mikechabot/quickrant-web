@@ -4,8 +4,8 @@
   <head>
     <meta charset="utf-8">
     <title>quickrant | say anything to everyone</title>
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="Express yourself without yourself. No login required.">
+    <meta name="author" content="Mike Chabot">
 
     <!-- Le styles -->
     <link href="/css/bootstrap.css" rel="stylesheet">

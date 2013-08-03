@@ -68,9 +68,7 @@ function validate() {
     	$('input[name=context]').val($('#legend').text());
     }
     
-    if(validForm) {
-    	$('#submit').attr('disabled', 'disabled');
-    }
+    if(validForm) $('#submit').attr('disabled', 'disabled');
     
     return validForm;
 }
