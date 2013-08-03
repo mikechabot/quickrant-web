@@ -67,5 +67,10 @@ function validate() {
         $('input[name=emotion]').val($("div.questions:visible").prop("id"));
     	$('input[name=context]').val($('#legend').text());
     }
+    
+    if(validForm) {
+    	$('#submit').attr('disabled', 'disabled');
+    }
+    
     return validForm;
 }

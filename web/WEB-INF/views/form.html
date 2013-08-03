@@ -15,6 +15,8 @@
         </div><!-- /.span4 -->
       </div><!-- /.row -->
     </div><!-- /.container -->
+    
+    <!-- TODO: fetch emotions from the db -->
 
     <div class="container questions" id="happy">
       <button class="btn btn-success question" type="button">You know what I love?</button>
@@ -50,7 +52,7 @@
           <input type="text" id="ranter" name="ranter" value="Name (optional)" class="optional">&nbsp;&nbsp;<input type="text" id="location" name="location" value="Location (optional)" class="optional">
           <textarea name="rant" id="rantText" rows="5">Say something...</textarea>
            <span class="help-block"><span id="counter"></span> characters left.</span>
-          <button type="submit" class="btn">Submit</button>
+          <button type="submit" id="submit" class="btn">Submit</button>
         </fieldset>
       </form>
       <p class="text-error" id="error-textarea"></p>

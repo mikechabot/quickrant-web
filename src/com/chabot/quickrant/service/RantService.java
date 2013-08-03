@@ -77,13 +77,13 @@ public class RantService {
 		   rants = new ArrayList<Rant>();
 			while (rs.next()) {
 				Rant rant = new Rant();
-				rant.setCreated(getShortDate(rs.getTimestamp(1)));
+				rant.setCreated(getFormattedDate(rs.getTimestamp(1)));
 				rant.setEmotion(rs.getString(2));
 				rant.setRant(rs.getString(3));
 				rant.setRanter(rs.getString(4));
 				rant.setLocation(rs.getString(5));
 				rants.add(rant);
-				log.info(rant.toString());
+				log.debug(rant.toString());
 			}
 			
 	    } catch (SQLException e) {	    	 
@@ -105,21 +105,21 @@ public class RantService {
 		return rants;
 	}
 	
-	private static String getShortDate(Timestamp timestamp) {
+	private static String getFormattedDate(Timestamp timestamp) {
 		
 		long ts = timestamp.getTime();
 		long today = new Date().getTime();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy ha");
 		String formattedDate = sdf.format(timestamp);
-		log.info("outie: " + formattedDate);
+/*		log.info("outie: " + formattedDate);
 		
 		log.info("timestamp: " + timestamp);
 		log.info("timestamp gettime: " + timestamp.getTime());
 		log.info("ts: " + ts);
 		log.info("today: " + today);
 		log.info("ts-today: " + (new Timestamp(ts - today)));
-		log.info("today-ts: " + (new Timestamp(today - ts)));
+		log.info("today-ts: " + (new Timestamp(today - ts)));*/
 		
 		return formattedDate;
 	}
