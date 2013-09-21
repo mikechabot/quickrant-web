@@ -4,11 +4,22 @@
 
 body {
 padding-bottom: 40px;
-color: #5a5a5a;
+font-family: Open Sans, Arial, sans serif;
 }
 
 .over {
 color: red;
+}
+
+.shadow {
+-webkit-border-radius: 4px;
+		border-radius: 4px;
+-webkit-box-shadow: 0px 0px 0px 1px #C0C0C0;
+		box-shadow: 0px 0px 0px 1px #C0C0C0;
+}
+
+.center {
+text-align: center;
 }
 
 /* CUSTOMIZE THE NAVBAR
@@ -67,6 +78,12 @@ button.question {
 margin: 3px;
 }
 
+/* FORM CONTENT
+-------------------------------------------------- */
+.error-text {
+	display: none;
+}
+
 /* STREAM CONTENT
 -------------------------------------------------- */
 
@@ -100,16 +117,23 @@ margin: 10px;
 clear: both;
 }
 
-.rant-display-text {  
+.rant-display-text-holder {  
 overflow:hidden; 
 text-overflow:hidden;
 margin-bottom: -20px;
 }
+
+.rant-text {
+font-size: 20px;
+}
+
+.rant-author {
+font-weight: 700;
+}
+
 .rant-display-details {
-float:right;
-width: 90px;
 margin-left: 5px;
-font-size: 10px;
+margin-right: 5px;
 }
 
 /* EMOTION CONTENT

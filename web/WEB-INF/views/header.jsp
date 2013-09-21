@@ -1,4 +1,5 @@
-<% String success = (String) request.getSession().getAttribute("success"); %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="success" value="${sessionScope['success']}"/>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,6 +7,12 @@
     <title>quickrant | say anything to everyone</title>
     <meta name="description" content="Express yourself without yourself. No login required.">
     <meta name="author" content="Mike Chabot">
+
+	<!-- Le scripts -->
+	<script src="/js/jquery.js"></script>
+
+	<!-- Les fonts -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 
     <!-- Le styles -->
     <link href="/css/bootstrap.css" rel="stylesheet">
@@ -33,7 +40,6 @@
               <ul class="nav">
                 <li class="active"><a href="\">Home</a></li>
                 <li><a href="">About</a></li>
-                <li><a href="">Contact</a></li>
               </ul>
             </div><!--/.nav-collapse -->        
           </div><!-- /.navbar-inner -->

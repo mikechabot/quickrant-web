@@ -31,10 +31,10 @@ public class RantService {
 		    		+ "(nextval('comments_id_seq'),?,?,?,?,?)";		    
 		    PreparedStatement preparedStatement = connection.prepareStatement(insertSql);
 		    
-		    if(rant.getRanter() == null || rant.getRanter().toLowerCase().contains("optional")) {
+		    if(rant.getRanter() == null || rant.getRanter().trim().length() == 0) {
 		    	 rant.setRanter("Anonymous");
 		    }
-		    if(rant.getLocation() == null || rant.getLocation().toLowerCase().contains("optional")) {
+		    if(rant.getLocation() == null || rant.getLocation().trim().length() == 0) {
 		    	 rant.setLocation("Earth");
 		    }		    
 		    
@@ -62,7 +62,7 @@ public class RantService {
 		}
 	}
 	
-	public static List<Rant> getRants() {
+	public static List<Rant> getLongList() {
 		
 		List<Rant> rants = null;
 		Connection connection = null;
@@ -106,22 +106,7 @@ public class RantService {
 	}
 	
 	private static String getFormattedDate(Timestamp timestamp) {
-		
-		long ts = timestamp.getTime();
-		long today = new Date().getTime();
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy ha");
-		String formattedDate = sdf.format(timestamp);
-/*		log.info("outie: " + formattedDate);
-		
-		log.info("timestamp: " + timestamp);
-		log.info("timestamp gettime: " + timestamp.getTime());
-		log.info("ts: " + ts);
-		log.info("today: " + today);
-		log.info("ts-today: " + (new Timestamp(ts - today)));
-		log.info("today-ts: " + (new Timestamp(today - ts)));*/
-		
-		return formattedDate;
+		return new SimpleDateFormat("MM/dd/yyyy h:m a").format(timestamp);
 	}
 
 	private static Timestamp getCurrentTimeStamp() {

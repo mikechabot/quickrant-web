@@ -22,46 +22,24 @@ public class RantController extends Controller {
 	
 	@Override
 	protected void initActions() {
-		addAction("/list", new ListAction());
-		addAction("/view", new ViewAction());
-		addAction("/post", new PostAction());
+		addAction("/getlonglist", new GetLongList());
+		addAction("/postrant", new PostRant());
 	}
 
 	@Override
 	protected Action defaultAction() {
-		return new ListAction();
+		return new GetLongList();
 	}
 	
-	public class ListAction implements Action {
+	public class GetLongList implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
-			request.getSession().setAttribute("rants", RantService.getRants());
+			request.getSession().setAttribute("longlist", RantService.getLongList());
 			response.sendRedirect(request.getContextPath()+"/"+basePath());
 			return null;
 		}		
 	}
 	
-	public class ViewAction implements Action {
-		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
-			/*
-			Params params = new Params(request);
-			Person temp = new Person().parse(params);
-			Database database = Database.getInstance();
-			PersonService svc = new PersonService(database);
-
-			Person person = svc.find(temp);
-			if (person == null) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
-				return null;
-			}
-			
-			request.setAttribute("person", person);
-			return basePath() + "/view.jsp";
-			*/
-			return null;
-		}
-	}	
-	
-	public class PostAction implements Action {
+	public class PostRant implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
 			Params params = new Params(request);
 			if (params.isGet()) throw new ServletException("This action only responds to POST requests");
