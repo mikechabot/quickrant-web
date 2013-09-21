@@ -30,16 +30,13 @@ $(document).ready(function () {
 
 function validate() {
 	var validForm = true;
-	    text = $.trim($("div#rant textarea").val());	    
+	    text = $.trim($("div#rant textarea").val());
     if (!text || text === "Say something...") {
     	$('p#error-text').text("Don't you want to say something?").slideDown(250).delay(3500).slideUp(250);
         validForm = false;
     }
-    setEmotion();
-    function setEmotion() {
-        $('input[name=emotion]').val($("div.questions:visible").prop("id"));
-    	$('input[name=context]').val($('#legend').text());
-    }
+    $('input[name=emotion]').val($("div.questions:visible").prop("id"));
+	$('input[name=context]').val($('#legend').text()); 
     
     if(validForm) $('#submit').attr('disabled', 'disabled');
     
