@@ -26,13 +26,15 @@ $(document).ready(function () {
         }
         return false;
     });
+    $("div#rant textarea").keydown(function() {
+    	$('p#error-text').slideUp(300);
+    });
 });
-
 function validate() {
 	var validForm = true;
 	    text = $.trim($("div#rant textarea").val());
-    if (!text || text === "Say something...") {
-    	$('p#error-text').text("Don't you want to say something?").slideDown(250).delay(3500).slideUp(250);
+    if (!text) {
+    	$('p#error-text').text("Don't you want to say something?").slideDown(300);
         validForm = false;
     }
     $('input[name=emotion]').val($("div.questions:visible").prop("id"));

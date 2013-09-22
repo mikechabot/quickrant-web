@@ -10,6 +10,7 @@
 
 	<!-- Le scripts -->
 	<script src="/js/jquery.js"></script>
+	<script src="/js/bootstrap.js"></script>
 
 	<!-- Les fonts -->
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>

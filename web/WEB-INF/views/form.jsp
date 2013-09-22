@@ -46,12 +46,20 @@
     </div>
     
     <c:if test="${success == 'true'}">
-    <br>
-    <div class="container center" id="flash">
-		<p class="text-success">Thanks for speaking your mind.</p>
-		<script>
-		 $("#flash").fadeOut(5000);
-		</script>
+	<div id="success-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="modal-label">quickrant</h3>
+	  </div>
+	  <div class="modal-body">
+	    <p>Thanks for speaking your mind.</p>
+	  </div>
+	  <script>
+		 $('#success-modal').modal('show');
+		 setTimeout(function() {
+			 $('#success-modal').modal('hide');
+			 }, 2000);
+	  </script>
 	</div>
 	<c:set var="success" value="${null}" />
 	</c:if>
@@ -68,5 +76,5 @@
           <button type="submit" id="submit" class="btn">Submit</button>
         </fieldset>
       </form>
-	  <p class="text-error" id="error-text"></p>
+	  <p class="text-error hidden-error-text" id="error-text"></p>
     </div>

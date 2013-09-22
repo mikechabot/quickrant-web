@@ -14,10 +14,10 @@
 				<img src="/img/${rant.getEmotion()}.gif" style="height: 24px; width: 24px;">
 			</div>
 			<div class="rant-display-text-holder">
-				<blockquote class="pull-left">
+				<blockquote class="pull-left full-width">
 				<p class="rant-text">${rant.getRant()}</p>
-				<small class="rant-info"><b class="rant-author">${rant.getRanter()}</b>, ${rant.getLocation()}<br>
-				${rant.getCreated()}</small>
+				<small class="rant-info"><b class="rant-author">${rant.getRanter()}</b>, ${rant.getLocation()}</small>
+				<span class="smaller muted pull-right">${rant.getCreated()}</span>
 				</blockquote>
 			</div>
 		</div>
