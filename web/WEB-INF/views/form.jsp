@@ -45,28 +45,21 @@
       <button class="btn btn-inverse question" type="button">You know what I regret?</button>
     </div>
     
-    <c:if test="${success == 'true'}">
-	<div id="success-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
 	  <div class="modal-header">
 	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	    <h3 id="modal-label">quickrant</h3>
+	    <h3 id="modal-label"></h3>
 	  </div>
 	  <div class="modal-body">
-	    <p>Thanks for speaking your mind.</p>
+	    <p></p>
+	    <span></span>
 	  </div>
-	  <script>
-		 $('#success-modal').modal('show');
-		 setTimeout(function() {
-			 $('#success-modal').modal('hide');
-			 }, 2000);
-	  </script>
-	</div>
-	<c:set var="success" value="${null}" />
-	</c:if>
-
+	</div>	
+    
     <div class="container rant" id="rant">
       <form method="post" action="/rant/postrant" onSubmit="return validate()">
       	<input type="hidden" id="emotion" name="emotion" value="">
+      	<input type="hidden" id="question" name="question" value="">
         <fieldset>
         <legend id="legend"></legend>
           <input type="text" id="ranter" name="ranter" placeholder="Name (optional)" class="optional">&nbsp;&nbsp;

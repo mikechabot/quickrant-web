@@ -19,89 +19,52 @@ public class RantService {
 	
 	private static Logger log = Logger.getLogger(RantService.class);
 	
-	public static void create(Rant rant) {				
+	public static void create(Rant rant) throws SQLException {				
 		
-		Connection connection = null;
-	    PreparedStatement insert = null;
+		Connection connection =  new Database().getConnection();  	
+	    String insertSql = "insert into rants (id, created, emotion, question, rant, ranter, location) values (nextval('rants_id_seq'),?,?,?,?,?,?);";		    
+	    PreparedStatement preparedStatement = connection.prepareStatement(insertSql);
+	    
+	    if(rant.getRanter() == null || rant.getRanter().trim().length() == 0) {
+	    	 rant.setRanter("Anonymous");
+	    }
+	    if(rant.getLocation() == null || rant.getLocation().trim().length() == 0) {
+	    	 rant.setLocation("Earth");
+	    }		    
 	    	    
-	    try {
-	    	connection = new Database().getConnection();	    	
-		    String insertSql = "insert into comments"
-		    		+ "(id, created, emotion, comment, commenter, location) values"
-		    		+ "(nextval('comments_id_seq'),?,?,?,?,?)";		    
-		    PreparedStatement preparedStatement = connection.prepareStatement(insertSql);
-		    
-		    if(rant.getRanter() == null || rant.getRanter().trim().length() == 0) {
-		    	 rant.setRanter("Anonymous");
-		    }
-		    if(rant.getLocation() == null || rant.getLocation().trim().length() == 0) {
-		    	 rant.setLocation("Earth");
-		    }		    
-		    
-		    preparedStatement.setTimestamp(1, getCurrentTimeStamp());
-		    preparedStatement.setString(2,  rant.getEmotion());
-		    preparedStatement.setString(3,  rant.getRant());
-		    preparedStatement.setString(4,  rant.getRanter());
-		    preparedStatement.setString(5,  rant.getLocation());	
-		    preparedStatement .executeUpdate();
-	    	
-	    } catch (SQLException e) {	    	 
-			log.error("Error inserting rant: " + e.getMessage());
- 
-		} finally { 
-			try {
-				if (insert != null) insert.close();
-			} catch (SQLException e) {
-				log.error("Error closing PreparedStatement: " + e.getMessage());
-			}
-			try {
-				if (connection != null) connection.close();
-			} catch (SQLException e) {
-				log.error("Error closing Connection: " + e.getMessage());
-			}
-		}
+	    preparedStatement.setTimestamp(1, getCurrentTimeStamp());
+	    preparedStatement.setString(2,  rant.getEmotion());
+	    preparedStatement.setString(3,  rant.getQuestion());
+	    preparedStatement.setString(4,  rant.getRant());
+	    preparedStatement.setString(5,  rant.getRanter());
+	    preparedStatement.setString(6,  rant.getLocation());
+	    preparedStatement.executeUpdate();
+
+		if (preparedStatement != null) preparedStatement.close();
+		if (connection != null) connection.close();
 	}
 	
-	public static List<Rant> getLongList() {
-		
-		List<Rant> rants = null;
-		Connection connection = null;
-	    PreparedStatement insert = null;
+	public static List<Rant> getLongList() throws SQLException {
+		Connection connection = new Database().getConnection();	  		
+	    String rantSQl = "select created, emotion, question, rant, ranter, location from rants order by id desc limit 40;";	    
+	    PreparedStatement preparedStatement = connection.prepareStatement(rantSQl);		    	    
+	    ResultSet rs = preparedStatement.executeQuery();
 	    
-	    try {
-	    	connection = new Database().getConnection();	    	
-		    String rantSQl = "select created, emotion, comment, commenter, location from comments order by id desc limit 40;";	    
-		    PreparedStatement preparedStatement = connection.prepareStatement(rantSQl);		    	    
-		    ResultSet rs = preparedStatement.executeQuery();
-		    
-		   rants = new ArrayList<Rant>();
-			while (rs.next()) {
-				Rant rant = new Rant();
-				rant.setCreated(getFormattedDate(rs.getTimestamp(1)));
-				rant.setEmotion(rs.getString(2));
-				rant.setRant(rs.getString(3));
-				rant.setRanter(rs.getString(4));
-				rant.setLocation(rs.getString(5));
-				rants.add(rant);
-				log.debug(rant.toString());
-			}
-			
-	    } catch (SQLException e) {	    	 
-			log.error("Error getting rants: " + e.getMessage());
- 
-		} finally { 
-			try {
-				if (insert != null) insert.close();
-			} catch (SQLException e) {
-				log.error("Error closing PreparedStatement: " + e.getMessage());
-			}
-			try {
-				if (connection != null) connection.close();
-			} catch (SQLException e) {
-				log.error("Error closing Connection: " + e.getMessage());
-			}
-		}
+	    List<Rant> rants = new ArrayList<Rant>();
+		while (rs.next()) {
+			Rant rant = new Rant();
+			rant.setCreated(getFormattedDate(rs.getTimestamp(1)));
+			rant.setEmotion(rs.getString(2));
+			rant.setQuestion(rs.getString(3));
+			rant.setRant(rs.getString(4));
+			rant.setRanter(rs.getString(5));
+			rant.setLocation(rs.getString(6));
+			rants.add(rant);
+			log.debug(rant.toString());
+		}	
 		
+		if (preparedStatement != null) preparedStatement.close();
+		if (connection != null) connection.close();
 		return rants;
 	}
 	

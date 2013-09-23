@@ -1,7 +1,5 @@
 package com.chabot.quickrant.model;
 
-import java.util.Date;
-
 import com.chabot.quickrant.Model;
 import com.chabot.quickrant.Params;
 import com.chabot.quickrant.Require;
@@ -13,6 +11,7 @@ public class Rant extends Model<Rant> {
 	
 	private String id;
 	private String emotion;
+	private String question;
 	private String ranter;
 	private String location;
 	private String created;
@@ -26,21 +25,37 @@ public class Rant extends Model<Rant> {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	public String getRant() {
-		return rant;
+	
+	public String getCreated() {
+		return created;
 	}
 
-	public void setRant(String rant) {
-		this.rant = rant;
+	public void setCreated(String created) {
+		this.created = created;
+	}
+	
+	public void setEmotion(String emotion) {
+		this.emotion = emotion;
 	}
 
 	public String getEmotion() {
 		return emotion;
 	}
 	
-	public void setEmotion(String emotion) {
-		this.emotion = emotion;
+	public String getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(String question) {
+		this.question = question;
+	}
+		
+	public String getRant() {
+		return rant;
+	}
+
+	public void setRant(String rant) {
+		this.rant = rant;
 	}
 	
 	public String getRanter() {
@@ -57,29 +72,23 @@ public class Rant extends Model<Rant> {
 
 	public void setLocation(String location) {
 		this.location = location;
-	}	
-	public String getCreated() {
-		return created;
-	}
-
-	public void setCreated(String created) {
-		this.created = created;
 	}
 	
 	@Override
 	public String toString() {
-		return "Rant [id=" + id + ", rant=" + rant + ", emotion="
-				+ emotion + ", ranter=" + ranter + ", location="
-				+ location + ", created=" + created + "]";
+		return "Rant [rant=" + rant + ", id=" + id + ", emotion=" + emotion
+				+ ", question=" + question + ", ranter=" + ranter
+				+ ", location=" + location + ", created=" + created + "]";
 	}
-	
+
 	@Override
 	public Rant parse(Params params) {
 		Rant rant = new Rant();
-		rant.emotion = params.getString("emotion");
-		rant.rant = params.getString("rant");
-		rant.ranter = params.getString("ranter");
-		rant.location = params.getString("location");
+		rant.setEmotion(params.getString("emotion"));
+		rant.setQuestion(params.getString("question"));
+		rant.setRant(params.getString("rant"));
+		rant.setRanter(params.getString("ranter"));
+		rant.setLocation(params.getString("location"));
 		return rant;
 	}
 }

@@ -38,7 +38,7 @@ function validate() {
         validForm = false;
     }
     $('input[name=emotion]').val($("div.questions:visible").prop("id"));
-	$('input[name=context]').val($('#legend').text()); 
+	$('input[name=question]').val($('#legend').text()); 
     
     if(validForm) $('#submit').attr('disabled', 'disabled');
     

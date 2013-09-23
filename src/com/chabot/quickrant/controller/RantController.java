@@ -1,5 +1,7 @@
 package com.chabot.quickrant.controller;
 
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,10 +34,16 @@ public class RantController extends Controller {
 	}
 	
 	public class GetLongList implements Action {
-		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
+		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+					
+		try {			
 			request.getSession().setAttribute("longlist", RantService.getLongList());
-			response.sendRedirect(request.getContextPath()+"/"+basePath());
-			return null;
+		} catch (SQLException e) {
+			request.getSession().setAttribute("success", false);
+			log.error("Error getting rants: " + e.getMessage());
+		}
+		response.sendRedirect(request.getContextPath()+"/"+basePath());
+		return null;	
 		}		
 	}
 	
@@ -45,11 +53,16 @@ public class RantController extends Controller {
 			if (params.isGet()) throw new ServletException("This action only responds to POST requests");
 			
 			Rant rant = new Rant().parse(params);			
-			log.info(rant.toString());
-			
+			log.debug(rant.toString());
+					
 			if (rant.isValid()) {				
-				RantService.create(rant);
-				request.getSession().setAttribute("success", "true");
+				try {
+					RantService.create(rant);
+					request.getSession().setAttribute("success", true);
+				} catch (SQLException e) {
+					log.error("error inserting rant: " + e.getMessage());
+					request.getSession().setAttribute("success", false);
+				}
 				response.sendRedirect(request.getContextPath()+"/"+basePath());
 				return null;				
 			}
