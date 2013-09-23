@@ -46,19 +46,20 @@ public class RantService {
 	
 	public static List<Rant> getLongList() throws SQLException {
 		Connection connection = new Database().getConnection();	  		
-	    String rantSQl = "select created, emotion, question, rant, ranter, location from rants order by id desc limit 40;";	    
+	    String rantSQl = "select id, created, emotion, question, rant, ranter, location from rants order by id desc limit 40;";	    
 	    PreparedStatement preparedStatement = connection.prepareStatement(rantSQl);		    	    
 	    ResultSet rs = preparedStatement.executeQuery();
 	    
 	    List<Rant> rants = new ArrayList<Rant>();
 		while (rs.next()) {
 			Rant rant = new Rant();
-			rant.setCreated(getFormattedDate(rs.getTimestamp(1)));
-			rant.setEmotion(rs.getString(2));
-			rant.setQuestion(rs.getString(3));
-			rant.setRant(rs.getString(4));
-			rant.setRanter(rs.getString(5));
-			rant.setLocation(rs.getString(6));
+			rant.setId(rs.getString(1));
+			rant.setCreated(getFormattedDate(rs.getTimestamp(2)));
+			rant.setEmotion(rs.getString(3));
+			rant.setQuestion(rs.getString(4));
+			rant.setRant(rs.getString(5));
+			rant.setRanter(rs.getString(6));
+			rant.setLocation(rs.getString(7));
 			rants.add(rant);
 			log.debug(rant.toString());
 		}	

@@ -11,7 +11,10 @@
 		<c:if test="${not empty rant}">
 		<div class="rant-display-container shadow">
 			<div class="rant-display-details pull-left">
-				<img src="/img/${rant.getEmotion()}.gif" style="height: 24px; width: 24px;">
+				<a href="#" class="question-popover" id="${rant.getId()}" rel="popover"><img src="/img/${rant.getEmotion()}.gif" style="height: 24px; width: 24px;"></a>	
+				<script>				
+				$("#${rant.getId()}").popover({ content: "${rant.getQuestion()}", placement: "left"});
+				</script>			
 			</div>
 			<div class="rant-display-text-holder">
 				<blockquote class="pull-left full-width">

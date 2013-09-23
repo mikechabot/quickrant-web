@@ -28,6 +28,15 @@ $(document).ready(function () {
     });
     $("div#rant textarea").keydown(function() {
     	$('p#error-text').slideUp(300);
+    });    
+    $("a.question-popover").click(function() {
+    	event.preventDefault();
+    	var id = $(this).prop('id');
+    	$("a.question-popover").each(function() {
+    		if($(this).is(":visible") && $(this).prop('id') !== id) {
+    			$(this).popover('hide');
+    		}
+    	});
     });
 });
 function validate() {
