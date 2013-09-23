@@ -15,6 +15,11 @@ $(document).ready(function () {
         } else {
             $("div#" + id).slideToggle(150);
         }
+	$("a.question-popover").each(function() {
+    		if($(this).is(":visible")) {
+    			$(this).popover('hide');
+    		}
+    	});
         return false;
     });
     $("button.question").click(function () {
@@ -24,6 +29,11 @@ $(document).ready(function () {
             $('#legend').text($(this).text());
             $('#rant').slideToggle(150);
         }
+	$("a.question-popover").each(function() {
+    		if($(this).is(":visible")) {
+    			$(this).popover('hide');
+    		}
+    	});
         return false;
     });
     $("div#rant textarea").keydown(function() {
