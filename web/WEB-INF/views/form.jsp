@@ -6,13 +6,13 @@
     <div class="container emotion">
       <div class="row">
         <div class="span4">
-           <a class="emotion" id="happy" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/happy.gif"></a>
+           <a class="emoticon" id="happy" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/happy.gif"></a>
         </div><!-- /.span4 -->
         <div class="span4">
-          <a class="emotion" id="angry" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/angry.gif"></a>
+          <a class="emoticon" id="angry" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/angry.gif"></a>
         </div><!-- /.span4 -->
         <div class="span4">
-          <a class="emotion" id="sad" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/sad.gif"></a>
+          <a class="emoticon" id="sad" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/sad.gif"></a>
         </div><!-- /.span4 -->
       </div><!-- /.row -->
     </div><!-- /.container -->
@@ -56,12 +56,12 @@
 	  </div>
 	</div>	
     
-    <div class="container rant" id="rant">
-      <form method="post" action="/rant/postrant" onSubmit="return validate()">
+    <div class="container rant retract" id="rant-form-container">
+      <form method="post" action="/rant/post" onSubmit="return validate()">
       	<input type="hidden" id="emotion" name="emotion" value="">
       	<input type="hidden" id="question" name="question" value="">
         <fieldset>
-        <legend id="legend"></legend>
+        <legend id="legend" class="center-legend"></legend>
           <input type="text" id="ranter" name="ranter" placeholder="Name (optional)" class="optional">&nbsp;&nbsp;
           <input type="text" id="location" name="location" placeholder="Location (optional)" class="optional">
           <textarea name="rant" id="countable" rows="5" placeholder="Say something..."></textarea>
@@ -69,5 +69,5 @@
           <button type="submit" id="submit" class="btn">Submit</button>
         </fieldset>
       </form>
-	  <p class="text-error hidden-error-text" id="error-text"></p>
+	  <p class="text-error hidden-error-text retract" id="error-text"></p>
     </div>

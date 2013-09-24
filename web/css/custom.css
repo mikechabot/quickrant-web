@@ -26,9 +26,15 @@ text-align: center;
 font-size: 10px;
 }
 
-.full-width {
+.center-legend {
+    width: 100%;
+    text-align: center;
+}
+
+.wide {
 width: 95%;	
 }
+
 
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */

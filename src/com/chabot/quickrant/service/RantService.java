@@ -44,7 +44,7 @@ public class RantService {
 		if (connection != null) connection.close();
 	}
 	
-	public static List<Rant> getLongList() throws SQLException {
+	public static List<Rant> getRants() throws SQLException {
 		Connection connection = new Database().getConnection();	  		
 	    String rantSQl = "select id, created, emotion, question, rant, ranter, location from rants order by id desc limit 40;";	    
 	    PreparedStatement preparedStatement = connection.prepareStatement(rantSQl);		    	    

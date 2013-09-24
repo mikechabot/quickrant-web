@@ -24,30 +24,30 @@ public class RantController extends Controller {
 	
 	@Override
 	protected void initActions() {
-		addAction("/getlonglist", new GetLongList());
-		addAction("/postrant", new PostRant());
+		addAction("/get", new GetAction());
+		addAction("/post", new PostAction());
 	}
 
 	@Override
 	protected Action defaultAction() {
-		return new GetLongList();
+		return new GetAction();
 	}
 	
-	public class GetLongList implements Action {
+	public class GetAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-					
-		try {			
-			request.getSession().setAttribute("longlist", RantService.getLongList());
+		Params params = new Params(request);
+		if (params.isPost()) throw new ServletException("This action only responds to GET requests");
+		try {				
+			request.setAttribute("rants", RantService.getRants());
 		} catch (SQLException e) {
-			request.getSession().setAttribute("success", false);
 			log.error("Error getting rants: " + e.getMessage());
+			request.setAttribute("success", false);
 		}
-		response.sendRedirect(request.getContextPath()+"/"+basePath());
-		return null;	
+		return basePath() + "/index.jsp";
 		}		
 	}
 	
-	public class PostRant implements Action {
+	public class PostAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
 			Params params = new Params(request);
 			if (params.isGet()) throw new ServletException("This action only responds to POST requests");
