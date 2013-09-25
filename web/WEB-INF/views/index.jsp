@@ -3,8 +3,8 @@
 	import="java.util.List" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<jsp:include page="header.jsp"/>
-<jsp:include page="form.jsp" />
+<c:import url="header.jsp"/>
+<c:import url="form.jsp"/>
 <c:if test="${fn:length(rants) > 0}">
 <div class="container stream">
 	<c:forEach items="${rants}" var="rant">
@@ -27,5 +27,5 @@
 		</c:if>	
 	</c:forEach>
 </div>
-</c:if> 
-<jsp:include page="footer.jsp" />	
+</c:if>
+<c:import url="footer.jsp"/>

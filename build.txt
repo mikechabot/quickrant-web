@@ -1,0 +1,31 @@
+
+D:\Development\workspaces\quickrant>ant build 
+Buildfile: D:\Development\workspaces\quickrant\build.xml
+
+clean:
+   [delete] Deleting directory D:\Development\workspaces\quickrant\build
+    [mkdir] Created dir: D:\Development\workspaces\quickrant\build
+
+compile:
+    [mkdir] Created dir: D:\Development\workspaces\quickrant\build\classes
+    [javac] D:\Development\workspaces\quickrant\build.xml:44: warning: 'includeantruntime' was not set, defaulting to build.sysclasspath=last; set to false for repeatable builds
+    [javac] Compiling 16 source files to D:\Development\workspaces\quickrant\build\classes
+    [javac] warning: [options] bootstrap class path not set in conjunction with -source 1.5
+    [javac] Note: D:\Development\workspaces\quickrant\src\com\chabot\quickrant\Params.java uses unchecked or unsafe operations.
+    [javac] Note: Recompile with -Xlint:unchecked for details.
+    [javac] 1 warning
+     [copy] Copying 2 files to D:\Development\workspaces\quickrant\build\classes
+
+compress-jar:
+      [jar] Building jar: D:\Development\workspaces\quickrant\build\QuickRant.jar
+
+compress-war:
+      [war] Building war: D:\Development\workspaces\quickrant\build\QuickRant.war
+     [copy] Copying 1 file to D:\Development\workspaces\quickrant\build
+
+package:
+
+build:
+
+BUILD SUCCESSFUL
+Total time: 1 second
