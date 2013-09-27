@@ -34,9 +34,9 @@ public abstract class Controller extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getPathInfo();
 		String view = null;
-		
+			
 		try {
-			if (action == null || action.equals("") || action.equals("/")) {
+			if (action == null || action.equals("") || action.equals("/") || action.matches("\\/([0-9]+)$")) {
 				view = defaultAction.execute(request, response);
 			}
 			else if (actions.get(action) == null) {

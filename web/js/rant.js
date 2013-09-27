@@ -2,7 +2,12 @@
 /*global  $*/
 $(document).ready(function () {
     "use strict";
-    $('#countable').simplyCountable();   
+    // Rant textarea character counter
+    $('#countable').simplyCountable();
+    
+    $(".permalink").tooltip({ title: "permalink", placement: "top", trigger: "hover"});
+    
+    // Controls display for questionnaire UI
     $("a.emoticon").click(function () {
     	$(".retract").each(function() {    		
     		$(this).slideUp(150);
@@ -15,11 +20,6 @@ $(document).ready(function () {
         } else {
             $("div#" + id).slideToggle(150);
         }
-	$("a.question-popover").each(function() {
-    		if($(this).is(":visible")) {
-    			$(this).popover('hide');
-    		}
-    	});
         return false;
     });
     $("button.question").click(function () {
@@ -29,11 +29,6 @@ $(document).ready(function () {
             $('#legend').text($(this).text());
             $('#rant-form-container').slideToggle(150);
         }
-	$("a.question-popover").each(function() {
-    		if($(this).is(":visible")) {
-    			$(this).popover('hide');
-    		}
-    	});
         return false;
     });
     $("div#rant-form-container textarea").keydown(function() {

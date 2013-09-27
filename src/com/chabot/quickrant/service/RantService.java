@@ -19,7 +19,7 @@ public class RantService {
 	
 	private static Logger log = Logger.getLogger(RantService.class);
 	
-	public static void create(Rant rant) throws SQLException {				
+	public static void postRant(Rant rant) throws SQLException {				
 		
 		Connection connection =  new Database().getConnection();  	
 	    String insertSql = "insert into rants (id, created, emotion, question, rant, ranter, location) values (nextval('rants_id_seq'),?,?,?,?,?,?);";		    
@@ -67,6 +67,30 @@ public class RantService {
 		if (preparedStatement != null) preparedStatement.close();
 		if (connection != null) connection.close();
 		return rants;
+	}
+	
+	public static Rant getRant(String id) throws SQLException {
+		Connection connection = new Database().getConnection();	  		
+	    String rantSQl = "select id, created, emotion, question, rant, ranter, location from rants where id = " + id + ";";	    
+	    PreparedStatement preparedStatement = connection.prepareStatement(rantSQl);		    	    
+	    ResultSet rs = preparedStatement.executeQuery();
+	    
+	    Rant rant = null;
+		if (rs.next()) {
+			rant = new Rant();
+			rant.setId(rs.getString(1));
+			rant.setCreated(getFormattedDate(rs.getTimestamp(2)));
+			rant.setEmotion(rs.getString(3));
+			rant.setQuestion(rs.getString(4));
+			rant.setRant(rs.getString(5));
+			rant.setRanter(rs.getString(6));
+			rant.setLocation(rs.getString(7));
+			log.debug(rant.toString());
+		}
+		
+		if (preparedStatement != null) preparedStatement.close();
+		if (connection != null) connection.close();
+		return rant;
 	}
 	
 	private static String getFormattedDate(Timestamp timestamp) {

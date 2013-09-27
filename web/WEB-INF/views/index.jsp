@@ -9,17 +9,16 @@
 <div class="container stream">
 	<c:forEach items="${rants}" var="rant">
 		<c:if test="${not empty rant}">
-		<div class="rant-display-container shadow">
-			<div class="rant-display-details pull-left">
-				<a href="#" class="question-popover" id="${rant.getId()}" rel="popover"><img src="/img/${rant.getEmotion()}.gif" style="height: 24px; width: 24px;"></a>	
-				<script>				
-				$("#${rant.getId()}").popover({ content: "${rant.getQuestion()}", placement: "left", trigger: "hover"});
-				</script>			
+		<div class="rant-container shadow">
+			<div class="rant-details pull-left">
+				<img src="/img/${rant.getEmotion()}.gif" style="height: 24px; width: 24px;">
 			</div>
-			<div class="rant-display-text-holder">
+			<div class="rant-text-container">
+				<p class="muted pull-left stream-question">${rant.getQuestion()}</p>
+				<a rel="tooltip" data-toggle="tooltip" class="permalink btn btn-mini pull-right" href="/rant/${rant.getId()}"><i class="icon-plus"></i></a>
 				<blockquote class="pull-left wide">
-				<p class="rant-text">${rant.getRant()}</p>
-				<small class="rant-info"><b class="rant-author">${rant.getRanter()}</b>, ${rant.getLocation()}</small>
+				<p class="rant-text small-bottom-margin">${rant.getRant()}</p>
+				<small class="rant-info"><b class="dark-bold">${rant.getRanter()}</b>, ${rant.getLocation()}</small>
 				<span class="smaller muted pull-right">${rant.getCreated()}</span>
 				</blockquote>
 			</div>
@@ -27,5 +26,36 @@
 		</c:if>	
 	</c:forEach>
 </div>
+</c:if>
+<c:if test="${fn:length(rants) == 0}">
+	<c:if test="${not empty rant}">
+		<div class="container single-stream">
+			<div class="rant-container shadow">
+				<div class="rant-single-text-container">
+					<img src="/img/${rant.getEmotion()}.gif" class="pull-right" style="height: 24px; width: 24px;">
+					<h4 class="muted">${rant.getQuestion()}</h4>
+					<blockquote class="pull-left wide">
+					<p class="rant-single-text small-bottom-margin">${rant.getRant()}</p>
+					<small class="rant-single-info"><b class="dark-bold">${rant.getRanter()}</b>, ${rant.getLocation()}</small>
+					<span class="smaller muted pull-right">${rant.getCreated()}</span>
+					</blockquote>
+				</div>
+			</div>
+		</div>
+	</c:if>
+	<c:if test="${empty rant}">
+		<div class="container single-stream">
+			<div class="rant-container shadow">
+				<div class="rant-single-text-container">
+					<i class="icon-globe pull-right"></i>
+					<blockquote class="pull-left wide">
+					<p class="rant-single-text small-bottom-margin">404: Rant Not Found </p>
+					<small class="rant-single-info"><b class="dark-bold">HTTP</b>, Interwebs</small>
+					<span class="smaller muted pull-right">01/01/1970</span>
+					</blockquote>
+				</div>
+			</div>
+		</div>
+	</c:if>
 </c:if>
 <c:import url="footer.jsp"/>

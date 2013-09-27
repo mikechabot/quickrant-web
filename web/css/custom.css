@@ -7,10 +7,6 @@ padding-bottom: 40px;
 font-family: Open Sans, Arial, sans serif;
 }
 
-.over {
-color: red;
-}
-
 .shadow {
 -webkit-border-radius: 4px;
 		border-radius: 4px;
@@ -18,8 +14,20 @@ color: red;
 		box-shadow: 0px 0px 0px 1px #CCCCCC;
 }
 
+.dark-bold {
+font-weight: 700;
+}
+
+.over {
+color: red;
+}
+
 .center {
 text-align: center;
+}
+
+.small-bottom-margin {
+margin-bottom: 5px;
 }
 
 .smaller {
@@ -92,46 +100,62 @@ button.question {
 margin: 3px;
 }
 
+.stream-question {
+margin-top: 2px;
+font-size: 12px;
+font-weight: 600;
+}
+
 /* FORM CONTENT
 -------------------------------------------------- */
 .hidden-error-text{
 	display: none;
 }
 
-/* STREAM CONTENT
+/* STREAM & RANT CONTENT
 -------------------------------------------------- */
 
 .stream { 
 margin-top: 30px;
-width: 550px;  
+width: 35%;  
 }
 
-/* RANT CONTENT
--------------------------------------------------- */
+.single-stream { 
+margin-top: 30px;
+width: 40%;  
+}
 
-.rant {
+
+.rant-form-container {
 text-align: center;
 display: none; 
 width: 35%;
 margin-bottom: 10px;
 }
 
-.rant label {
+.rant-form-container label {
 font-style: italic;
 font-weight: bold;
 }
 
-.rant textarea{   
+.rant-form-container textarea{   
 width: 75%;
 }       
 
-.rant-display-container {
+.rant-container {
 padding: 5px;
 margin: 10px;
 clear: both;
 }
 
-.rant-display-text-holder {  
+.rant-text-container {  
+overflow:hidden; 
+text-overflow:hidden;
+margin-bottom: -20px;
+}
+
+.rant-single-text-container {
+padding-left: 2%;
 overflow:hidden; 
 text-overflow:hidden;
 margin-bottom: -20px;
@@ -139,15 +163,22 @@ margin-bottom: -20px;
 
 .rant-text {
 font-size: 20px;
+font-weight: 300;
 }
 
-.rant-author {
-font-weight: 700;
+.rant-single-text {
+font-size: 36px;
+font-weight: 300;
 }
 
-.rant-display-details {
+.rant-single-info {
+margin-top: 10px;
+font-size: 20px;
+}
+
+.rant-details {
 margin-left: 5px;
-margin-right: 5px;
+margin-right: 10px;
 }
 
 /* EMOTION CONTENT

@@ -56,7 +56,7 @@
 	  </div>
 	</div>	
     
-    <div class="container rant retract" id="rant-form-container">
+    <div class="container rant-form-container retract" id="rant-form-container">
       <form method="post" action="/rant/post" onSubmit="return validate()">
       	<input type="hidden" id="emotion" name="emotion" value="">
       	<input type="hidden" id="question" name="question" value="">

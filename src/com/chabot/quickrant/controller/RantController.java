@@ -3,6 +3,7 @@ package com.chabot.quickrant.controller;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,12 +38,24 @@ public class RantController extends Controller {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Params params = new Params(request);
 		if (params.isPost()) throw new ServletException("This action only responds to GET requests");
-		try {				
-			request.setAttribute("rants", RantService.getRants());
-		} catch (SQLException e) {
-			log.error("Error getting rants: " + e.getMessage());
-			request.setAttribute("success", false);
-		}
+		
+		String action = request.getPathInfo();
+		
+		if(action == null || action.equals("") || action.equals("/")) {
+			try {				
+				request.setAttribute("rants", RantService.getRants());
+			} catch (SQLException e) {
+				log.error("Error fetching rants: " + e.getMessage());
+				request.setAttribute("success", false);
+			}		
+		} else if (action.matches("\\/([0-9]+)$")) {
+			try {
+				request.setAttribute("rant", RantService.getRant(action.replaceAll("/", "")));
+			} catch (SQLException e) {
+				log.error("Error fetching rant: " + e.getMessage());
+				request.setAttribute("success", false);
+			}			
+		}		
 		return basePath() + "/index.jsp";
 		}		
 	}
@@ -52,12 +65,17 @@ public class RantController extends Controller {
 			Params params = new Params(request);
 			if (params.isGet()) throw new ServletException("This action only responds to POST requests");
 			
+			Cookie[] cookies = request.getCookies();
+			if (cookies == null || cookies.length == 0) {
+				return basePath() + "/error.jsp";
+			} 
+			
 			Rant rant = new Rant().parse(params);			
 			log.debug(rant.toString());
 					
 			if (rant.isValid()) {				
 				try {
-					RantService.create(rant);
+					RantService.postRant(rant);
 					request.getSession().setAttribute("success", true);
 				} catch (SQLException e) {
 					log.error("error inserting rant: " + e.getMessage());

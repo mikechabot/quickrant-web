@@ -11,7 +11,7 @@
 	<script src="/js/bootstrap.js"></script>
 
 	<!-- Les fonts -->
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
 
     <!-- Le styles -->
     <link href="/css/bootstrap.css" rel="stylesheet">
@@ -34,10 +34,10 @@
       <div class="container">
         <div class="navbar navbar-inverse">
           <div class="navbar-inner">            
-            <a class="brand" href="#">quickrant</a>           
+            <a class="brand" href="/">quickrant</a>           
             <div class="nav-collapse collapse">
               <ul class="nav">
-                <li class="active"><a href="\">Home</a></li>
+                <li class="active"><a href="/">Home</a></li>
                 <li><a href="">About</a></li>
               </ul>
             </div><!--/.nav-collapse -->        
