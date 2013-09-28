@@ -40,7 +40,7 @@ public abstract class Controller extends HttpServlet {
 				view = defaultAction.execute(request, response);
 			}
 			else if (actions.get(action) == null) {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				response.sendError(404);
 			}
 			else {
 				view = actions.get(action).execute(request, response);

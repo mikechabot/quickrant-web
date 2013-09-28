@@ -25,7 +25,7 @@ public class RantController extends Controller {
 	
 	@Override
 	protected void initActions() {
-		addAction("/get", new GetAction());
+		addAction(null, new GetAction());
 		addAction("/post", new PostAction());
 	}
 
@@ -36,39 +36,53 @@ public class RantController extends Controller {
 	
 	public class GetAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Params params = new Params(request);
-		if (params.isPost()) throw new ServletException("This action only responds to GET requests");
 		
 		String action = request.getPathInfo();
-		
 		if(action == null || action.equals("") || action.equals("/")) {
 			try {				
 				request.setAttribute("rants", RantService.getRants());
 			} catch (SQLException e) {
-				log.error("Error fetching rants: " + e.getMessage());
-				request.setAttribute("success", false);
+				log.error("Error fetching rants: " + e.getMessage());		
 			}		
 		} else if (action.matches("\\/([0-9]+)$")) {
 			try {
-				request.setAttribute("rant", RantService.getRant(action.replaceAll("/", "")));
+				Rant rant = RantService.getRant(action.replaceAll("/", ""));
+				if (rant != null) {
+					request.setAttribute("rant", rant);	
+				} else {
+					response.sendError(404);
+					return null;
+				}
 			} catch (SQLException e) {
-				log.error("Error fetching rant: " + e.getMessage());
-				request.setAttribute("success", false);
+				log.error("Error fetching rant: " + e.getMessage());		
 			}			
-		}		
+		} 
 		return basePath() + "/index.jsp";
 		}		
 	}
 	
 	public class PostAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
-			Params params = new Params(request);
-			if (params.isGet()) throw new ServletException("This action only responds to POST requests");
 			
+			// No POST requests allowed
+			Params params = new Params(request);
+			if (params.isGet()) {
+				response.sendRedirect(basePath() + "/index.jsp");
+				return null;
+			}
+			
+			// Check for scrumptious cookies
 			Cookie[] cookies = request.getCookies();
 			if (cookies == null || cookies.length == 0) {
-				return basePath() + "/error.jsp";
+				response.sendError(403);
+				return null;
 			} 
+
+			// Check for valid session
+			if (!request.isRequestedSessionIdValid()) {
+				response.sendError(403);
+				return null;
+			}
 			
 			Rant rant = new Rant().parse(params);			
 			log.debug(rant.toString());
@@ -83,7 +97,7 @@ public class RantController extends Controller {
 				}
 				response.sendRedirect(request.getContextPath()+"/"+basePath());
 				return null;				
-			}
+			}			
 			request.setAttribute("action", basePath() + "/post");
 			request.setAttribute("rant", rant); //now check to see if comment has error in the view
 			return basePath() + "/index.jsp";
