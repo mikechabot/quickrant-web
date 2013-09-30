@@ -71,19 +71,6 @@ public class RantController extends Controller {
 				return null;
 			}
 			
-			// Check for scrumptious cookies
-			Cookie[] cookies = request.getCookies();
-			if (cookies == null || cookies.length == 0) {
-				response.sendError(403);
-				return null;
-			} 
-
-			// Check for valid session
-			if (!request.isRequestedSessionIdValid()) {
-				response.sendError(403);
-				return null;
-			}
-			
 			Rant rant = new Rant().parse(params);			
 			log.debug(rant.toString());
 					

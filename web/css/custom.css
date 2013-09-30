@@ -18,6 +18,10 @@ font-family: Open Sans, Arial, sans serif;
 font-weight: 700;
 }
 
+.mild-bold {
+font-weight: 600;
+}
+
 .over {
 color: red;
 }

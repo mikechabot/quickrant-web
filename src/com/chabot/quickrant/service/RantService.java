@@ -17,8 +17,6 @@ import com.chabot.quickrant.model.Rant;
 
 public class RantService {
 	
-	private static Logger log = Logger.getLogger(RantService.class);
-	
 	public static void postRant(Rant rant) throws SQLException {				
 		
 		Connection connection =  new Database().getConnection();  	
@@ -61,7 +59,6 @@ public class RantService {
 			rant.setRanter(rs.getString(6));
 			rant.setLocation(rs.getString(7));
 			rants.add(rant);
-			log.debug(rant.toString());
 		}	
 		
 		if (preparedStatement != null) preparedStatement.close();
@@ -85,7 +82,6 @@ public class RantService {
 			rant.setRant(rs.getString(5));
 			rant.setRanter(rs.getString(6));
 			rant.setLocation(rs.getString(7));
-			log.debug(rant.toString());
 		}
 		
 		if (preparedStatement != null) preparedStatement.close();
