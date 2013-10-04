@@ -9,6 +9,7 @@ import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
 
 import com.chabot.quickrant.database.QuickQuery;
+import com.chabot.quickrant.timer.FlushCookiesJob;
 
 public class ContextEventListener implements ServletContextListener {
 	
@@ -25,7 +26,6 @@ public class ContextEventListener implements ServletContextListener {
 
             Configuration conf = Configuration.getInstance();
             conf.initialize(path);
-            
             log.info("Loaded rant.properties "); 
             
             String sql = "select version()";
@@ -35,6 +35,9 @@ public class ContextEventListener implements ServletContextListener {
                 log.info(resultSet.getString(1));
             }
             query.close();
+            
+            log.info("Initializing 'FlushCookiesJob'");
+            new FlushCookiesJob();
             
         }
         catch (Exception e) {

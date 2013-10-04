@@ -10,14 +10,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import com.chabot.quickrant.database.Database;
 import com.chabot.quickrant.model.Rant;
 
 public class RantService {
 	
-	public static void postRant(Rant rant) throws SQLException {				
+	public static void persistRant(Rant rant) throws SQLException {				
 		
 		Connection connection =  new Database().getConnection();  	
 	    String insertSql = "insert into rants (id, created, emotion, question, rant, ranter, location) values (nextval('rants_id_seq'),?,?,?,?,?,?);";		    
@@ -42,7 +40,7 @@ public class RantService {
 		if (connection != null) connection.close();
 	}
 	
-	public static List<Rant> getRants() throws SQLException {
+	public static List<Rant> fetchRants() throws SQLException {
 		Connection connection = new Database().getConnection();	  		
 	    String rantSQl = "select id, created, emotion, question, rant, ranter, location from rants order by id desc limit 40;";	    
 	    PreparedStatement preparedStatement = connection.prepareStatement(rantSQl);		    	    
@@ -66,7 +64,7 @@ public class RantService {
 		return rants;
 	}
 	
-	public static Rant getRant(String id) throws SQLException {
+	public static Rant fetchRant(String id) throws SQLException {
 		Connection connection = new Database().getConnection();	  		
 	    String rantSQl = "select id, created, emotion, question, rant, ranter, location from rants where id = " + id + ";";	    
 	    PreparedStatement preparedStatement = connection.prepareStatement(rantSQl);		    	    

@@ -40,13 +40,13 @@ public class RantController extends Controller {
 		String action = request.getPathInfo();
 		if(action == null || action.equals("") || action.equals("/")) {
 			try {				
-				request.setAttribute("rants", RantService.getRants());
+				request.setAttribute("rants", RantService.fetchRants());
 			} catch (SQLException e) {
 				log.error("Error fetching rants: " + e.getMessage());		
 			}		
 		} else if (action.matches("\\/([0-9]+)$")) {
 			try {
-				Rant rant = RantService.getRant(action.replaceAll("/", ""));
+				Rant rant = RantService.fetchRant(action.replaceAll("/", ""));
 				if (rant != null) {
 					request.setAttribute("rant", rant);	
 				} else {
@@ -76,7 +76,7 @@ public class RantController extends Controller {
 					
 			if (rant.isValid()) {				
 				try {
-					RantService.postRant(rant);
+					RantService.persistRant(rant);
 					request.getSession().setAttribute("success", true);
 				} catch (SQLException e) {
 					log.error("error inserting rant: " + e.getMessage());
