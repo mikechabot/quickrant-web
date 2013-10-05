@@ -9,13 +9,9 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import org.apache.log4j.Logger;
-
 public class Configuration {
     public String PROPERTY_FILE_NAME = "rant.properties";
     
-    private static final Logger log = Logger.getLogger(Configuration.class);
-
     private static Configuration config;
     private boolean initialized = false;
     private String path;

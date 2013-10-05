@@ -1,7 +1,5 @@
 package com.chabot.quickrant;
 
-import java.sql.ResultSet;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
