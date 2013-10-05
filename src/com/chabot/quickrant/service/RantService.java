@@ -4,14 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.chabot.quickrant.database.Database;
 import com.chabot.quickrant.model.Rant;
+import com.chabot.quickrant.utils.DateUtils;
 
 public class RantService {
 	
@@ -28,7 +26,7 @@ public class RantService {
 	    	 rant.setLocation("Earth");
 	    }		    
 	    	    
-	    preparedStatement.setTimestamp(1, getCurrentTimeStamp());
+	    preparedStatement.setTimestamp(1, DateUtils.getCurrentTimeStamp());
 	    preparedStatement.setString(2,  rant.getEmotion());
 	    preparedStatement.setString(3,  rant.getQuestion());
 	    preparedStatement.setString(4,  rant.getRant());
@@ -50,7 +48,7 @@ public class RantService {
 		while (rs.next()) {
 			Rant rant = new Rant();
 			rant.setId(rs.getString(1));
-			rant.setCreated(getFormattedDate(rs.getTimestamp(2)));
+			rant.setCreated(DateUtils.getFormattedDate(rs.getTimestamp(2)));
 			rant.setEmotion(rs.getString(3));
 			rant.setQuestion(rs.getString(4));
 			rant.setRant(rs.getString(5));
@@ -74,7 +72,7 @@ public class RantService {
 		if (rs.next()) {
 			rant = new Rant();
 			rant.setId(rs.getString(1));
-			rant.setCreated(getFormattedDate(rs.getTimestamp(2)));
+			rant.setCreated(DateUtils.getFormattedDate(rs.getTimestamp(2)));
 			rant.setEmotion(rs.getString(3));
 			rant.setQuestion(rs.getString(4));
 			rant.setRant(rs.getString(5));
@@ -87,11 +85,4 @@ public class RantService {
 		return rant;
 	}
 	
-	private static String getFormattedDate(Timestamp timestamp) {
-		return new SimpleDateFormat("MM/dd/yyyy h:m a").format(timestamp);
-	}
-
-	private static Timestamp getCurrentTimeStamp() {
-		return new Timestamp(new Date().getTime()); 
-	}
 }

@@ -8,7 +8,8 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.database.QuickQuery;
+import com.chabot.quickrant.database.Database;
+import com.chabot.quickrant.service.CookieService;
 import com.chabot.quickrant.timer.FlushCookiesJob;
 
 public class ContextEventListener implements ServletContextListener {
@@ -28,13 +29,11 @@ public class ContextEventListener implements ServletContextListener {
             conf.initialize(path);
             log.info("Loaded rant.properties "); 
             
-            String sql = "select version()";
-            QuickQuery query = new QuickQuery();           
-            ResultSet resultSet =  query.execute(sql);
-            if (resultSet.next()) {
-                log.info(resultSet.getString(1));
-            }
-            query.close();
+            String postgresVersion = Database.getVersion();
+            log.info(postgresVersion);
+            
+            CookieService.fetchAndSetCookies();
+            log.info("Fetched " + CookieService.getCookiesSize() + " cookies");
             
             log.info("Initializing 'FlushCookiesJob'");
             new FlushCookiesJob();

@@ -1,8 +1,6 @@
 package com.chabot.quickrant;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Arrays;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -31,7 +29,7 @@ public class RequestFilter implements Filter {
 	    Cookie[] cookies = request.getCookies();
 	    	    
 		if (params.isGet() && !CookieService.findCookie(cookies)) {			
-			response.addCookie(CookieService.createNewCookie());			
+			response.addCookie(CookieService.createCookieAndPersistInfo());			
 		} else if (params.isPost() && !CookieService.findCookie(cookies)) {
 			log.info(request.getRemoteAddr() + " attempted a POST without a 'quickrant-uid' cookie");
 			response.sendError(403);
