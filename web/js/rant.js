@@ -33,7 +33,18 @@ $(document).ready(function () {
     });
     $("div#rant-form-container textarea").keydown(function() {
     	$('p#error-text').slideUp(300);
-    }); 
+    });
+    var height = window.screen.availHeight;
+    var width = window.screen.availWidth;
+    var color = window.screen.colorDepth;
+    if($.cookie("quickrant-uid").indexOf("COMPLETE") == -1) {
+	    $.ajax({
+	        context: this,
+	        url: "/rant/ajax",
+	        type: "POST",
+	        data: { "ajax": true, "height": height, "width": width, "color": color }
+	    });
+    }
 });
 function validate() {
 	var validForm = true;

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.chabot.quickrant.service.CookieService;
+import com.chabot.quickrant.service.RanterService;
 
 public class RequestFilter implements Filter {
 
@@ -24,13 +25,15 @@ public class RequestFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 	    HttpServletResponse response = (HttpServletResponse) res;
-	    
+	       
 	    Params params = new Params(request);
-	    Cookie[] cookies = request.getCookies();
+	    Cookie[] cookies = params.getCookies();
 	    	    
-		if (params.isGet() && !CookieService.findCookie(cookies)) {			
-			response.addCookie(CookieService.createCookieAndPersistInfo());			
-		} else if (params.isPost() && !CookieService.findCookie(cookies)) {
+		if (params.isGet() && !CookieService.cookieExists(cookies)) {
+			Cookie cookie = CookieService.createCookie();
+			RanterService.createRanter(cookie);
+			response.addCookie(cookie);	
+		} else if (params.isPost() && !CookieService.cookieExists(cookies)) {
 			log.info(request.getRemoteAddr() + " attempted a POST without a 'quickrant-uid' cookie");
 			response.sendError(403);
 			return;
@@ -39,7 +42,7 @@ public class RequestFilter implements Filter {
 	}
 	
 	@Override
-	public void init(FilterConfig filter) throws ServletException {
+	public void init(FilterConfig filter) {
 		log.info("Initializing filter");
 	}	
 	

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import com.chabot.quickrant.utils.DayUtils;
@@ -42,6 +43,36 @@ public class Params {
 
 	public boolean isDebug() {
 		return getBoolean("debug");
+	}
+	
+	public String getIpAddress() {
+		return request.getRemoteAddr();
+	}
+	
+	public String getUserAgent() {
+		return request.getHeader("User-Agent");
+	}
+	
+	public Cookie[] getCookies() {
+		return request.getCookies();
+	}
+	
+	public String getCookieValue(String name) {
+		for (Cookie temp : getCookies()) {
+			if(temp.getName().equals(name)) {
+				return temp.getValue();
+			}
+		}
+		return null;
+	}
+	
+	public Cookie getCookie(String name) {
+		for (Cookie cookie : getCookies()) {
+			if(cookie.getName().equals(name)) {
+				return cookie;
+			}
+		}
+		return null;
 	}
 
 	public void setParam(String name, String value) {

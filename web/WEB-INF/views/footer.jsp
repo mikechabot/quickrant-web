@@ -20,5 +20,6 @@
 </c:if>
 <script src="/js/rant.js"></script>
 <script src="/js/jquery.simplyCountable.js"></script>
+<script src="/js/jquery.cookie.js"></script>
 </body>
 </html>

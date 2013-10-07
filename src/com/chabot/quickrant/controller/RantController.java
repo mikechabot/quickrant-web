@@ -2,6 +2,7 @@ package com.chabot.quickrant.controller;
 
 import java.sql.SQLException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,7 +11,8 @@ import org.apache.log4j.Logger;
 import com.chabot.quickrant.Controller;
 import com.chabot.quickrant.Params;
 import com.chabot.quickrant.model.Rant;
-import com.chabot.quickrant.service.RantService;
+import com.chabot.quickrant.model.Ranter;
+import com.chabot.quickrant.service.*;
 
 public class RantController extends Controller {
 
@@ -25,6 +27,7 @@ public class RantController extends Controller {
 	protected void initActions() {
 		addAction(null, new GetAction());
 		addAction("/post", new PostAction());
+		addAction("/ajax", new AjaxAction());
 	}
 
 	@Override
@@ -62,7 +65,7 @@ public class RantController extends Controller {
 	public class PostAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
 			
-			// No POST requests allowed
+			// No GET requests allowed
 			Params params = new Params(request);
 			if (params.isGet()) {
 				response.sendRedirect(basePath() + "/index.jsp");
@@ -70,11 +73,9 @@ public class RantController extends Controller {
 			}
 			
 			Rant rant = new Rant().parse(params);			
-			log.debug(rant.toString());
-					
 			if (rant.isValid()) {				
 				try {
-					RantService.persistRant(rant);
+					RantService.createRant(rant, params);
 					request.getSession().setAttribute("success", true);
 				} catch (SQLException e) {
 					log.error("error inserting rant: " + e.getMessage());
@@ -82,10 +83,29 @@ public class RantController extends Controller {
 				}
 				response.sendRedirect(request.getContextPath()+"/"+basePath());
 				return null;				
-			}			
-			request.setAttribute("action", basePath() + "/post");
-			request.setAttribute("rant", rant); //now check to see if comment has error in the view
+			}
+			
 			return basePath() + "/index.jsp";
 		}		
 	}
+	
+	public class AjaxAction implements Action {
+		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		// No GET requests allowed
+		Params params = new Params(request);
+		if (params.isGet()) {
+			response.sendRedirect(basePath() + "/index.jsp");
+			return null;
+		}		
+
+		if(!RanterService.isComplete(params)) {			
+			RanterService.updateRanter(new Ranter().parse(params));
+			Cookie cookie = CookieService.updateCookie(params.getCookie(CookieService.COOKIE_NAME));
+			response.addCookie(cookie);
+		} 
+		return basePath();
+		}		
+	}
+	
 }

@@ -30,8 +30,8 @@ public class ContextEventListener implements ServletContextListener {
             String postgresVersion = Database.getVersion();
             log.info(postgresVersion);
             
-            CookieService.fetchAndSetCookies();
-            log.info("Fetched " + CookieService.getCookiesSize() + " cookies");
+            CookieService.populateCookieCache();
+            log.info("Fetched " + CookieService.getCookieCacheSize() + " cookies");
             
             log.info("Initializing 'FlushCookiesJob'");
             new FlushCookiesJob();
