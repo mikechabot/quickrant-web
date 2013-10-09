@@ -25,9 +25,9 @@ public class Database {
 			log.error("Unable to load configuration", e);
 		}
 
-		String url = config.getRequiredString("postgresDbUrl");
-		String user = config.getRequiredString("postgresDbUser");
-		String pass = config.getRequiredString("postgresDbPass");		
+		String url = config.getRequiredString("postgres-url");
+		String user = config.getRequiredString("postgres-user");
+		String pass = config.getRequiredString("postgres-pass");		
 		
 		Connection connection = null;
 		

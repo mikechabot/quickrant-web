@@ -6,6 +6,8 @@ import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
+import com.chabot.quickrant.Configuration;
+import com.chabot.quickrant.Configuration.ConfigurationException;
 import com.chabot.quickrant.service.CookieService;
 import com.chabot.quickrant.service.RanterService;
 
@@ -13,18 +15,22 @@ public class FlushCookiesJob {
 	
 	private static Logger log = Logger.getLogger(FlushCookiesJob.class);
 	
-	private final long TIMER_DELAY = 60*1000; 		// 1 seconds
-	private final long TIMER_INTERVAL = 180*1000;	// 3 minutes
-
-	private boolean initializing = true;
+	private long TIMER_DELAY;
+	private long TIMER_INTERVAL;
 	
-    public FlushCookiesJob() {
+    public FlushCookiesJob() throws ConfigurationException {
+    	Configuration config = Configuration.getInstance();
+		config.initialize();
+		
+		this.TIMER_DELAY = config.getOptionalLong("cookie-flush-delay", 2);
+		this.TIMER_INTERVAL = config.getOptionalLong("cookie-flush-interval", 5);
+    	
     	Timer timer = new Timer();
-        timer.schedule(new FlushCookiesTask(), TIMER_DELAY, TIMER_INTERVAL);
-        log.info("Timer delay: " + (TIMER_DELAY / 1000)/60 + " minute(s)");
-        log.info("Timer interval: " + (TIMER_INTERVAL / 1000)/60 + " minute(s)");
-        log.info("Next scheduled run time: " + getNextRunTime());
-        initializing = false;
+        timer.schedule(new FlushCookiesTask(), TIMER_DELAY*60*1000, TIMER_INTERVAL*60*1000);
+        
+        log.info("Timer delay: " + TIMER_DELAY + " minute(s)");
+        log.info("Timer interval: " + TIMER_INTERVAL + " minute(s)");
+        log.info("Next scheduled run time: " + getNextRunTime(true));
     }
 
     class FlushCookiesTask extends TimerTask {
@@ -34,9 +40,13 @@ public class FlushCookiesJob {
     		log.info("Next scheduled run time: " + getNextRunTime());
         }
     }
-    
+
     public Timestamp getNextRunTime() {
-    	return new Timestamp(new Date().getTime() + (initializing ? TIMER_DELAY : TIMER_INTERVAL));
+    	return getNextRunTime(false);
+    }
+    
+    public Timestamp getNextRunTime(boolean initializing) {
+    	return new Timestamp(new Date().getTime() + (initializing ? TIMER_DELAY*60*1000 : TIMER_INTERVAL*60*1000));
     }
     
 }

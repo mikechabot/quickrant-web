@@ -25,15 +25,15 @@ public class ContextEventListener implements ServletContextListener {
 
             Configuration conf = Configuration.getInstance();
             conf.initialize(path);
-            log.info("Loaded rant.properties "); 
+            log.info("Loaded rant.properties"); 
             
             String postgresVersion = Database.getVersion();
             log.info(postgresVersion);
             
-            CookieService.populateCookieCache();
-            log.info("Fetched " + CookieService.getCookieCacheSize() + " cookies");
+            log.info("Initializing CookieService");
+            CookieService.initialize();
             
-            log.info("Initializing 'FlushCookiesJob'");
+            log.info("Initializing FlushCookiesJob");
             new FlushCookiesJob();
             
         }

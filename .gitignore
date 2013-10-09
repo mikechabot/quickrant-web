@@ -3,3 +3,4 @@
 /.classpath
 /.project
 /build.xml
+/web/WEB-INF/etc/rant.properties

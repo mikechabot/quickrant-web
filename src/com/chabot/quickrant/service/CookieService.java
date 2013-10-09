@@ -14,6 +14,8 @@ import javax.servlet.http.Cookie;
 
 import org.apache.log4j.Logger;
 
+import com.chabot.quickrant.Configuration;
+import com.chabot.quickrant.Configuration.ConfigurationException;
 import com.chabot.quickrant.database.Database;
 import com.chabot.quickrant.model.RantCookie;
 
@@ -22,8 +24,21 @@ public class CookieService {
 	private static Logger log = Logger.getLogger(CookieService.class);
 	
 	public static final String COOKIE_NAME = "quickrant-uid";
-	public static final long COOKIE_AGE = 21600; 	// 6 hours (in seconds)
+	public static long COOKIE_AGE;
 	private static ConcurrentMap<Long, String> cookies = new ConcurrentHashMap<Long, String>();
+	
+	public static void initialize() throws ConfigurationException {
+		Configuration config = Configuration.getInstance();
+		config.initialize();
+		
+		// Convert in-minutes configuration property to seconds
+		COOKIE_AGE = config.getOptionalLong("cookie-age", 1440);
+		
+		log.info("Cookie name: " + COOKIE_NAME);
+		log.info("Cookie age: " + COOKIE_AGE + " minutes (or " + (COOKIE_AGE / 60) + " hours)");
+		
+		populateCookieCache();		
+	}
 	
 	public static int getCookieCacheSize() {
 		return cookies.size();
@@ -40,6 +55,14 @@ public class CookieService {
 		return false;
 	}
 	
+	public static RantCookie createCookie() {
+	    RantCookie rantCookie = new RantCookie(COOKIE_NAME, UUID.randomUUID().toString());
+	    rantCookie.setMaxAge((int)COOKIE_AGE*60);
+	    rantCookie.setIssued(new Date().getTime());
+		cookies.put(rantCookie.getIssued(), rantCookie.getValue());
+		return rantCookie;
+	}
+	
 	public static Cookie updateCookie(Cookie cookie) {
 		String newCookieValue = cookie.getValue() + "-COMPLETE";		
 		// Update cookie cache
@@ -50,17 +73,9 @@ public class CookieService {
 		}		
 		// Set response cookie
 		cookie.setValue(newCookieValue);
-		cookie.setMaxAge((int)CookieService.COOKIE_AGE);
+		cookie.setMaxAge((int)CookieService.COOKIE_AGE*60);
 		cookie.setPath("/");		
 		return cookie;
-	}
-	
-	public static RantCookie createCookie() {
-	    RantCookie rantCookie = new RantCookie(COOKIE_NAME, UUID.randomUUID().toString());
-	    rantCookie.setMaxAge((int)COOKIE_AGE);
-	    rantCookie.setIssued(new Date().getTime());
-		cookies.put(rantCookie.getIssued(), rantCookie.getValue());
-		return rantCookie;
 	}
 	
 	public static void populateCookieCache() {
@@ -79,7 +94,8 @@ public class CookieService {
 			
 		} catch (SQLException e) {
 			log.error("Error fetching cookies", e);
-		}    
+		}
+		log.info("Fetched " + getCookieCacheSize() + " cookies");
 	}
 		
 	public static void clean() {
@@ -87,7 +103,7 @@ public class CookieService {
 		if(cookies != null) {
 			int start = cookies.size();
 			for(Long temp : cookies.keySet()) {
-				if (new Date().getTime() - temp > COOKIE_AGE*1000) { 
+				if (new Date().getTime() - temp > COOKIE_AGE*60*1000) { 
 					cookies.remove(temp);
 				}
 			}

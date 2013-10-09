@@ -80,7 +80,7 @@ public class RanterService {
 	public static void clean() {
 		// Deactivate persisted cookies
 		Connection connection =  new Database().getConnection();
-	    String updateSql = "update ranter set cookieactive = false where (to_number(replace(to_char(extract(epoch from now()),'9999999999D999'),'.',''),'9999999999999') - cookieissued) > " + CookieService.COOKIE_AGE*1000;		    
+	    String updateSql = "update ranter set cookieactive = false where cookieactive = true and (to_number(replace(to_char(extract(epoch from now()),'9999999999D999'),'.',''),'9999999999999') - cookieissued) > " + CookieService.COOKIE_AGE*60*1000;		    
 	    PreparedStatement updateStatement = null;	    
 		try {
 			updateStatement = connection.prepareStatement(updateSql);
