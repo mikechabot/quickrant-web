@@ -1,4 +1,4 @@
-package com.chabot.quickrant.exception;
+package com.quickrant.rave.exception;
 
 public class ServiceException extends Exception {
 

@@ -1,4 +1,4 @@
-package com.chabot.quickrant.service;
+package com.quickrant.rave.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,12 +10,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.Configuration;
-import com.chabot.quickrant.Configuration.ConfigurationException;
-import com.chabot.quickrant.Params;
-import com.chabot.quickrant.database.Database;
-import com.chabot.quickrant.model.Rant;
-import com.chabot.quickrant.utils.DateUtils;
+import com.quickrant.rave.Configuration;
+import com.quickrant.rave.Params;
+import com.quickrant.rave.Configuration.ConfigurationException;
+import com.quickrant.rave.database.Database;
+import com.quickrant.rave.model.Rant;
+import com.quickrant.rave.utils.DateUtils;
 
 public class RantService {
 	

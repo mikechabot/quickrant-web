@@ -1,4 +1,4 @@
-package com.chabot.quickrant;
+package com.quickrant.rave;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.chabot.quickrant.utils.DayUtils;
+import com.quickrant.rave.utils.DayUtils;
 
 public class Params {
 

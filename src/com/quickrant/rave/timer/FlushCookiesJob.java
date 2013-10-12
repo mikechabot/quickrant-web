@@ -1,4 +1,4 @@
-package com.chabot.quickrant.timer;
+package com.quickrant.rave.timer;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Timer;
@@ -6,10 +6,10 @@ import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.Configuration;
-import com.chabot.quickrant.Configuration.ConfigurationException;
-import com.chabot.quickrant.service.CookieService;
-import com.chabot.quickrant.service.RanterService;
+import com.quickrant.rave.Configuration;
+import com.quickrant.rave.Configuration.ConfigurationException;
+import com.quickrant.rave.service.CookieService;
+import com.quickrant.rave.service.RanterService;
 
 public class FlushCookiesJob {
 	

@@ -2,11 +2,11 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>QuickRant</display-name>
   <listener>
-    <listener-class>com.chabot.quickrant.ContextEventListener</listener-class>
+    <listener-class>com.quickrant.rave.ContextEventListener</listener-class>
   </listener>
   <filter>
     <filter-name>RequestFilter</filter-name>
-    <filter-class>com.chabot.quickrant.RequestFilter</filter-class>
+    <filter-class>com.quickrant.rave.RequestFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>RequestFilter</filter-name>
@@ -30,7 +30,7 @@
   </error-page>
   <servlet>
     <servlet-name>RantController</servlet-name>
-    <servlet-class>com.chabot.quickrant.controller.RantController</servlet-class>
+    <servlet-class>com.quickrant.rave.controller.RantController</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>RantController</servlet-name>

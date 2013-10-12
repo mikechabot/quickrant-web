@@ -1,4 +1,4 @@
-package com.chabot.quickrant;
+package com.quickrant.rave;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

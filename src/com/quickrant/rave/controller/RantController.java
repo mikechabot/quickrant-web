@@ -1,4 +1,4 @@
-package com.chabot.quickrant.controller;
+package com.quickrant.rave.controller;
 
 import java.sql.SQLException;
 
@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.Controller;
-import com.chabot.quickrant.Params;
-import com.chabot.quickrant.model.Rant;
-import com.chabot.quickrant.model.Ranter;
-import com.chabot.quickrant.service.*;
+import com.quickrant.rave.Controller;
+import com.quickrant.rave.Params;
+import com.quickrant.rave.model.Rant;
+import com.quickrant.rave.model.Ranter;
+import com.quickrant.rave.service.*;
 
 public class RantController extends Controller {
 

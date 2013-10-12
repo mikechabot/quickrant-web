@@ -1,4 +1,4 @@
-package com.chabot.quickrant.utils;
+package com.quickrant.rave.utils;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

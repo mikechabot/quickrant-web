@@ -1,4 +1,4 @@
-package com.chabot.quickrant;
+package com.quickrant.rave;
 
 import java.io.IOException;
 
@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.service.CookieService;
-import com.chabot.quickrant.service.RanterService;
+import com.quickrant.rave.service.CookieService;
+import com.quickrant.rave.service.RanterService;
 
 public class RequestFilter implements Filter {
 

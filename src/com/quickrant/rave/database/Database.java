@@ -1,4 +1,4 @@
-package com.chabot.quickrant.database;
+package com.quickrant.rave.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,8 +8,8 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.Configuration;
-import com.chabot.quickrant.Configuration.ConfigurationException;
+import com.quickrant.rave.Configuration;
+import com.quickrant.rave.Configuration.ConfigurationException;
 
 public class Database {
 	

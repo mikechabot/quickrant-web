@@ -1,4 +1,4 @@
-package com.chabot.quickrant.utils;
+package com.quickrant.rave.utils;
 
 public class StringUtils {
 

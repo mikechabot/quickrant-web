@@ -1,4 +1,4 @@
-package com.chabot.quickrant;
+package com.quickrant.rave;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.chabot.quickrant.utils.StringUtils;
+import com.quickrant.rave.utils.StringUtils;
 
 /*
  * Validator

@@ -1,4 +1,4 @@
-package com.chabot.quickrant;
+package com.quickrant.rave;
 
 import java.io.File;
 import java.io.FileInputStream;

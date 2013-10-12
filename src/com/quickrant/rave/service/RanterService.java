@@ -1,4 +1,4 @@
-package com.chabot.quickrant.service;
+package com.quickrant.rave.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,11 +9,11 @@ import javax.servlet.http.Cookie;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.Params;
-import com.chabot.quickrant.database.Database;
-import com.chabot.quickrant.model.RantCookie;
-import com.chabot.quickrant.model.Ranter;
-import com.chabot.quickrant.utils.DateUtils;
+import com.quickrant.rave.Params;
+import com.quickrant.rave.database.Database;
+import com.quickrant.rave.model.RantCookie;
+import com.quickrant.rave.model.Ranter;
+import com.quickrant.rave.utils.DateUtils;
 
 public class RanterService {
 

@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="com.chabot.quickrant.model.Rant"
+	import="com.quickrant.rave.model.Rant"
 	import="java.util.List" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>

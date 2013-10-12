@@ -1,4 +1,4 @@
-package com.chabot.quickrant.model;
+package com.quickrant.rave.model;
 
 import javax.servlet.http.Cookie;
 

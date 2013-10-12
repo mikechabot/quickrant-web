@@ -1,4 +1,4 @@
-package com.chabot.quickrant;
+package com.quickrant.rave;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -6,9 +6,9 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.database.Database;
-import com.chabot.quickrant.service.CookieService;
-import com.chabot.quickrant.timer.FlushCookiesJob;
+import com.quickrant.rave.database.Database;
+import com.quickrant.rave.service.CookieService;
+import com.quickrant.rave.timer.FlushCookiesJob;
 
 public class ContextEventListener implements ServletContextListener {
 	

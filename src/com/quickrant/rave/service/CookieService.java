@@ -1,4 +1,4 @@
-package com.chabot.quickrant.service;
+package com.quickrant.rave.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,10 +14,10 @@ import javax.servlet.http.Cookie;
 
 import org.apache.log4j.Logger;
 
-import com.chabot.quickrant.Configuration;
-import com.chabot.quickrant.Configuration.ConfigurationException;
-import com.chabot.quickrant.database.Database;
-import com.chabot.quickrant.model.RantCookie;
+import com.quickrant.rave.Configuration;
+import com.quickrant.rave.Configuration.ConfigurationException;
+import com.quickrant.rave.database.Database;
+import com.quickrant.rave.model.RantCookie;
 
 public class CookieService {
 	

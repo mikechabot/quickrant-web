@@ -1,8 +1,8 @@
-package com.chabot.quickrant.model;
+package com.quickrant.rave.model;
 
-import com.chabot.quickrant.Model;
-import com.chabot.quickrant.Params;
-import com.chabot.quickrant.Require;
+import com.quickrant.rave.Model;
+import com.quickrant.rave.Params;
+import com.quickrant.rave.Require;
 
 public class Ranter extends Model<Ranter>{
 
