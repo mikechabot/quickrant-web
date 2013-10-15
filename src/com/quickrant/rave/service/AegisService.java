@@ -18,7 +18,7 @@ public class AegisService {
 	    boolean isComplete = false;
 		try {
 			Connection connection = new Database().getConnection();
-			String selectSql = "select complete from ranter where cookievalue = '" + params.getCookieValue(CookieService.COOKIE_NAME) + "'";
+			String selectSql = "";
 			PreparedStatement selectStatement = connection.prepareStatement(selectSql);		
 			ResultSet rs = selectStatement.executeQuery();
 			if (rs.next() && rs.getBoolean(1)) isComplete = true; 		
