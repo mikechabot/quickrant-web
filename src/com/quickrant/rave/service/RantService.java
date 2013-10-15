@@ -90,7 +90,7 @@ public class RantService {
 		if (connection != null) connection.close();
 		return rants;
 	}
-	
+
 	public static Rant fetchRant(String id) throws SQLException {
 		Connection connection = new Database().getConnection();	  		
 	    String rantSQl = "select id, created, emotion, question, rant, ranter, location from rants where id = " + id + ";";	    

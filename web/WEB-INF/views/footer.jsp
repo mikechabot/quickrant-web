@@ -18,6 +18,9 @@
   </script>
 <c:set var="success" value="${null}" />
 </c:if>
+<script>
+$('input[name=pageLoadTime]').val((new Date).getTime());
+</script>
 <script src="/js/rant.js"></script>
 <script src="/js/jquery.simplyCountable.js"></script>
 <script src="/js/jquery.cookie.js"></script>

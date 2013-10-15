@@ -3,21 +3,21 @@
   <head>
     <meta charset="utf-8">
     <title>quickrant | say anything to everyone</title>
-    <meta name="description" content="Express yourself without yourself. No login required.">
+    <meta name="description" content="Express yourself without yourself.">
     <meta name="author" content="Mike Chabot">
 
-	<!-- Le scripts -->
+	<!-- scripts -->
 	<script src="/js/jquery.js"></script>
 	<script src="/js/bootstrap.js"></script>
 
-	<!-- Les fonts -->
+	<!-- fonts -->
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
 
-    <!-- Le styles -->
+    <!-- styles -->
     <link href="/css/bootstrap.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
 
-    <!-- Fav and touch icons -->
+    <!-- fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/ico/apple-touch-icon-72-precomposed.png">

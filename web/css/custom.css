@@ -7,6 +7,15 @@ padding-bottom: 40px;
 font-family: Open Sans, Arial, sans serif;
 }
 
+blockquote {
+border-left: 5px solid #D8D8D8;
+margin: 3px 0px 0px 0px;
+}
+
+h5 {
+margin-top: 2px;
+}
+
 .shadow {
 -webkit-border-radius: 4px;
 		border-radius: 4px;
@@ -46,7 +55,6 @@ font-size: 10px;
 .wide {
 width: 95%;	
 }
-
 
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
@@ -155,24 +163,28 @@ clear: both;
 .rant-text-container {  
 overflow:hidden; 
 text-overflow:hidden;
-margin-bottom: -20px;
 }
 
 .rant-single-text-container {
 padding-left: 2%;
 overflow:hidden; 
 text-overflow:hidden;
-margin-bottom: -20px;
 }
 
 .rant-text {
 font-size: 20px;
 font-weight: 300;
+margin-bottom: 10px;
+}
+
+.rant-single-block {
+margin: 10px 5px 10px 15px;
 }
 
 .rant-single-text {
 font-size: 36px;
 font-weight: 300;
+margin-bottom: 20px;
 }
 
 .rant-single-info {

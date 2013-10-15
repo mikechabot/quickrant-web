@@ -11,16 +11,16 @@
 		<c:if test="${not empty rant}">
 		<div class="rant-container shadow">
 			<div class="rant-details pull-left">
-				<img src="/img/${rant.getEmotion()}.gif" style="height: 24px; width: 24px;">
+				<img src="/img/${rant.getEmotion()}.gif" style="height: 32px; width: 32px;">
 			</div>
 			<div class="rant-text-container">
 				<p class="muted pull-left stream-question">${rant.getQuestion()}</p>
 				<a rel="tooltip" data-toggle="tooltip" class="permalink btn btn-mini pull-right" href="/rant/${rant.getId()}"><i class="icon-plus"></i></a>
 				<blockquote class="pull-left wide">
-				<p class="rant-text small-bottom-margin">${rant.getRant()}</p>
+				<p class="rant-text">${rant.getRant()}</p>
 				<small class="rant-info"><b class="dark-bold">${rant.getRanter()}</b>, ${rant.getLocation()}</small>
-				<span class="smaller muted pull-right">${rant.getCreated()}</span>
 				</blockquote>
+				<span class="smaller muted pull-right">${rant.getCreated()}</span>
 			</div>
 		</div>
 		</c:if>	
@@ -32,13 +32,13 @@
 		<div class="container single-stream">
 			<div class="rant-container shadow">
 				<div class="rant-single-text-container">
-					<img src="/img/${rant.getEmotion()}.gif" class="pull-right" style="height: 24px; width: 24px;">
-					<h4 class="muted">${rant.getQuestion()}</h4>
-					<blockquote class="pull-left wide">
-					<p class="rant-single-text small-bottom-margin">${rant.getRant()}</p>
+					<img src="/img/${rant.getEmotion()}.gif" class="pull-right" style="height: 32px; width: 32px;">
+					<h5 class="muted">${rant.getQuestion()}</h5>
+					<blockquote class="pull-left wide rant-single-block">
+					<p class="rant-single-text">${rant.getRant()}</p>
 					<small class="rant-single-info"><b class="dark-bold">${rant.getRanter()}</b>, ${rant.getLocation()}</small>
-					<span class="smaller muted pull-right">${rant.getCreated()}</span>
 					</blockquote>
+					<span class="smaller muted pull-right">${rant.getCreated()}</span>
 				</div>
 			</div>
 		</div>

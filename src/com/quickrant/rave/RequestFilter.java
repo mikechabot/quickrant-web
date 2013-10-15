@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.quickrant.rave.service.AegisService;
 import com.quickrant.rave.service.CookieService;
 import com.quickrant.rave.service.RanterService;
 
@@ -33,8 +34,8 @@ public class RequestFilter implements Filter {
 			Cookie cookie = CookieService.createCookie();
 			RanterService.createRanter(cookie);
 			response.addCookie(cookie);	
-		} else if (params.isPost() && !CookieService.cookieExists(cookies)) {
-			log.info(request.getRemoteAddr() + " attempted a POST without a 'quickrant-uid' cookie");
+		} else if (params.isPost() && !CookieService.cookieExists(cookies) && !AegisService.isBanned(params.getIpAddress())) {
+			log.info(request.getRemoteAddr() + " attempted a POST without a 'quickrant-uid' cookie, or was banned");
 			response.sendError(403);
 			return;
 		}
