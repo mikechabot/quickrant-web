@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project name="QuickRant" default="build" basedir=".">
+<project name="quickrant" default="build" basedir=".">
+    
     <!-- Init -->
     <tstamp prefix="BUILD"/>
     
@@ -11,9 +12,9 @@
     
     <property name="DIST"            value="build"/>
     <property name="DIST.CLASSES"    value="${DIST}/classes"/>
-    <property name="DIST.BASE"       value="QuickRant"/>
-    <property name="DIST.PREFIX"     value="QuickRant"/>
+    <property name="DIST.PREFIX"     value="quickrant"/>
     
+    <property name="BUILD.RELEASE"   value="0.1"/>
     <property name="BUILD.BRANCH"    value="DEV"/>
     <property name="BUILD.STAMP"     value="${BUILD.DSTAMP}_${BUILD.TSTAMP}"/>
     <property name="BUILD.TAG"       value="${BUILD.BRANCH}-${BUILD.STAMP}"/>
@@ -41,13 +42,14 @@
     
     <target name="compile" description="Compile project">
         <mkdir dir="${DIST.CLASSES}" />
-        <javac destdir="${DIST.CLASSES}" debug="true" source="1.5" target="1.5">
+        <javac destdir="${DIST.CLASSES}" debug="true" source="1.7" target="1.7">
             <src path="${SRC}" />
             <classpath refid="project.classpath" />
         </javac>
         <copy todir="${DIST.CLASSES}" filtering="true">
             <fileset dir="${SRC}" includes="*.properties *.xml"/>
             <filterset>
+                <filter token="RELEASE" value="${BUILD.RELEASE}"/>
                 <filter token="BRANCH"  value="${BUILD.BRANCH}"/>
                 <filter token="BUILD"   value="${BUILD.STAMP}"/>
                 <filter token="TAG"     value="${BUILD.TAG}"/>
@@ -58,7 +60,7 @@
     <target name="package" description="Package project" depends="compress-jar,compress-war"/>
     
     <target name="compress-jar" description="Compress project into JAR">
-        <jar jarfile="${DIST}/${DIST.PREFIX}.jar" basedir="${DIST.CLASSES}"/>
+        <jar jarfile="${DIST}/${DIST.PREFIX}-${BUILD.RELEASE}.jar" basedir="${DIST.CLASSES}"/>
     </target>
     
     <target name="compress-war" description="Compress project into WAR">
@@ -68,6 +70,5 @@
             <classes dir="${DIST.CLASSES}" includes="*.properties *.xml" excludes="version.properties"/>
         </war>
         <copy file="${DIST}/${DIST.PREFIX}.war" tofile="${DIST}/ROOT.war"/>
-        <copy file="${DIST}/${DIST.PREFIX}.war" tofile="${DIST}/QuickRant.war"/>
     </target>
 </project>

@@ -19,11 +19,16 @@ public class RanterService {
 
 	private static Logger log = Logger.getLogger(RanterService.class);
 	
+	/**
+	 * Determine if a ranter completed the AJAX handshake
+	 * @param params
+	 * @return
+	 */
 	public static boolean isComplete(Params params) {    	
 	    boolean isComplete = false;
 		try {
 			Connection connection = new Database().getConnection();
-			String selectSql = "select complete from ranter where cookievalue = '" + params.getCookieValue(CookieService.COOKIE_NAME) + "'";
+			String selectSql = "select complete from ranter where cookievalue = '" + params.getCookieValue(CookieService.getCookieName()) + "'";
 			PreparedStatement selectStatement = connection.prepareStatement(selectSql);		
 			ResultSet rs = selectStatement.executeQuery();
 			if (rs.next() && rs.getBoolean(1)) isComplete = true; 		
@@ -35,6 +40,10 @@ public class RanterService {
 		return isComplete;
 	}
 	
+	/**
+	 * Create a new ranter
+	 * @param cookie
+	 */
 	public static void createRanter(Cookie cookie) {
 		RantCookie rantCookie = (RantCookie) cookie;
 		Connection connection =  new Database().getConnection();
@@ -55,13 +64,17 @@ public class RanterService {
 		}		
 	}
 	
+	/**
+	 * Update an existing ranter
+	 * @param ranter
+	 */
 	public static void updateRanter(Ranter ranter) {
 		Connection connection =  new Database().getConnection();
 		String updateSql = "update ranter set cookievalue = ?, ipaddress = ?, useragent = ?, screenheight = ?, screenwidth = ?, screencolor = ?, key = ?, complete = ? where cookievalue = '" + ranter.getCookieValue() + "'";	
 		PreparedStatement updateStatement = null;	        
 		try {
 			updateStatement = connection.prepareStatement(updateSql);
-			updateStatement.setString(1, ranter.getCookieValue() + "-COMPLETE");
+			updateStatement.setString(1, ranter.getCookieValue() + "*");
 			updateStatement.setString(2, ranter.getIpAddress());
 			updateStatement.setString(3, ranter.getUserAgent());
 			updateStatement.setInt(4, ranter.getScreenHeight());
@@ -77,10 +90,13 @@ public class RanterService {
 		}		
 	}
 	
+	/**
+	 * Purge old ranters from the backend
+	 */
 	public static void clean() {
 		// Deactivate persisted cookies
 		Connection connection =  new Database().getConnection();
-	    String updateSql = "update ranter set cookieactive = false where cookieactive = true and (to_number(replace(to_char(extract(epoch from now()),'9999999999D999'),'.',''),'9999999999999') - cookieissued) > " + CookieService.COOKIE_AGE*60*1000;		    
+	    String updateSql = "update ranter set cookieactive = false where cookieactive = true and (to_number(replace(to_char(extract(epoch from now()),'9999999999D999'),'.',''),'9999999999999') - cookieissued) > " + CookieService.getCookieAge()*60*1000;		    
 	    PreparedStatement updateStatement = null;	    
 		try {
 			updateStatement = connection.prepareStatement(updateSql);

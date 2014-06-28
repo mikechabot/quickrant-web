@@ -15,22 +15,23 @@ public class FlushCookiesJob {
 	
 	private static Logger log = Logger.getLogger(FlushCookiesJob.class);
 	
-	private long TIMER_DELAY;
-	private long TIMER_INTERVAL;
+	private static long TIMER_DELAY;
+	private static long TIMER_INTERVAL;
 	
     public FlushCookiesJob() throws ConfigurationException {
     	Configuration config = Configuration.getInstance();
 		config.initialize();
 		
-		this.TIMER_DELAY = config.getOptionalLong("cookie-flush-delay", 2);
-		this.TIMER_INTERVAL = config.getOptionalLong("cookie-flush-interval", 5);
-    	
+		TIMER_DELAY = config.getOptionalLong("cookie-flush-delay", 2);
+		TIMER_INTERVAL = config.getOptionalLong("cookie-flush-interval", 5);
+    }
+    
+    public void start() {
     	Timer timer = new Timer();
         timer.schedule(new FlushCookiesTask(), TIMER_DELAY*60*1000, TIMER_INTERVAL*60*1000);
-        
         log.info("Timer delay: " + TIMER_DELAY + " minute(s)");
         log.info("Timer interval: " + TIMER_INTERVAL + " minute(s)");
-        log.info("Next scheduled run time: " + getNextRunTime(true));
+        log.info("Next scheduled run time: " + new Timestamp(new Date().getTime() + TIMER_DELAY*60*1000));
     }
 
     class FlushCookiesTask extends TimerTask {
@@ -42,11 +43,7 @@ public class FlushCookiesJob {
     }
 
     public Timestamp getNextRunTime() {
-    	return getNextRunTime(false);
-    }
-    
-    public Timestamp getNextRunTime(boolean initializing) {
-    	return new Timestamp(new Date().getTime() + (initializing ? TIMER_DELAY*60*1000 : TIMER_INTERVAL*60*1000));
+    	return new Timestamp(new Date().getTime() + TIMER_INTERVAL*60*1000);
     }
     
 }

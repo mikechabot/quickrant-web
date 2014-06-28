@@ -21,6 +21,12 @@ public class RantService {
 	
 	private static Logger log = Logger.getLogger(RantService.class);
 	
+	/**
+	 * Create a new rant
+	 * @param rant
+	 * @param params
+	 * @throws SQLException
+	 */
 	public static void createRant(Rant rant, Params params) throws SQLException {				
 		
     	Configuration config = Configuration.getInstance();
@@ -31,7 +37,7 @@ public class RantService {
 		}
 		
 		Connection connection =  new Database().getConnection();
-	    String selectSql = "select id, rantattempts, lastrant from ranter where cookievalue = '" + params.getCookieValue(CookieService.COOKIE_NAME) + "';";
+	    String selectSql = "select id, rantattempts, lastrant from ranter where cookievalue = '" + params.getCookieValue(CookieService.getCookieName()) + "';";
 		String insertSql = "insert into rants (id, created, emotion, question, rant, ranter, location, ranter_id) values (nextval('rants_id_seq'),?,?,?,?,?,?,?);";		    
 		String updateSql = "update ranter set lastrant = " + new Date().getTime() +" where id = %id%";
 		PreparedStatement selectStatement = connection.prepareStatement(selectSql);
@@ -67,6 +73,11 @@ public class RantService {
 		if (connection != null) connection.close();
 	}
 	
+	/**
+	 * Fetch rants from the backend
+	 * @return
+	 * @throws SQLException
+	 */
 	public static List<Rant> fetchRants() throws SQLException {
 		Connection connection = new Database().getConnection();	  		
 	    String rantSQl = "select id, created, emotion, question, rant, ranter, location from rants order by id desc limit 40;";	    
@@ -91,6 +102,12 @@ public class RantService {
 		return rants;
 	}
 
+	/**
+	 * Fetch a single rant from the backend
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
 	public static Rant fetchRant(String id) throws SQLException {
 		Connection connection = new Database().getConnection();	  		
 	    String rantSQl = "select id, created, emotion, question, rant, ranter, location from rants where id = " + id + ";";	    

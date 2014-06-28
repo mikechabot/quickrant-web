@@ -101,7 +101,7 @@ public class RantController extends Controller {
 
 		if(!RanterService.isComplete(params)) {			
 			RanterService.updateRanter(new Ranter().parse(params));
-			Cookie cookie = CookieService.updateCookie(params.getCookie(CookieService.COOKIE_NAME));
+			Cookie cookie = CookieService.updateCookie(params.getCookie(CookieService.getCookieName()));
 			response.addCookie(cookie);
 		} 
 		return basePath();

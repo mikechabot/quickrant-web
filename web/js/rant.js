@@ -40,7 +40,7 @@ $(document).ready(function () {
     var height = window.screen.availHeight,
         width = window.screen.availWidth,
         color = window.screen.colorDepth;
-    if($.cookie("quickrant-uid").indexOf("COMPLETE") == -1) {
+    if($.cookie("quickrant-uid").indexOf("*") == -1) {
 	    $.ajax({
 	        context: this,
 	        url: "/rant/ajax",

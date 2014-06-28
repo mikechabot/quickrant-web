@@ -10,14 +10,14 @@ import com.quickrant.rave.database.Database;
 import com.quickrant.rave.service.CookieService;
 import com.quickrant.rave.timer.FlushCookiesJob;
 
-public class ContextEventListener implements ServletContextListener {
+public class Bootstrap implements ServletContextListener {
 	
-    private static Logger log = Logger.getLogger(ContextEventListener.class);
+    private static Logger log = Logger.getLogger(Bootstrap.class);
     
-    public void contextInitialized(ServletContextEvent sce) {
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
     	
-    	ServletContext c = sce.getServletContext();
-        String path = c.getRealPath("WEB-INF/etc");
+    	ServletContext context = servletContextEvent.getServletContext();
+        String path = context.getRealPath("WEB-INF/etc");
                 
         try {
             Version.load();
@@ -30,11 +30,12 @@ public class ContextEventListener implements ServletContextListener {
             String postgresVersion = Database.getVersion();
             log.info(postgresVersion);
             
-            log.info("Initializing CookieService");
             CookieService.initialize();
+            log.info("Initialized CookieService");
             
-            log.info("Initializing FlushCookiesJob");
-            new FlushCookiesJob();
+            FlushCookiesJob flushCookies = new FlushCookiesJob();
+            flushCookies.start();
+            log.info("Initialized FlushCookiesJob");
             
         }
         catch (Exception e) {

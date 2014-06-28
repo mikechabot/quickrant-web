@@ -14,7 +14,6 @@ public class Configuration {
     
     private static Configuration config;
     private boolean initialized = false;
-    private String path;
     private File base;
 
     private final SimpleDateFormat usStd;
@@ -54,8 +53,7 @@ public class Configuration {
     
     public void initialize(String path) throws ConfigurationException {
     	if (initialized) return;
-    	
-        this.path = path;
+        
         if (path != null && !path.equals("")) {
             base = new File(path, PROPERTY_FILE_NAME);
         }

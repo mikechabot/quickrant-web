@@ -21,29 +21,43 @@ import com.quickrant.rave.model.RantCookie;
 
 public class CookieService {
 	
+	private static final String COOKIE_NAME = "quickrant-uid";
+	private static int COOKIE_AGE;
+
 	private static Logger log = Logger.getLogger(CookieService.class);
 	
-	public static final String COOKIE_NAME = "quickrant-uid";
-	public static long COOKIE_AGE;
 	private static ConcurrentMap<Long, String> cookies = new ConcurrentHashMap<Long, String>();
 	
-	public static void initialize() throws ConfigurationException {
+	public static void initialize() {
 		Configuration config = Configuration.getInstance();
-		config.initialize();
-		
-		// Convert in-minutes configuration property to seconds
-		COOKIE_AGE = config.getOptionalLong("cookie-age", 1440);
-		
-		log.info("Cookie name: " + COOKIE_NAME);
+		try {
+			config.initialize("WEB-INF/etc");
+		} catch (ConfigurationException e) {
+			log.error("Unable to intialize configuration", e);
+		}
+		COOKIE_AGE = config.getRequiredInt("cookie-age");
 		log.info("Cookie age: " + COOKIE_AGE + " minutes (or " + (COOKIE_AGE / 60) + " hours)");
 		
-		populateCookieCache();		
+		populateCookieCache();
 	}
 	
-	public static int getCookieCacheSize() {
+	public static String getCookieName() {
+		return COOKIE_NAME;
+	}
+	
+	public static long getCookieAge() {
+		return COOKIE_AGE;
+	}
+	
+	public static int getCacheSize() {
 		return cookies.size();
 	}
 	
+	/**
+	 * Determine if a cookie exists in the cache
+	 * @param requestCookies
+	 * @return
+	 */
 	public static boolean cookieExists(Cookie[] requestCookies) {
 		if(requestCookies == null) {
 			return false;
@@ -55,6 +69,10 @@ public class CookieService {
 		return false;
 	}
 	
+	/**
+	 * Create an HTTP cookie
+	 * @return RantCookie
+	 */
 	public static RantCookie createCookie() {
 	    RantCookie rantCookie = new RantCookie(COOKIE_NAME, UUID.randomUUID().toString());
 	    rantCookie.setMaxAge((int)COOKIE_AGE*60);
@@ -63,21 +81,31 @@ public class CookieService {
 		return rantCookie;
 	}
 	
+	/**
+	 * Update a cookie with "*" to signify the AJAX response 
+	 * was received, then update the local cookies cache
+	 * @param cookie
+	 * @return Cookie
+	 */
 	public static Cookie updateCookie(Cookie cookie) {
-		String newCookieValue = cookie.getValue() + "-COMPLETE";		
-		// Update cookie cache
+		String newCookieValue = cookie.getValue() + "*";
 		for(Map.Entry<Long, String> temp : cookies.entrySet()) {
 			if(temp.getValue().equals(cookie.getValue())) {
 				cookies.put(temp.getKey(), newCookieValue);
 			}
-		}		
-		// Set response cookie
+		}
 		cookie.setValue(newCookieValue);
 		cookie.setMaxAge((int)CookieService.COOKIE_AGE*60);
 		cookie.setPath("/");		
 		return cookie;
 	}
 	
+	/**
+	 * Populate the local cache from the backend. This ensures active 
+	 * users that were issued a cookie prior to a web server restart  
+	 * are able to post without being issued another cookie, as posting 
+	 * with an invalid cookie is not allowed
+	 */
 	public static void populateCookieCache() {
 		Connection connection = new Database().getConnection();	  		
 	    String selectSql = "select cookieissued, cookievalue from ranter where cookieactive = true;";	    
@@ -95,11 +123,13 @@ public class CookieService {
 		} catch (SQLException e) {
 			log.error("Error fetching cookies", e);
 		}
-		log.info("Fetched " + getCookieCacheSize() + " cookies");
+		log.info("Fetched " + getCacheSize() + " cookies");
 	}
-		
+	
+	/*
+	 * Purge old cookies from the cache
+	 */
 	public static void clean() {
-		// Clean cookie cache
 		if(cookies != null) {
 			int start = cookies.size();
 			for(Long temp : cookies.keySet()) {
