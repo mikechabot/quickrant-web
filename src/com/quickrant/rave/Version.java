@@ -32,7 +32,7 @@ public class Version {
     }
         
     public static String display() {
-    	return getRelease() + " / " + getTag() + " / " + getBuild() + " / " + getBranch();
+    	return getRelease() + " / " + getTag();
     }
     
     public static void main(String[] args) {

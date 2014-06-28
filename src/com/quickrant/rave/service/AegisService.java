@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.rave.Params;
 import com.quickrant.rave.database.Database;
 
 public class AegisService {
