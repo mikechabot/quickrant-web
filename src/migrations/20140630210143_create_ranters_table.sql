@@ -1,0 +1,1 @@
+create table ranter (id serial unique, created timestamp (60), cookievalue varchar(50), cookieissued bigint, cookieactive boolean, complete boolean, ipaddress varchar(50), useragent varchar(200), lastrant bigint, rantattempts smallint, screenheight smallint, screenwidth smallint, screencolor smallint, key varchar(500));  

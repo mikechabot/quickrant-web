@@ -1,0 +1,15 @@
+# Postgres URL
+postgres-url=
+
+# Postgres credentials
+postgres-user=
+postgres-pass=
+
+# Cookie age (in minutes) (Default: 21600)
+#cookie-age=
+
+# Initial delay of the FlushCookieJob task (in seconds) (Default: 60)
+#cookie-flush-delay=
+
+# Following the delay, the recurring interval of the FlushCookiesJob task (in seconds) (Default: 180)
+#cookie-flush-interval=

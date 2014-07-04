@@ -1,1 +1,1 @@
-ant build
+mvn package

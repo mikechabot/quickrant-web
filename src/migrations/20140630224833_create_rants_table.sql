@@ -1,0 +1,1 @@
+create table rants (id serial unique, created_at timestamp(60), updated_at timestamp (60), emotion varchar(16), question varchar(500), rant varchar(500), ranter varchar(100), location varchar(150), ranter_id integer);
