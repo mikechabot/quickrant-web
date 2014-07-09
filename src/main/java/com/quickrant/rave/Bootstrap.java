@@ -10,8 +10,10 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.rave.connection.Database;
-import com.quickrant.rave.connection.DatabaseUtil;
+import com.quickrant.rave.database.Database;
+import com.quickrant.rave.database.DatabaseUtils;
+import com.quickrant.rave.jobs.PurgeCookiesJob;
+import com.quickrant.rave.service.CookieService;
 
 public class Bootstrap implements ServletContextListener {
 	
@@ -30,14 +32,11 @@ public class Bootstrap implements ServletContextListener {
             conf.initialize(path);
             log.info("Loaded rant.properties");
             
-            //verifyDatabaseConnectivity();
+            verifyDatabaseConnectivity();
 
-//            CookieService.initialize();
-//            log.info("Initialized CookieService");
-//            
-//            FlushCookiesJob flushCookies = new FlushCookiesJob();
-//            flushCookies.start();
-//            log.info("Initialized FlushCookiesJob");
+            log.info("Initializing CookieService");
+            CookieService cookieSvc = new CookieService(conf);
+            cookieSvc.initialize();
             
         }
         catch (Exception e) {
@@ -59,9 +58,9 @@ public class Bootstrap implements ServletContextListener {
 	        }
     	}
     	finally {
-    		DatabaseUtil.close(resultSet);
-    		DatabaseUtil.close(preparedStatement);
-    		DatabaseUtil.close(database);
+    		DatabaseUtils.close(resultSet);
+    		DatabaseUtils.close(preparedStatement);
+    		DatabaseUtils.close(database);
     	}    	
     }
 

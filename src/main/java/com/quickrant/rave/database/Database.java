@@ -1,4 +1,4 @@
-package com.quickrant.rave.connection;
+package com.quickrant.rave.database;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

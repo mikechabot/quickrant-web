@@ -1,4 +1,4 @@
-package com.quickrant.rave.connection;
+package com.quickrant.rave.database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-public class DatabaseUtil {
+public class DatabaseUtils {
 
-	private static Logger log = Logger.getLogger(DatabaseUtil.class);
+	private static Logger log = Logger.getLogger(DatabaseUtils.class);
 	
 	/**
 	 * Close Database

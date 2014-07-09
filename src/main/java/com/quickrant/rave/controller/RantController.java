@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.quickrant.rave.Controller;
-import com.quickrant.rave.connection.Database;
+import com.quickrant.rave.database.Database;
 import com.quickrant.rave.model.Rant;
 
 public class RantController extends Controller {
