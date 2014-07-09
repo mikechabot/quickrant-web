@@ -13,6 +13,7 @@ public class PurgeCookiesJob {
 	
 	private static Logger log = Logger.getLogger(PurgeCookiesJob.class);
 	
+	private Timer timer;
 	private long delayInMin;
 	private long intervalInMin;
 	
@@ -21,15 +22,27 @@ public class PurgeCookiesJob {
     	intervalInMin = conf.getOptionalLong("cookie-flush-interval", 5);
     }
     
+    /**
+     * Start the job
+     */
     public void start() {
-    	Timer timer = new Timer();
-        timer.schedule(new FlushCookiesTask(), delayInMin*60*1000, intervalInMin*60*1000);
-        log.info("Timer delay: " + delayInMin + " minute(s)");
-        log.info("Timer interval: " + intervalInMin + " minute(s)");
-        log.info("Next run time: " + new Timestamp(System.currentTimeMillis() + delayInMin*60*1000));
+    	timer = new Timer();
+        timer.schedule(new PurgeTask(), delayInMin*60*1000, intervalInMin*60*1000);
+        log.info("Next cookie purge: " + new Timestamp(System.currentTimeMillis() + delayInMin*60*1000));
+    }
+    
+    /**
+     * Cancel the job
+     */
+    public void stop() {
+    	timer.cancel();
     }
 
-    class FlushCookiesTask extends TimerTask {
+    /**
+     * Purge cookies every N minutes
+     * 
+     */
+    class PurgeTask extends TimerTask {
     	
     	@Override
     	public void run() {
@@ -37,7 +50,7 @@ public class PurgeCookiesJob {
 //    		RanterService.clean();
     		log.info("Next run time: " + getNextRunTime());
         }
-    	
+
         private Timestamp getNextRunTime() {
         	return new Timestamp(System.currentTimeMillis() + intervalInMin*60*1000);
         }
