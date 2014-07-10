@@ -22,16 +22,13 @@ import com.quickrant.rave.model.RantCookie;
 
 public class CookieService {
 	
-	private static Logger log = Logger.getLogger(CookieService.class);
-	
+	private static Logger log = Logger.getLogger(CookieService.class);	
 	private static ConcurrentMap<Long, String> cookies = new ConcurrentHashMap<Long, String>();
-	private static String cookieName;
 	private static int cookieAge;
-	private boolean initialized = false;
 	
 	private Configuration conf;
-
-	
+	private boolean initialized = false;
+		
 	public CookieService(Configuration conf) {
 		this.conf = conf;
 	}
@@ -45,15 +42,14 @@ public class CookieService {
 	}
 
 	private void getConfig() {
-		cookieName =  conf.getOptionalString("cookie-name", "quickrant-uid");
 		cookieAge = conf.getOptionalInt("cookie-age", 10);
 	}
 
 	private void startPurgeJob() {
 		PurgeCookiesJob purgeCookies = new PurgeCookiesJob(conf);
-        purgeCookies.start();
+		purgeCookies.start();
 	}
-	
+		
 	/**
 	 * Populate the cookie cache. This ensures *active* users that were 
 	 * issued a cookie prior to a web server restart are able to post 
@@ -88,13 +84,12 @@ public class CookieService {
 	}
 	
 	/**
-	 * Determine if a cookie exists in the cache
+	 * Determine if a quickrant cookie exists in the cache
 	 * @param requestCookies
 	 * @return
 	 */
-	public static boolean cookieExists(Cookie[] requestCookies) {
-		if(requestCookies == null) {
-			return false;
+	public static boolean inCache(Cookie[] requestCookies) {
+		if(requestCookies == null || cookies.size() == 0) {
 		} else {
 			for(Cookie cookie : requestCookies) {
 				if (cookies.containsValue((cookie.getValue()))) return true;
@@ -107,14 +102,26 @@ public class CookieService {
 	 * Create an HTTP cookie
 	 * @return RantCookie
 	 */
-	public static RantCookie createCookie() {
-	    RantCookie rantCookie = new RantCookie(cookieName, UUID.randomUUID().toString());
-	    rantCookie.setMaxAge((int)cookieAge*60);
-	    rantCookie.setIssued(new Date().getTime());
-		cookies.put(rantCookie.getIssued(), rantCookie.getValue());
+	public static RantCookie newCookie() {
+	    RantCookie rantCookie = new RantCookie(getCookieValue());
+	    rantCookie.initialize(cookieAge);
+	    putInCache(rantCookie);
+		
 		return rantCookie;
 	}
 	
+	private static void putInCache(RantCookie rantCookie) {
+		cookies.put(rantCookie.getIssued(), rantCookie.getValue());
+	}
+
+	/**
+	 * Generate a decently random string
+	 * @return a random UUID (e.g. 067e6162-3b6f-4ae2-a171-2470b63dff0)
+	 */
+	private static String getCookieValue() {
+		return String.valueOf(UUID.randomUUID());
+	}
+
 	/**
 	 * Update a cookie with "*" to signify the AJAX response 
 	 * was received, then update the local cookies cache
@@ -129,7 +136,7 @@ public class CookieService {
 			}
 		}
 		cookie.setValue(newCookieValue);
-		cookie.setMaxAge((int)cookieAge*60);
+		cookie.setMaxAge(cookieAge*60);
 		cookie.setPath("/");		
 		return cookie;
 	}

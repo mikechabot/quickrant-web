@@ -12,16 +12,15 @@ import org.apache.log4j.Logger;
 
 import com.quickrant.rave.database.Database;
 import com.quickrant.rave.database.DatabaseUtils;
-import com.quickrant.rave.jobs.PurgeCookiesJob;
 import com.quickrant.rave.service.CookieService;
 
 public class Bootstrap implements ServletContextListener {
 	
     private static Logger log = Logger.getLogger(Bootstrap.class);
-    
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-    	
-    	ServletContext context = servletContextEvent.getServletContext();
+
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+		ServletContext context = sce.getServletContext();
         String path = context.getRealPath("WEB-INF/etc");
                 
         try {
@@ -42,8 +41,13 @@ public class Bootstrap implements ServletContextListener {
         catch (Exception e) {
             log.fatal("Could not start application", e);
         }        
-    }
-    
+	}	
+
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
+		log.info("Context destroyed");
+	}
+	
     private void verifyDatabaseConnectivity() throws SQLException {
         Database database = null;
         PreparedStatement preparedStatement = null;
@@ -63,8 +67,5 @@ public class Bootstrap implements ServletContextListener {
     		DatabaseUtils.close(database);
     	}    	
     }
-
-	public void contextDestroyed(ServletContextEvent sce) {
-    	log.info("Context destroyed");
-    }
+    
 }

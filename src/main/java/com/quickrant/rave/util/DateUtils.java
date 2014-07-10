@@ -2,7 +2,6 @@ package com.quickrant.rave.util;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class DateUtils {
 
@@ -11,7 +10,7 @@ public class DateUtils {
 	}
 
 	public static Timestamp getCurrentTimeStamp() {
-		return new Timestamp(new Date().getTime()); 
+		return new Timestamp(System.currentTimeMillis()); 
 	}
 	
 }

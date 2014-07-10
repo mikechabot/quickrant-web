@@ -16,7 +16,7 @@ public class RantController extends Controller {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected String basePath() { return ""; }	
+	protected String basePath() { return ""; }
 	
 	@Override
 	protected void initActions() {
@@ -34,8 +34,8 @@ public class RantController extends Controller {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 			String action = request.getPathInfo();
+			log.debug("GetAction().action=" + action);
 			if(action == null || action.equals("") || action.equals("/")) {
-				
 				Database database = new Database();
 				database.open();
 				Rant p = new Rant();

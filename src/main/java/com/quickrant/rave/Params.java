@@ -218,6 +218,7 @@ public class Params {
 	}
 
 	private void init() {
+		@SuppressWarnings("unchecked")
 		Map<String, String[]> params = request.getParameterMap();
 		map = new HashMap<String, String>(0);
 		for (String key : params.keySet()) {

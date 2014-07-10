@@ -14,21 +14,24 @@ public class PurgeCookiesJob {
 	private static Logger log = Logger.getLogger(PurgeCookiesJob.class);
 	
 	private Timer timer;
-	private long delayInMin;
-	private long intervalInMin;
+	private int delayInMin;
+	private int intervalInMin;
 	
-    public PurgeCookiesJob(Configuration conf) {		
-    	delayInMin = conf.getOptionalLong("cookie-flush-delay", 2);
-    	intervalInMin = conf.getOptionalLong("cookie-flush-interval", 5);
-    }
+	private boolean initialized = false;
+	
+	public PurgeCookiesJob(Configuration conf) { 
+		delayInMin = conf.getOptionalInt("cookie-flush-delay", 2);
+    	intervalInMin = conf.getOptionalInt("cookie-flush-interval", 5);
+	}
     
     /**
      * Start the job
      */
     public void start() {
+    	if (initialized) return;
     	timer = new Timer();
         timer.schedule(new PurgeTask(), delayInMin*60*1000, intervalInMin*60*1000);
-        log.info("Next cookie purge: " + new Timestamp(System.currentTimeMillis() + delayInMin*60*1000));
+        initialized = true;
     }
     
     /**
@@ -42,7 +45,7 @@ public class PurgeCookiesJob {
      * Purge cookies every N minutes
      * 
      */
-    class PurgeTask extends TimerTask {
+    private class PurgeTask extends TimerTask {
     	
     	@Override
     	public void run() {

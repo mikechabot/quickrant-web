@@ -7,19 +7,22 @@ import javax.servlet.http.Cookie;
  *
  */
 public class RantCookie extends Cookie {
-		
+
+	public static final String COOKIE_NAME = "quickrant-uuid";
+	
 	private long issued;
 	
-	public RantCookie(String name, String value) {
-		super(name, value);		
+	public RantCookie(String value) {
+		super(COOKIE_NAME, value);
+	}
+	
+	public void initialize(int cookieAge) {
+	    setMaxAge(cookieAge*60);
+	    this.issued = System.currentTimeMillis();
 	}
 		
 	public long getIssued() {
 		return issued;
-	}
-	
-	public void setIssued(long issued) {
-		this.issued = issued;
 	}
 	
 }
