@@ -1,0 +1,1 @@
+alter table rants drop column if exists ranter_id

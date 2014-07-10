@@ -1,0 +1,1 @@
+alter table rants drop constraint rants_id_key;

@@ -211,6 +211,10 @@ public class Params {
 		if (sb.length() > 0) return "?"+sb.toString();
 		return "";
 	}
+	
+	public Map<String, String> getMap() {
+		return map;
+	}
 
 	@Override
 	public String toString() {

@@ -43,10 +43,9 @@ public class RequestFilter implements Filter {
 			response.sendError(403);
 			return;
 		}
-		/**
-		 * If the GET didn't contain a cookie, attach one
-		 * If the POST didn't contain a cookie, deny access
-		 */
+		
+		/* If the GET didn't contain a cookie, attach one
+		 * If the POST didn't contain a cookie, deny access */
 		if (!inCache(params.getCookies())) {
 			if (params.isGet()) {
 				response.addCookie(CookieService.newCookie());

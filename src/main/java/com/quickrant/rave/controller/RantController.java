@@ -1,13 +1,17 @@
 package com.quickrant.rave.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
 import com.quickrant.rave.Controller;
-import com.quickrant.rave.database.Database;
+import com.quickrant.rave.Params;
 import com.quickrant.rave.model.Rant;
+import com.quickrant.rave.service.RantService;
 
 public class RantController extends Controller {
 
@@ -32,68 +36,70 @@ public class RantController extends Controller {
 	
 	public class GetAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
 			String action = request.getPathInfo();
 			log.debug("GetAction().action=" + action);
-			if(action == null || action.equals("") || action.equals("/")) {
-				Database database = new Database();
-				database.open();
-				Rant p = new Rant();
-				p.set("rant", "boobs");
-				p.save();
-				database.close();
-				
+			
+			/* Match root (/rant/) */
+			if (action == null || action.equals("") || action.equals("/")) {
+				List<Rant> rants = RantService.fetchRants();
+				request.setAttribute("rants", rants);
+				return basePath() + "/index.jsp";
+			}
+
+			/* Match /rant/[number] */
+			if (action.matches("\\/([0-9]+)$")) {
+				int id = Integer.valueOf(action.replaceAll("/", ""));
+				Rant rant = RantService.fetchRant(id);
+				request.setAttribute("rant", rant);
+				return basePath() + "/index.jsp";
+			} else {
+				response.sendError(404);
+				return null;
 			}
 			
-//		String action = request.getPathInfo();
-//		if(action == null || action.equals("") || action.equals("/")) {
-//			try {				
-//				request.setAttribute("rants", RantService.fetchRants());
-//			} catch (SQLException e) {
-//				log.error("Error fetching rants: " + e.getMessage());		
-//			}		
-//		} else if (action.matches("\\/([0-9]+)$")) {
-//			try {
-//				Rant rant = RantService.fetchRant(action.replaceAll("/", ""));
-//				if (rant != null) {
-//					request.setAttribute("rant", rant);	
-//				} else {
-//					response.sendError(404);
-//					return null;
-//				}
-//			} catch (SQLException e) {
-//				log.error("Error fetching rant: " + e.getMessage());		
-//			}			
-//		} 
-		return basePath() + "/index.jsp";
 		}		
 	}
 	
 	public class PostAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
 			
-//			// No GET requests allowed
-//			Params params = new Params(request);
-//			if (params.isGet()) {
-//				response.sendRedirect(basePath() + "/index.jsp");
-//				return null;
-//			}
-//
-//			Rant rant = new Rant().parse(params);			
-//			if (rant.isValid()) {				
-//				try {
-//					RantService.createRant(rant, params);
-//					request.getSession().setAttribute("success", true);
-//				} catch (SQLException e) {
-//					log.error("error inserting rant: " + e.getMessage());
-//					request.getSession().setAttribute("success", false);
-//				}
-//				response.sendRedirect(request.getContextPath()+"/"+basePath());
-//				return null;				
-//			}
-			
-			return basePath() + "/index.jsp";
-		}		
+			/* No GET requests allowed */
+			Params params = new Params(request);
+			if (params.isGet()) {
+				response.sendRedirect(basePath() + "/index.jsp");
+				return null;
+			}
+
+			/* Get the rant from the form */
+			Map<String, String> map = params.getMap();
+			Rant rant = new Rant();
+			rant.fromMap(map);
+			setDefaults(rant);
+	
+			if (rant.isValid()) {
+				RantService.saveRant(rant);
+				request.getSession().setAttribute("success", true);
+			} else {
+				request.getSession().setAttribute("success", false);
+			}
+
+			response.sendRedirect(request.getContextPath()+"/"+basePath());
+			return null;
+		}
+		
+		/**
+		 * Anonymous, Earth
+		 * @param rant
+		 */
+		private void setDefaults(Rant rant) {
+			if (rant.getRanter() == null || rant.getRanter().isEmpty()) {
+				rant.set("ranter", "Anonymous");
+			}
+			if (rant.getLocation() == null || rant.getLocation().isEmpty()) {
+				rant.set("location", "Earth");
+			}
+		}
+		
 	}
 	
 	public class AjaxAction implements Action {
