@@ -17,19 +17,19 @@ import com.quickrant.rave.Configuration;
 
 import com.quickrant.rave.database.Database;
 import com.quickrant.rave.database.DatabaseUtils;
-import com.quickrant.rave.jobs.PurgeCookiesJob;
-import com.quickrant.rave.model.RantCookie;
+import com.quickrant.rave.jobs.PurgeOreosJob;
+import com.quickrant.rave.model.Oreo;
 
-public class CookieService {
+public class OreoService {
 	
-	private static Logger log = Logger.getLogger(CookieService.class);	
-	private static ConcurrentMap<Long, String> cookies = new ConcurrentHashMap<Long, String>();
-	private static int cookieAge;
+	private static Logger log = Logger.getLogger(OreoService.class);	
+	private static ConcurrentMap<Long, String> oreos = new ConcurrentHashMap<Long, String>();
+	private static int oreoAge;
 	
 	private Configuration conf;
 	private boolean initialized = false;
 		
-	public CookieService(Configuration conf) {
+	public OreoService(Configuration conf) {
 		this.conf = conf;
 	}
 	
@@ -42,12 +42,12 @@ public class CookieService {
 	}
 
 	private void getConfig() {
-		cookieAge = conf.getOptionalInt("cookie-age", 10);
+		oreoAge = conf.getOptionalInt("cookie-age", 10);
 	}
 
 	private void startPurgeJob() {
-		PurgeCookiesJob purgeCookies = new PurgeCookiesJob(conf);
-		purgeCookies.start();
+		PurgeOreosJob purgeOreos = new PurgeOreosJob(conf);
+		purgeOreos.start();
 	}
 		
 	/**
@@ -67,9 +67,9 @@ public class CookieService {
 			select = database.getPreparedStatement(selectSql);		
 			resultSet = select.executeQuery();
 			while (resultSet.next()) {
-				cookies.put(resultSet.getLong(1),  resultSet.getString(2));
+				oreos.put(resultSet.getLong(1),  resultSet.getString(2));
 			}
-			log.info("Fetched " + cookies.size() + " cookies");
+			log.info("Fetched " + oreos.size() + " cookies");
 		} catch (SQLException e) {
 			log.error("Error fetching cookies", e);
 		} finally {
@@ -80,7 +80,7 @@ public class CookieService {
 	}
 
 	public static int getCacheSize() {
-		return cookies.size();
+		return oreos.size();
 	}
 	
 	/**
@@ -89,10 +89,10 @@ public class CookieService {
 	 * @return
 	 */
 	public static boolean inCache(Cookie[] requestCookies) {
-		if(requestCookies == null || cookies.size() == 0) {
+		if(requestCookies == null || oreos.size() == 0) {
 		} else {
 			for(Cookie cookie : requestCookies) {
-				if (cookies.containsValue((cookie.getValue()))) return true;
+				if (oreos.containsValue((cookie.getValue()))) return true;
 			}
 		}
 		return false;
@@ -102,57 +102,65 @@ public class CookieService {
 	 * Create an HTTP cookie
 	 * @return RantCookie
 	 */
-	public static RantCookie newCookie() {
-	    RantCookie rantCookie = new RantCookie(getCookieValue());
-	    rantCookie.initialize(cookieAge);
-	    putInCache(rantCookie);
-		
-		return rantCookie;
+	public static Oreo newOreo() {
+	    Oreo oreoCookie = new Oreo(getRandomUUID());
+	    oreoCookie.initialize(oreoAge);
+	    putInCache(oreoCookie);
+		return oreoCookie;
 	}
 	
-	private static void putInCache(RantCookie rantCookie) {
-		cookies.put(rantCookie.getIssued(), rantCookie.getValue());
+	private static void putInCache(Oreo oreoCookie) {
+		oreos.put(oreoCookie.getIssued(), oreoCookie.getValue());
 	}
 
 	/**
 	 * Generate a decently random string
 	 * @return a random UUID (e.g. 067e6162-3b6f-4ae2-a171-2470b63dff0)
 	 */
-	private static String getCookieValue() {
+	private static String getRandomUUID() {
 		return String.valueOf(UUID.randomUUID());
 	}
 
 	/**
-	 * Update a cookie with "*" to signify the AJAX response 
-	 * was received, then update the local cookies cache
+	 * Update cookie with "*" to signify the AJAX 
+	 * response was received
 	 * @param cookie
 	 * @return Cookie
 	 */
 	public static Cookie updateCookie(Cookie cookie) {
-		String newCookieValue = cookie.getValue() + "*";
-		for(Map.Entry<Long, String> temp : cookies.entrySet()) {
-			if(temp.getValue().equals(cookie.getValue())) {
-				cookies.put(temp.getKey(), newCookieValue);
-			}
-		}
-		cookie.setValue(newCookieValue);
-		cookie.setMaxAge(cookieAge*60);
-		cookie.setPath("/");		
+		String newValue = cookie.getValue() + "*";
+		updateCache(cookie, newValue);
+		cookie.setValue(newValue);
+		cookie.setMaxAge(oreoAge*60);
+		cookie.setPath("/");
 		return cookie;
 	}
 	
+	/**
+	 * Update the cache with a new cookie value
+	 * @param cookie
+	 * @param value
+	 */
+	private static void updateCache(Cookie cookie, String newValue) {
+		for(Map.Entry<Long, String> temp : oreos.entrySet()) {
+			if(temp.getValue().equals(cookie.getValue())) {
+				oreos.put(temp.getKey(), newValue);
+			}
+		}
+	}
+
 	/*
 	 * Purge old cookies from the cache
 	 */
 	public static void clean() {
-		if(cookies != null) {
-			int start = cookies.size();
-			for(Long temp : cookies.keySet()) {
-				if (new Date().getTime() - temp > cookieAge*60*1000) { 
-					cookies.remove(temp);
+		if(oreos != null) {
+			int start = oreos.size();
+			for(Long temp : oreos.keySet()) {
+				if (new Date().getTime() - temp > oreoAge*60*1000) { 
+					oreos.remove(temp);
 				}
 			}
-			int finish = cookies.size();
+			int finish = oreos.size();
 	 		log.info("Cleaned up " + (start-finish) + " cached cookies (" + finish + " active)");
 		}
 	}

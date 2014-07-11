@@ -22,9 +22,7 @@ public abstract class Controller extends HttpServlet {
 		initActions();
 		defaultAction = defaultAction();
 		if (defaultAction == null) throw new ServletException("A default action was not specified");
-		
-		System.out.println("Loaded Controller with Base Path of: /"+basePath());
-		
+		System.out.println("Loaded Controller with Base Path of: /" + basePath());
 	}
 	
 	protected abstract void initActions();
@@ -33,8 +31,7 @@ public abstract class Controller extends HttpServlet {
 		
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getPathInfo();
-		String view = null;
-			
+		String view = null;			
 		try {
 			if (action == null || action.equals("") || action.equals("/") || action.matches("\\/([0-9]+)$")) {
 				view = defaultAction.execute(request, response);
@@ -51,8 +48,8 @@ public abstract class Controller extends HttpServlet {
 		}
 		
 		if (view != null && !view.equals("")) {
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/"+view);
-			if (dispatcher == null) throw new ServletException("The view file (WEB-INF/views/"+view+") was not found!");			
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/" + view);
+			if (dispatcher == null) throw new ServletException("The view file (WEB-INF/views/" + view + ") was not found!");			
 			dispatcher.forward(request, response);
 		}
 	}

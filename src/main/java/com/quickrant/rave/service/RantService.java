@@ -61,4 +61,5 @@ public class RantService {
 			DatabaseUtils.close(database);
 		}		
 	}
+	
 }

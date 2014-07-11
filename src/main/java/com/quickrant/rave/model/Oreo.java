@@ -6,13 +6,13 @@ import javax.servlet.http.Cookie;
  * Cookies represent unique users of the system
  *
  */
-public class RantCookie extends Cookie {
+public class Oreo extends Cookie {
 
 	public static final String COOKIE_NAME = "quickrant-uuid";
 	
 	private long issued;
 	
-	public RantCookie(String value) {
+	public Oreo(String value) {
 		super(COOKIE_NAME, value);
 	}
 	

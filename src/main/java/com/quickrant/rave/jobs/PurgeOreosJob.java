@@ -7,11 +7,11 @@ import java.util.TimerTask;
 import org.apache.log4j.Logger;
 
 import com.quickrant.rave.Configuration;
-import com.quickrant.rave.service.CookieService;
+import com.quickrant.rave.service.OreoService;
 
-public class PurgeCookiesJob {
+public class PurgeOreosJob {
 	
-	private static Logger log = Logger.getLogger(PurgeCookiesJob.class);
+	private static Logger log = Logger.getLogger(PurgeOreosJob.class);
 	
 	private Timer timer;
 	private int delayInMin;
@@ -19,7 +19,7 @@ public class PurgeCookiesJob {
 	
 	private boolean initialized = false;
 	
-	public PurgeCookiesJob(Configuration conf) { 
+	public PurgeOreosJob(Configuration conf) { 
 		delayInMin = conf.getOptionalInt("cookie-flush-delay", 2);
     	intervalInMin = conf.getOptionalInt("cookie-flush-interval", 5);
 	}
@@ -42,14 +42,13 @@ public class PurgeCookiesJob {
     }
 
     /**
-     * Purge cookies every N minutes
-     * 
+     * Purge cookies every N minutes     * 
      */
     private class PurgeTask extends TimerTask {
     	
     	@Override
     	public void run() {
-    		CookieService.clean();
+    		OreoService.clean();
 //    		RanterService.clean();
     		log.info("Next run time: " + getNextRunTime());
         }

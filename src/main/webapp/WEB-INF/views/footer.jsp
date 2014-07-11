@@ -7,7 +7,7 @@
 	 $('#modal').modal('show');
 	 setTimeout(function() {
 		 $('#modal').modal('hide');
-		 }, 2000);
+	 }, 2000);
   </script>
 </c:if>
 <c:if test="${success eq false}">

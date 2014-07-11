@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.quickrant.rave.service.AegisService;
-import com.quickrant.rave.service.CookieService;
+import com.quickrant.rave.service.OreoService;
 
 public class RequestFilter implements Filter {
 
@@ -33,38 +33,25 @@ public class RequestFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+		
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 		Params params = new Params(request);
-
-		/* Check for IP ban */
-		if (isBanned(params.getIpAddress())) {
-			log.info("Banned IP (" + params.getIpAddress() + ") detected");
+		
+		/* Shield against assholes */
+		if (AegisService.shieldAgainstRequest(request, response)) {
 			response.sendError(403);
 			return;
 		}
 		
-		/* If the GET didn't contain a cookie, attach one
-		 * If the POST didn't contain a cookie, deny access */
-		if (!inCache(params.getCookies())) {
+		/* If the GET didn't contain a cookie, attach one */		 
+		if (!OreoService.inCache(params.getCookies())) {
 			if (params.isGet()) {
-				response.addCookie(CookieService.newCookie());
-			} else if (params.isGet()) {
-				log.info("IP address (" + params.getIpAddress()	+ ") attempted a POST without a valie cookie");
-				response.sendError(403);
-				return;
+				response.addCookie(OreoService.newOreo());
 			}
-		}
+		}	
 
 		chain.doFilter(request, response);
 	}
-
-	private boolean inCache(Cookie[] cookies) {
-		return CookieService.inCache(cookies);
-	}
-
-	private boolean isBanned(String ipAddress) {
-		return AegisService.isBanned(ipAddress);
-	}
-
+	
 }

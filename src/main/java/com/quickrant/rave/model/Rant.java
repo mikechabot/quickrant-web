@@ -15,7 +15,7 @@ public class Rant extends Model {
 	String emotion;
 	String question;
 	String location;
-	Timestamp created; 
+	Timestamp created;
 	
 	public void setRant(String rant) {
 		set("rant", rant);

@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.quickrant.rave.database.Database;
 import com.quickrant.rave.database.DatabaseUtils;
-import com.quickrant.rave.service.CookieService;
+import com.quickrant.rave.service.OreoService;
 
 public class Bootstrap implements ServletContextListener {
 	
@@ -34,7 +34,7 @@ public class Bootstrap implements ServletContextListener {
             verifyDatabaseConnectivity();
 
             log.info("Initializing CookieService");
-            CookieService cookieSvc = new CookieService(conf);
+            OreoService cookieSvc = new OreoService(conf);
             cookieSvc.initialize();
             
         }
