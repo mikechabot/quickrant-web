@@ -5,9 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,7 +44,7 @@ public class AegisService {
 	}
 	
 	private static boolean isCookieInCache(Params params) {
-		return !OreoService.inCache(params.getCookies());
+		return CookieService.inCache(params.getCookies());
 	}
 	
 	/**
@@ -56,7 +53,7 @@ public class AegisService {
 	 * @return
 	 */
 	public static boolean isBanned(Params params) {
-		String ipAddress = params.getIpAddress();
+//		String ipAddress = params.getIpAddress();
 	    Database database = null;
 	    PreparedStatement statement = null;
 	    ResultSet resultSet = null;

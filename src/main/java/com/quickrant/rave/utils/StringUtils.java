@@ -1,4 +1,4 @@
-package com.quickrant.rave.util;
+package com.quickrant.rave.utils;
 
 public class StringUtils {
 

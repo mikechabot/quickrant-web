@@ -1,0 +1,2 @@
+drop table if exists ranter;
+create table visitors (id serial not null, created_at timestamp(6), updated_at timestamp (6), cookie varchar(50), isComplete boolean, isActive boolean, ipAddress varchar(50), userAgent varchar(200), lastRant timestamp(6), rantAttempts smallint, screenHeight smallint, screenWidth smallint, screenColor smallint, fingerprint varchar(500), constraint visitors_pkey primary key (id));

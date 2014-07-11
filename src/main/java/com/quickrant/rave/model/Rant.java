@@ -4,18 +4,27 @@ import java.sql.Timestamp;
 
 import org.javalite.activejdbc.Model;
 
-import com.quickrant.rave.util.DateUtils;
+import com.quickrant.rave.utils.DateUtils;
 
 public class Rant extends Model {
 	
 	static { validatePresenceOf("rant"); }
+
+	public void setVisitorId(String visitorId) {
+		set("visitorId", visitorId);
+	}
 	
-	String rant;
-	String ranter;
-	String emotion;
-	String question;
-	String location;
-	Timestamp created;
+	public String getVisitorId() {
+		return getString("visitorId");
+	}
+
+	public void setVisitorName(String visitorName) {
+		set("visitorName", visitorName);
+	}
+	
+	public String getVisitorName() {
+		return getString("visitorName");
+	}
 	
 	public void setRant(String rant) {
 		set("rant", rant);
@@ -23,14 +32,6 @@ public class Rant extends Model {
 	
 	public String getRant() {
 		return getString("rant");
-	}
-	
-	public void setRanter(String ranter) {
-		set("ranter", ranter);
-	}
-	
-	public String getRanter() {
-		return getString("ranter");
 	}
 	
 	public void setEmotion(String emotion) {

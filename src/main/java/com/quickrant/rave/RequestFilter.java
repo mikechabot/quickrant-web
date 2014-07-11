@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.quickrant.rave.service.AegisService;
-import com.quickrant.rave.service.OreoService;
+import com.quickrant.rave.service.CookieService;
+import com.quickrant.rave.service.VisitorService;
 
 public class RequestFilter implements Filter {
 
@@ -45,9 +46,10 @@ public class RequestFilter implements Filter {
 		}
 		
 		/* If the GET didn't contain a cookie, attach one */		 
-		if (!OreoService.inCache(params.getCookies())) {
+		if (!CookieService.inCache(params.getCookies())) {
 			if (params.isGet()) {
-				response.addCookie(OreoService.newOreo());
+				Cookie cookie = VisitorService.addVisitor(params);
+				response.addCookie(cookie);
 			}
 		}	
 

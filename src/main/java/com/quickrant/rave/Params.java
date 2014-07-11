@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.quickrant.rave.util.DayUtils;
+import com.quickrant.rave.utils.DayUtils;
 
 public class Params {
 

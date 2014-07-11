@@ -1,0 +1,1 @@
+alter table visitors add column isactive boolean;

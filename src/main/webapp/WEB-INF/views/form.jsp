@@ -63,7 +63,7 @@
       	<input type="hidden" id="question" name="question" value="">
         <fieldset>
         <legend id="legend" class="center-legend"></legend>
-          <input type="text" id="ranter" name="ranter" placeholder="Name (optional)" class="optional">&nbsp;&nbsp;
+          <input type="text" id="vistorName" name="vistorName" placeholder="Name (optional)" class="optional">&nbsp;&nbsp;
           <input type="text" id="location" name="location" placeholder="Location (optional)" class="optional">
           <textarea name="rant" id="countable" rows="5" placeholder="Say something..."></textarea>
            <span class="help-block"><span id="counter"></span> characters left.</span>

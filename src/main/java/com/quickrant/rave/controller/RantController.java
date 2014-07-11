@@ -1,6 +1,5 @@
 package com.quickrant.rave.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,42 +23,41 @@ public class RantController extends Controller {
 	
 	@Override
 	protected void initActions() {
-		addAction(null, new GetAction());
+		addAction(null, new GetRants());
 		addAction("/post", new PostAction());
 		addAction("/ajax", new AjaxAction());
 	}
 
 	@Override
 	protected Action defaultAction() {
-		return new GetAction();
+		return new GetRants();
 	}
 	
-	public class GetAction implements Action {
+	public class GetRants implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 			String action = request.getPathInfo();
-			log.debug("GetAction().action=" + action);
 			
 			/* Match root (/rant/) */
 			if (action == null || action.equals("") || action.equals("/")) {
-				List<Rant> rants = RantService.fetchRants();
-				request.setAttribute("rants", rants);
+				request.setAttribute("rants", RantService.fetchRants());
 				return basePath() + "/index.jsp";
 			}
-
+			
 			/* Match /rant/[number] */
 			if (action.matches("\\/([0-9]+)$")) {
 				int id = Integer.valueOf(action.replaceAll("/", ""));
 				Rant rant = RantService.fetchRant(id);
+				if (rant == null) {
+					response.sendError(404);
+					return null;
+				}
 				request.setAttribute("rant", rant);
-				return basePath() + "/index.jsp";
-			} else {
-				response.sendError(404);
-				return null;
 			}
-			
+
+			return basePath() + "/index.jsp";
 		}		
 	}
-	
+		
 	public class PostAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
 			
@@ -92,8 +90,8 @@ public class RantController extends Controller {
 		 * @param rant
 		 */
 		private void setDefaults(Rant rant) {
-			if (rant.getRanter() == null || rant.getRanter().isEmpty()) {
-				rant.set("ranter", "Anonymous");
+			if (rant.getVisitorName() == null || rant.getVisitorName().isEmpty()) {
+				rant.set("visitorName", "Anonymous");
 			}
 			if (rant.getLocation() == null || rant.getLocation().isEmpty()) {
 				rant.set("location", "Earth");

@@ -11,16 +11,16 @@
 		<c:if test="${not empty rant}">
 		<div class="rant-container shadow">
 			<div class="rant-details pull-left">
-				<img src="/img/${rant.getEmotion()}.gif" style="height: 32px; width: 32px;">
+				<img src="/img/${rant.emotion}.gif" style="height: 32px; width: 32px;">
 			</div>
 			<div class="rant-text-container">
-				<p class="muted pull-left stream-question">${rant.getQuestion()}</p>
-				<a rel="tooltip" data-toggle="tooltip" class="permalink btn btn-mini pull-right" href="/rant/${rant.getId()}"><i class="icon-plus"></i></a>
+				<p class="muted pull-left stream-question">${rant.question}</p>
+				<a rel="tooltip" data-toggle="tooltip" class="permalink btn btn-mini pull-right" href="/rant/${rant.id}"><i class="icon-plus"></i></a>
 				<blockquote class="pull-left wide">
-				<p class="rant-text">${rant.getRant()}</p>
-				<small class="rant-info"><b class="dark-bold">${rant.getRanter()}</b>, ${rant.getLocation()}</small>
+				<p class="rant-text">${rant.rant}</p>
+				<small class="rant-info"><b class="dark-bold">${rant.visitorName}</b>, ${rant.location}</small>
 				</blockquote>
-				<span class="smaller muted pull-right">${rant.getCreated()}</span>
+				<span class="smaller muted pull-right">${rant.created}</span>
 			</div>
 		</div>
 		</c:if>	
@@ -32,13 +32,13 @@
 		<div class="container single-stream">
 			<div class="rant-container shadow">
 				<div class="rant-single-text-container">
-					<img src="/img/${rant.getEmotion()}.gif" class="pull-right" style="height: 32px; width: 32px;">
-					<h5 class="muted">${rant.getQuestion()}</h5>
+					<img src="/img/${rant.emotion}.gif" class="pull-right" style="height: 32px; width: 32px;">
+					<h5 class="muted">${rant.question}</h5>
 					<blockquote class="pull-left wide rant-single-block">
-					<p class="rant-single-text">${rant.getRant()}</p>
-					<small class="rant-single-info"><b class="dark-bold">${rant.getRanter()}</b>, ${rant.getLocation()}</small>
+					<p class="rant-single-text">${rant.rant}</p>
+					<small class="rant-single-info"><b class="dark-bold">${rant.visitorName}</b>, ${rant.location}</small>
 					</blockquote>
-					<span class="smaller muted pull-right">${rant.getCreated()}</span>
+					<span class="smaller muted pull-right">${rant.created}</span>
 				</div>
 			</div>
 		</div>

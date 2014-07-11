@@ -4,7 +4,7 @@
   <script>
  	$('#modal-label').text("quickrant");
  	$('div.modal-body p').text("Thanks for speaking your mind.");
-	 $('#modal').modal('show');
+	$('#modal').modal('show');
 	 setTimeout(function() {
 		 $('#modal').modal('hide');
 	 }, 2000);

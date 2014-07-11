@@ -3,6 +3,7 @@ package com.quickrant.rave.service;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -17,19 +18,21 @@ import com.quickrant.rave.Configuration;
 
 import com.quickrant.rave.database.Database;
 import com.quickrant.rave.database.DatabaseUtils;
-import com.quickrant.rave.jobs.PurgeOreosJob;
-import com.quickrant.rave.model.Oreo;
+import com.quickrant.rave.jobs.PurgeCookiesJob;
+import com.quickrant.rave.utils.DateUtils;
 
-public class OreoService {
+public class CookieService {
 	
-	private static Logger log = Logger.getLogger(OreoService.class);	
-	private static ConcurrentMap<Long, String> oreos = new ConcurrentHashMap<Long, String>();
-	private static int oreoAge;
+	private static final String COOKIE_NAME = "quickrant-uuid";
+	
+	private static Logger log = Logger.getLogger(CookieService.class);	
+	private static ConcurrentMap<Timestamp, String> cookies = new ConcurrentHashMap<Timestamp, String>();
+	private static int cookieAge;
 	
 	private Configuration conf;
 	private boolean initialized = false;
 		
-	public OreoService(Configuration conf) {
+	public CookieService(Configuration conf) {
 		this.conf = conf;
 	}
 	
@@ -42,11 +45,11 @@ public class OreoService {
 	}
 
 	private void getConfig() {
-		oreoAge = conf.getOptionalInt("cookie-age", 10);
+		cookieAge = conf.getOptionalInt("cookie-age", 10);
 	}
 
 	private void startPurgeJob() {
-		PurgeOreosJob purgeOreos = new PurgeOreosJob(conf);
+		PurgeCookiesJob purgeOreos = new PurgeCookiesJob(conf);
 		purgeOreos.start();
 	}
 		
@@ -60,16 +63,16 @@ public class OreoService {
 		Database database = null;
 	    PreparedStatement select = null;		    	    
 	    ResultSet resultSet = null;
-	    String selectSql = "select cookieissued, cookievalue from ranter where cookieactive = true;";
+	    String selectSql = "select created_at, cookie from visitors;";
 		try {
 			database = new Database();
 			database.open();
 			select = database.getPreparedStatement(selectSql);		
 			resultSet = select.executeQuery();
 			while (resultSet.next()) {
-				oreos.put(resultSet.getLong(1),  resultSet.getString(2));
+				cookies.put(resultSet.getTimestamp(1),  resultSet.getString(2));
 			}
-			log.info("Fetched " + oreos.size() + " cookies");
+			log.info("Fetched " + cookies.size() + " cookies");
 		} catch (SQLException e) {
 			log.error("Error fetching cookies", e);
 		} finally {
@@ -80,7 +83,7 @@ public class OreoService {
 	}
 
 	public static int getCacheSize() {
-		return oreos.size();
+		return cookies.size();
 	}
 	
 	/**
@@ -89,10 +92,10 @@ public class OreoService {
 	 * @return
 	 */
 	public static boolean inCache(Cookie[] requestCookies) {
-		if(requestCookies == null || oreos.size() == 0) {
+		if(requestCookies == null || cookies.size() == 0) {
 		} else {
 			for(Cookie cookie : requestCookies) {
-				if (oreos.containsValue((cookie.getValue()))) return true;
+				if (cookies.containsValue((cookie.getValue()))) return true;
 			}
 		}
 		return false;
@@ -102,15 +105,15 @@ public class OreoService {
 	 * Create an HTTP cookie
 	 * @return RantCookie
 	 */
-	public static Oreo newOreo() {
-	    Oreo oreoCookie = new Oreo(getRandomUUID());
-	    oreoCookie.initialize(oreoAge);
-	    putInCache(oreoCookie);
-		return oreoCookie;
+	public static Cookie newOreo() {
+	    Cookie cookie = new Cookie(COOKIE_NAME, getRandomUUID());
+	    cookie.setMaxAge(cookieAge*60);
+	    putInCache(cookie);
+		return cookie;
 	}
 	
-	private static void putInCache(Oreo oreoCookie) {
-		oreos.put(oreoCookie.getIssued(), oreoCookie.getValue());
+	private static void putInCache(Cookie oreoCookie) {
+		cookies.put(DateUtils.getCurrentTimeStamp(), oreoCookie.getValue());
 	}
 
 	/**
@@ -131,7 +134,7 @@ public class OreoService {
 		String newValue = cookie.getValue() + "*";
 		updateCache(cookie, newValue);
 		cookie.setValue(newValue);
-		cookie.setMaxAge(oreoAge*60);
+		cookie.setMaxAge(cookieAge*60);
 		cookie.setPath("/");
 		return cookie;
 	}
@@ -142,9 +145,9 @@ public class OreoService {
 	 * @param value
 	 */
 	private static void updateCache(Cookie cookie, String newValue) {
-		for(Map.Entry<Long, String> temp : oreos.entrySet()) {
+		for(Map.Entry<Long, String> temp : cookies.entrySet()) {
 			if(temp.getValue().equals(cookie.getValue())) {
-				oreos.put(temp.getKey(), newValue);
+				cookies.put(temp.getKey(), newValue);
 			}
 		}
 	}
@@ -153,14 +156,14 @@ public class OreoService {
 	 * Purge old cookies from the cache
 	 */
 	public static void clean() {
-		if(oreos != null) {
-			int start = oreos.size();
-			for(Long temp : oreos.keySet()) {
-				if (new Date().getTime() - temp > oreoAge*60*1000) { 
-					oreos.remove(temp);
+		if(cookies != null) {
+			int start = cookies.size();
+			for(Long temp : cookies.keySet()) {
+				if (new Date().getTime() - temp > cookieAge*60*1000) { 
+					cookies.remove(temp);
 				}
 			}
-			int finish = oreos.size();
+			int finish = cookies.size();
 	 		log.info("Cleaned up " + (start-finish) + " cached cookies (" + finish + " active)");
 		}
 	}
