@@ -3,3 +3,4 @@
 /.project
 /target
 /src/main/webapp/WEB-INF/etc/rant.properties
+/build.bat
