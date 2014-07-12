@@ -37,23 +37,28 @@ public class RequestFilter implements Filter {
 		
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-		Params params = new Params(request);
+		
+		//* Require the client to request fresh content */
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+		response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+		response.setDateHeader("Expires", 0); // Proxies	
 		
 		/* Shield against assholes */
 		if (AegisService.shieldAgainstRequest(request, response)) {
 			response.sendError(403);
 			return;
 		}
-		
-		/* If the GET didn't contain a cookie, attach one */		 
+
+		/* If the GET didn't contain a cookie, attach one */
+		Params params = new Params(request);
 		if (!CookieService.inCache(params.getCookies())) {
 			if (params.isGet()) {
 				Cookie cookie = VisitorService.addVisitor(params);
 				response.addCookie(cookie);
 			}
-		}	
+		}
 
 		chain.doFilter(request, response);
 	}
-	
+
 }

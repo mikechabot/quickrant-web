@@ -54,16 +54,16 @@
 	    <p></p>
 	    <span></span>
 	  </div>
-	</div>	
+	</div>
     
     <div class="container rant-form-container retract" id="rant-form-container">
-      <form method="post" action="/rant/post" onSubmit="return validate()">
+      <form method="post" action="/rant" onSubmit="return validate()">
       	<div style="display: none; visibility: hidden;"><input type="hidden" id="pageLoadTime" name="pageLoadTime" value=""></div>
       	<input type="hidden" id="emotion" name="emotion" value="">
       	<input type="hidden" id="question" name="question" value="">
         <fieldset>
         <legend id="legend" class="center-legend"></legend>
-          <input type="text" id="vistorName" name="vistorName" placeholder="Name (optional)" class="optional">&nbsp;&nbsp;
+          <input type="text" id="visitor_name" name="visitor_name" placeholder="Name (optional)" class="optional">&nbsp;&nbsp;
           <input type="text" id="location" name="location" placeholder="Location (optional)" class="optional">
           <textarea name="rant" id="countable" rows="5" placeholder="Say something..."></textarea>
            <span class="help-block"><span id="counter"></span> characters left.</span>

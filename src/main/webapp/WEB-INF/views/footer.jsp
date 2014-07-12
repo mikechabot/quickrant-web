@@ -2,19 +2,19 @@
 <c:if test="${success eq true}">
   <c:set var="success" value="${null}" />
   <script>
- 	$('#modal-label').text("quickrant");
- 	$('div.modal-body p').text("Thanks for speaking your mind.");
-	$('#modal').modal('show');
-	 setTimeout(function() {
-		 $('#modal').modal('hide');
-	 }, 2000);
+    $('#modal-label').text("quickrant");
+    $('div.modal-body p').text("Thanks for speaking your mind.");
+    $('#modal').modal('show');
+     setTimeout(function() {
+         $('#modal').modal('hide');
+     }, 2000);
   </script>
 </c:if>
 <c:if test="${success eq false}">
   <script>
-  	 $('#modal-label').text("Something went wrong...");
-  	 $('div.modal-body p').html("https://www.google.com/search?q=dealwithit" target=\"_blank\">#dealwithit</a>");     
-	 $('#modal').modal('show');
+     $('#modal-label').text("Something went wrong...");
+     $('div.modal-body p').html("https://www.google.com/search?q=dealwithit" target=\"_blank\">#dealwithit</a>");     
+     $('#modal').modal('show');
   </script>
 <c:set var="success" value="${null}" />
 </c:if>

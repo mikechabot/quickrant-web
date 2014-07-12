@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,7 +62,7 @@ public class CookieService {
 		Database database = null;
 	    PreparedStatement select = null;		    	    
 	    ResultSet resultSet = null;
-	    String selectSql = "select created_at, cookie from visitors;";
+	    String selectSql = "select created_at, cookie from visitors where isActive = true";
 		try {
 			database = new Database();
 			database.open();
@@ -145,7 +144,7 @@ public class CookieService {
 	 * @param value
 	 */
 	private static void updateCache(Cookie cookie, String newValue) {
-		for(Map.Entry<Long, String> temp : cookies.entrySet()) {
+		for(Map.Entry<Timestamp, String> temp : cookies.entrySet()) {
 			if(temp.getValue().equals(cookie.getValue())) {
 				cookies.put(temp.getKey(), newValue);
 			}
@@ -158,8 +157,9 @@ public class CookieService {
 	public static void clean() {
 		if(cookies != null) {
 			int start = cookies.size();
-			for(Long temp : cookies.keySet()) {
-				if (new Date().getTime() - temp > cookieAge*60*1000) { 
+			for(Timestamp temp : cookies.keySet()) {
+				long diff = System.currentTimeMillis() - temp.getTime();
+				if (diff > cookieAge*60*1000) { 
 					cookies.remove(temp);
 				}
 			}

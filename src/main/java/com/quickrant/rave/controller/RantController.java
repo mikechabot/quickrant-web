@@ -14,8 +14,6 @@ import com.quickrant.rave.service.RantService;
 
 public class RantController extends Controller {
 
-	private static Logger log = Logger.getLogger(RantController.class);
-	
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -23,20 +21,32 @@ public class RantController extends Controller {
 	
 	@Override
 	protected void initActions() {
-		addAction(null, new GetRants());
-		addAction("/post", new PostAction());
+		addAction(null, new DelegateAction());
 		addAction("/ajax", new AjaxAction());
 	}
 
 	@Override
 	protected Action defaultAction() {
-		return new GetRants();
+		return new DelegateAction();
 	}
 	
-	public class GetRants implements Action {
+	public class DelegateAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			String action = request.getPathInfo();
+			String method = request.getMethod().toUpperCase();
+			if (method.equals("GET")) {
+				return new GetAction().execute(request, response);
+			} else if (method.equals("POST")) {
+				return new PostAction().execute(request, response);
+			}
+			response.sendRedirect(request.getContextPath()+"/"+basePath());
+			return null;
+		}		
+	}
+	
+	public class GetAction implements Action {
+		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 			
+			String action = request.getPathInfo();
 			/* Match root (/rant/) */
 			if (action == null || action.equals("") || action.equals("/")) {
 				request.setAttribute("rants", RantService.fetchRants());
@@ -47,13 +57,9 @@ public class RantController extends Controller {
 			if (action.matches("\\/([0-9]+)$")) {
 				int id = Integer.valueOf(action.replaceAll("/", ""));
 				Rant rant = RantService.fetchRant(id);
-				if (rant == null) {
-					response.sendError(404);
-					return null;
-				}
+				if (rant == null) { response.sendError(404); return null; }
 				request.setAttribute("rant", rant);
 			}
-
 			return basePath() + "/index.jsp";
 		}		
 	}
@@ -91,7 +97,7 @@ public class RantController extends Controller {
 		 */
 		private void setDefaults(Rant rant) {
 			if (rant.getVisitorName() == null || rant.getVisitorName().isEmpty()) {
-				rant.set("visitorName", "Anonymous");
+				rant.set("visitor_name", "Anonymous");
 			}
 			if (rant.getLocation() == null || rant.getLocation().isEmpty()) {
 				rant.set("location", "Earth");

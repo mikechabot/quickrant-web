@@ -18,7 +18,7 @@ public class RantService {
 	public static List<Rant> fetchRants() {
 		List<Rant> rants = new ArrayList<Rant>();
 		Database database = null;
-		String sql = "select id, created_at, emotion, question, rant, visitorName, location from rants order by id desc limit 40";
+		String sql = "select id, created_at, emotion, question, rant, visitor_name, location from rants order by id desc limit 40";
 		try {
 			database = new Database();
 			database.open();

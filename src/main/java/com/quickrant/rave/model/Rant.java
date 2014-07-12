@@ -11,19 +11,19 @@ public class Rant extends Model {
 	static { validatePresenceOf("rant"); }
 
 	public void setVisitorId(String visitorId) {
-		set("visitorId", visitorId);
+		set("visitor_id", visitorId);
 	}
 	
 	public String getVisitorId() {
-		return getString("visitorId");
+		return getString("visitor_id");
 	}
 
 	public void setVisitorName(String visitorName) {
-		set("visitorName", visitorName);
+		set("visitor_name", visitorName);
 	}
 	
 	public String getVisitorName() {
-		return getString("visitorName");
+		return getString("visitor_name");
 	}
 	
 	public void setRant(String rant) {

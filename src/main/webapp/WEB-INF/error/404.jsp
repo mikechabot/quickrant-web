@@ -8,7 +8,7 @@
 		<div class="rant-single-text-container">
 			<i class="icon-globe pull-right"></i>
 			<blockquote class="pull-left wide">
-			<p class="rant-single-text small-bottom-margin">404: Rant Not Found</p>
+			<p class="rant-single-text small-bottom-margin"><b class="mild-bold">404</b>: Ya dun goofed</p>
 			<small class="rant-single-info"><b class="dark-bold">HTTP</b>, Interwebs</small>
 			<span class="smaller muted pull-right">01/01/1970</span>
 			</blockquote>

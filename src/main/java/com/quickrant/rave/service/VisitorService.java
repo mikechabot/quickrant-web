@@ -22,7 +22,6 @@ public class VisitorService {
 			database = new Database();
 			database.open();
 			Visitor visitor = new Visitor();
-			
 			visitor.set("cookie", cookie.getValue());
 			visitor.set("useragent", params.getUserAgent());
 			visitor.set("ipaddress", params.getIpAddress());
