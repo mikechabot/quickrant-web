@@ -36,14 +36,14 @@ $(document).ready(function () {
     	$('p#error-text').slideUp(300);
     });
     
-    
+    // All your specs are belong to us
     var height = window.screen.availHeight,
         width = window.screen.availWidth,
         color = window.screen.colorDepth;
-    if($.cookie("quickrant-uid").indexOf("*") == -1) {
+    if($.cookie("quickrant-uuid").indexOf("*") == -1) {
 	    $.ajax({
 	        context: this,
-	        url: "/rant/ajax",
+	        url: "/ajax/phonehome",
 	        type: "POST",
 	        data: { "ajax": true, "height": height, "width": width, "color": color }
 	    });

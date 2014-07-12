@@ -30,6 +30,15 @@
     <url-pattern>/rant/*</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>AjaxController</servlet-name>
+    <servlet-class>com.quickrant.rave.controller.AjaxController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AjaxController</servlet-name>
+    <url-pattern>/ajax/*</url-pattern>
+  </servlet-mapping>
+  
   <error-page>
     <error-code>404</error-code>
     <location>/404.jsp</location>

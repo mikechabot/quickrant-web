@@ -16,7 +16,7 @@ public class VisitorService {
 	private static Logger log = Logger.getLogger(VisitorService.class);
 	
 	public static Cookie addVisitor(Params params) {
-		Cookie cookie = CookieService.newOreo();
+		Cookie cookie = CookieService.newCookie();
 		Database database = null;
 		try {
 			database = new Database();
@@ -35,5 +35,10 @@ public class VisitorService {
 		}
 		return cookie;
 	}
+
+	public static void updateVisitor(Visitor visitor) {
+		
+	}
+
 	
 }

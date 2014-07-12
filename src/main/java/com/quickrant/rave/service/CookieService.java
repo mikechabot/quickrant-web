@@ -22,7 +22,7 @@ import com.quickrant.rave.utils.DateUtils;
 
 public class CookieService {
 	
-	private static final String COOKIE_NAME = "quickrant-uuid";
+	public static final String COOKIE_NAME = "quickrant-uuid";
 	
 	private static Logger log = Logger.getLogger(CookieService.class);	
 	private static ConcurrentMap<Timestamp, String> cookies = new ConcurrentHashMap<Timestamp, String>();
@@ -104,7 +104,7 @@ public class CookieService {
 	 * Create an HTTP cookie
 	 * @return RantCookie
 	 */
-	public static Cookie newOreo() {
+	public static Cookie newCookie() {
 	    Cookie cookie = new Cookie(COOKIE_NAME, getRandomUUID());
 	    cookie.setMaxAge(cookieAge*60);
 	    putInCache(cookie);
@@ -135,6 +135,7 @@ public class CookieService {
 		cookie.setValue(newValue);
 		cookie.setMaxAge(cookieAge*60);
 		cookie.setPath("/");
+		log.info(cookie.getValue());
 		return cookie;
 	}
 	

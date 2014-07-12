@@ -5,8 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import com.quickrant.rave.Controller;
 import com.quickrant.rave.Params;
 import com.quickrant.rave.model.Rant;
@@ -22,7 +20,6 @@ public class RantController extends Controller {
 	@Override
 	protected void initActions() {
 		addAction(null, new DelegateAction());
-		addAction("/ajax", new AjaxAction());
 	}
 
 	@Override
@@ -104,25 +101,6 @@ public class RantController extends Controller {
 			}
 		}
 		
-	}
-	
-	public class AjaxAction implements Action {
-		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-//		// No GET requests allowed
-//		Params params = new Params(request);
-//		if (params.isGet()) {
-//			response.sendRedirect(basePath() + "/index.jsp");
-//			return null;
-//		}		
-//
-//		if(!RanterService.isComplete(params)) {			
-//			RanterService.updateRanter(new Ranter().parse(params));
-//			Cookie cookie = CookieService.updateCookie(params.getCookie(CookieService.getCookieName()));
-//			response.addCookie(cookie);
-//		} 
-		return basePath();
-		}		
 	}
 	
 }
