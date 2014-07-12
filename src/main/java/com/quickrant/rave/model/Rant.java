@@ -8,7 +8,7 @@ import com.quickrant.rave.utils.TimeUtils;
 
 public class Rant extends Model {
 	
-	static { validatePresenceOf("rant"); }
+	static { validatePresenceOf("rant", "emotion", "question"); }
 
 	public void setVisitorId(String visitorId) {
 		set("visitor_id", visitorId);

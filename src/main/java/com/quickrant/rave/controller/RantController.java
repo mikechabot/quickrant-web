@@ -1,7 +1,5 @@
 package com.quickrant.rave.controller;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,6 +38,11 @@ public class RantController extends Controller {
 		}		
 	}
 	
+	/**
+	 * Handle GET requests to /rant
+	 * @author Mike
+	 *
+	 */
 	public class GetAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 			
@@ -57,10 +60,16 @@ public class RantController extends Controller {
 				if (rant == null) { response.sendError(404); return null; }
 				request.setAttribute("rant", rant);
 			}
+			
 			return basePath() + "/index.jsp";
 		}		
 	}
-		
+
+	/**
+	 * Handle POST requests to /rant
+	 * @author Mike
+	 *
+	 */
 	public class PostAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
 			
@@ -70,15 +79,8 @@ public class RantController extends Controller {
 				response.sendRedirect(basePath() + "/index.jsp");
 				return null;
 			}
-
-			/* Get the rant from the form */
-			Map<String, String> map = params.getMap();
-			Rant rant = new Rant();
-			rant.fromMap(map);
-			setDefaults(rant);
-	
-			if (rant.isValid()) {
-				RantService.saveRant(rant);
+			
+			if (RantService.saveRant(params)) {
 				request.getSession().setAttribute("success", true);
 			} else {
 				request.getSession().setAttribute("success", false);
@@ -86,19 +88,6 @@ public class RantController extends Controller {
 
 			response.sendRedirect(request.getContextPath()+"/"+basePath());
 			return null;
-		}
-		
-		/**
-		 * Anonymous, Earth
-		 * @param rant
-		 */
-		private void setDefaults(Rant rant) {
-			if (rant.getVisitorName() == null || rant.getVisitorName().isEmpty()) {
-				rant.setVisitorName("Anonymous");
-			}
-			if (rant.getLocation() == null || rant.getLocation().isEmpty()) {
-				rant.setLocation("Earth");
-			}
 		}
 		
 	}

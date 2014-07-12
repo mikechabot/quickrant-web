@@ -3,9 +3,11 @@ package com.quickrant.rave.service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.quickrant.rave.Params;
 import com.quickrant.rave.database.CustomSql;
 import com.quickrant.rave.database.Database;
 import com.quickrant.rave.database.DatabaseUtils;
@@ -63,17 +65,40 @@ public class RantService {
 	 * Save a new rant
 	 * @param rant
 	 */
-	public static void saveRant(Rant rant) {
+	public static boolean saveRant(Params params) {
 		Database database = null;
 		try {
 			database = new Database();
 			database.open();
+			Rant rant = parseFromParams(params);
+			if (!rant.isValid()) return false;
 			rant.saveIt();
 		} catch (SQLException e) {
 			log.error("Unable to open connection to database", e);
 		} finally {
 			DatabaseUtils.close(database);
-		}		
+		}
+		return true;
+	}
+	
+	/**
+	 * Parse Rant from the form
+	 * @param params
+	 * @return
+	 */
+	private static Rant parseFromParams(Params params) {
+		Map<String, String> map = params.getMap();
+		Rant rant = new Rant();
+		rant.fromMap(map);
+
+		/* Set defaults */
+		if (rant.getVisitorName() == null || rant.getVisitorName().isEmpty()) {
+			rant.setVisitorName("Anonymous");
+		}
+		if (rant.getLocation() == null || rant.getLocation().isEmpty()) {
+			rant.setLocation("Earth");
+		}
+		return rant;
 	}
 	
 }

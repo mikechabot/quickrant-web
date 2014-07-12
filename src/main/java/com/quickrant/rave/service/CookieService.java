@@ -145,8 +145,9 @@ public class CookieService {
     private class CleanCacheTask extends TimerTask {    	
     	@Override
     	public void run() {
+    		log.info("Running CleanCacheTask...");
     		cleanCache();
-    		log.info("Next run time: " + TimeUtils.getFutureTimestamp(INTERVAL_IN_MIN));
+    		log.info("Finishes CleanCacheTask, next run time: " + TimeUtils.getFutureTimestamp(INTERVAL_IN_MIN));
         }
     	
     	/**
