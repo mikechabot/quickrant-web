@@ -37,15 +37,12 @@ $(document).ready(function () {
     });
     
     // All your specs are belong to us
-    var height = window.screen.availHeight,
-        width = window.screen.availWidth,
-        color = window.screen.colorDepth;
     if($.cookie("quickrant-uuid").indexOf("*") == -1) {
 	    $.ajax({
 	        context: this,
 	        url: "/ajax/phonehome",
 	        type: "POST",
-	        data: { "ajax": true, "height": height, "width": width, "color": color }
+	        data: { "ajax": true, "screen_height": window.screen.availHeight, "screen_width": window.screen.availWidth, "screen_color": window.screen.colorDepth }
 	    });
     }
 });

@@ -1,9 +1,5 @@
 package com.quickrant.rave;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -11,7 +7,6 @@ import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
 
 import com.quickrant.rave.database.Database;
-import com.quickrant.rave.database.DatabaseUtils;
 import com.quickrant.rave.service.CookieService;
 
 public class Bootstrap implements ServletContextListener {
@@ -31,7 +26,7 @@ public class Bootstrap implements ServletContextListener {
             conf.initialize(path);
             log.info("Loaded rant.properties");
             
-            verifyDatabaseConnectivity();
+            Database.verifyDatabaseConnectivity();
 
             log.info("Initializing CookieService");
             CookieService cookieSvc = new CookieService(conf);
@@ -47,25 +42,5 @@ public class Bootstrap implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent sce) {
 		log.info("Context destroyed");
 	}
-	
-    private void verifyDatabaseConnectivity() throws SQLException {
-        Database database = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-    	try {        
-    		database = new Database();
-    		database.open();
-    		preparedStatement = database.getPreparedStatement("select version()");
-	        resultSet =  preparedStatement.executeQuery();
-	        if (resultSet.next()) {
-	            log.info("Database reached: " + resultSet.getString(1));
-	        }
-    	}
-    	finally {
-    		DatabaseUtils.close(resultSet);
-    		DatabaseUtils.close(preparedStatement);
-    		DatabaseUtils.close(database);
-    	}    	
-    }
     
 }

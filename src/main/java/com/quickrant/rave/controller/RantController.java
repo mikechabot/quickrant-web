@@ -94,10 +94,10 @@ public class RantController extends Controller {
 		 */
 		private void setDefaults(Rant rant) {
 			if (rant.getVisitorName() == null || rant.getVisitorName().isEmpty()) {
-				rant.set("visitor_name", "Anonymous");
+				rant.setVisitorName("Anonymous");
 			}
 			if (rant.getLocation() == null || rant.getLocation().isEmpty()) {
-				rant.set("location", "Earth");
+				rant.setLocation("Earth");
 			}
 		}
 		

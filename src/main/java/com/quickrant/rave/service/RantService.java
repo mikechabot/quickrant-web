@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.quickrant.rave.database.CustomSql;
 import com.quickrant.rave.database.Database;
 import com.quickrant.rave.database.DatabaseUtils;
 import com.quickrant.rave.model.Rant;
@@ -15,14 +16,18 @@ public class RantService {
 
 	private static Logger log = Logger.getLogger(RantService.class);
 	
+	/**
+	 * Fetch all rants
+	 * @return
+	 */
 	public static List<Rant> fetchRants() {
 		List<Rant> rants = new ArrayList<Rant>();
 		Database database = null;
-		String sql = "select id, created_at, emotion, question, rant, visitor_name, location from rants order by id desc limit 40";
 		try {
 			database = new Database();
 			database.open();
-			List<Rant> temp = Rant.findBySQL(sql);
+			List<Rant> temp = Rant.findBySQL(CustomSql.FETCH_TOP_40_RANTS);
+			/* Iterate to fetch */
 			for (Rant each : temp) {
 				rants.add(each);
 			}
@@ -34,6 +39,11 @@ public class RantService {
 		return rants;		
 	}
 	
+	/**
+	 * Fetch a single Rant object
+	 * @param id
+	 * @return Rant
+	 */
 	public static Rant fetchRant(int id) {
 		Rant rant = null;
 		Database database = null;
@@ -49,6 +59,10 @@ public class RantService {
 		return rant;		
 	}
 
+	/**
+	 * Save a new rant
+	 * @param rant
+	 */
 	public static void saveRant(Rant rant) {
 		Database database = null;
 		try {

@@ -51,7 +51,7 @@ public class RequestFilter implements Filter {
 
 		/* If the GET didn't contain a cookie, attach one */
 		Params params = new Params(request);
-		if (!CookieService.inCache(params.getCookies())) {
+		if (!CookieService.existsInCache(params.getCookies())) {
 			if (params.isGet()) {
 				Cookie cookie = VisitorService.addVisitor(params);
 				response.addCookie(cookie);

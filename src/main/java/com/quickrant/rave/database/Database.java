@@ -1,6 +1,7 @@
 package com.quickrant.rave.database;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -11,6 +12,8 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.javalite.activejdbc.Base;
 import org.postgresql.ds.PGPoolingDataSource;
+
+import com.quickrant.rave.Configuration;
 
 public class Database {
 	
@@ -27,12 +30,14 @@ public class Database {
             ic.createSubcontext("jdbc");
             
             dataSource = new PGPoolingDataSource();
+            
+            Configuration conf = Configuration.getInstance();
             ((PGPoolingDataSource) dataSource).setDataSourceName("quickrant-ds");
-            ((PGPoolingDataSource) dataSource).setServerName("localhost");
-            ((PGPoolingDataSource) dataSource).setDatabaseName("quickrant");
-            ((PGPoolingDataSource) dataSource).setUser("quickrant");
-            ((PGPoolingDataSource) dataSource).setPassword("s00perhax0r!");
-            ((PGPoolingDataSource) dataSource).setMaxConnections(50);
+            ((PGPoolingDataSource) dataSource).setServerName(conf.getRequiredString("postgres-host"));
+            ((PGPoolingDataSource) dataSource).setDatabaseName(conf.getRequiredString("postgres-name"));
+            ((PGPoolingDataSource) dataSource).setUser(conf.getRequiredString("postgres-username"));
+            ((PGPoolingDataSource) dataSource).setPassword(conf.getRequiredString("postgres-password"));
+            ((PGPoolingDataSource) dataSource).setMaxConnections(conf.getOptionalInt("postgres-max-connections", 50));
 			
 			ic.bind("jdbc/datasource", dataSource);
 		}
@@ -61,6 +66,25 @@ public class Database {
 	
 	public void close() {
 		Base.close();
+	}
+	
+	public static void verifyDatabaseConnectivity() throws SQLException {
+		Database database = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			database = new Database();
+			database.open();
+			preparedStatement = database.getPreparedStatement("select version()");
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				log.info("Database reached: " + resultSet.getString(1));
+			}
+		} finally {
+			DatabaseUtils.close(resultSet);
+			DatabaseUtils.close(preparedStatement);
+			DatabaseUtils.close(database);
+		}
 	}
 	
 }

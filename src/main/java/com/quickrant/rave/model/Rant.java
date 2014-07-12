@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 import org.javalite.activejdbc.Model;
 
-import com.quickrant.rave.utils.DateUtils;
+import com.quickrant.rave.utils.TimeUtils;
 
 public class Rant extends Model {
 	
@@ -63,7 +63,7 @@ public class Rant extends Model {
 	}
 	
 	public String getCreated() {
-		return DateUtils.getFormattedDate(getTimestamp("created_at"));
+		return TimeUtils.getFormattedDate(getTimestamp("created_at"));
 	}
 	
 }

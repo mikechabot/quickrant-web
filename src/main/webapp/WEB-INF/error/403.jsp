@@ -8,7 +8,7 @@
 		<div class="rant-single-text-container">
 			<i class="icon-globe pull-right"></i>
 			<blockquote class="pull-left wide">
-			<p class="rant-single-text small-bottom-margin">403: I know, it sucks, but you need cookies in order to post on <b class="mild-bold">quickrant</b>. Click here to see why.</p>
+			<p class="rant-single-text small-bottom-margin">403: You tried to do something without a valid cookie. <b class="mild-bold">quickrant</b>. Click here to see why.</p>
 			<small class="rant-single-info"><b class="dark-bold">HTTP</b>, Interwebs</small>
 			<span class="smaller muted pull-right">01/01/1970</span>
 			</blockquote>

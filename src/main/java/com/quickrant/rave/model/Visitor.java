@@ -15,11 +15,11 @@ public class Visitor extends Model {
 	}
 
 	public void setLastRant(Timestamp lastRant) {
-		set("lastRant", lastRant);
+		set("last_rant", lastRant);
 	}
 	
 	public Timestamp getLastRant() {
-		return getTimestamp("lastRant");
+		return getTimestamp("last_rant");
 	}
 
 	public void setCookie(String cookie) {
@@ -31,11 +31,19 @@ public class Visitor extends Model {
 	}
 
 	public void setUserAgent(String userAgent) {
-		set("userAgent", userAgent);
+		set("user_agent", userAgent);
 	}
 
 	public String getUserAgent() {
-		return getString("userAgent");
+		return getString("user_agent");
+	}
+	
+	public void setIpAddress(String ipAddress) {
+		set("ip_address", ipAddress);
+	}
+	
+	public String getIpAddress() {
+		return getString("ip_address");
 	}
 
 	public void setFingerprint(String fingerprint) {
@@ -47,51 +55,51 @@ public class Visitor extends Model {
 	}
 
 	public void setRantAttempts(int rantAttempts) {
-		set("rantAttempts", rantAttempts);
+		set("rant_attempts", rantAttempts);
 	}
 
 	public int getRantAttempts() {
-		return getInteger("rantAttempts");
+		return getInteger("rant_attempts");
 	}
 
 	public void setScreenHeight(int screenHeight) {
-		set("screenHeight", screenHeight);
+		set("screen_height", screenHeight);
 	}
 
 	public int getScreenHeight() {
-		return getInteger("screenHeight");
+		return getInteger("screen_height");
 	}
 
 	public void setScreenWidth(int screenWidth) {
-		set("screenWidth", screenWidth);
+		set("screen_width", screenWidth);
 	}
 
 	public int getScreenWidth() {
-		return getInteger("screenWidth");
+		return getInteger("screen_width");
 	}
 
 	public void setScreenColor(int screenColor) {
-		set("screenColor", screenColor);
+		set("screen_color", screenColor);
 	}
 	
 	public int getScreenColor() {
-		return getInteger("screenColor");
+		return getInteger("screen_color");
 	}
 
 	public void setActive(boolean isActive) {
-		set("isActive", isActive);
+		set("is_active", isActive);
 	}
 
 	public boolean isActive() {
-		return getBoolean("isActive");
+		return getBoolean("is_active");
 	}
 	
 	public void setComplete(boolean isComplete) {
-		set("isComplete", isComplete);
+		set("is_complete", isComplete);
 	}
 	
 	public boolean isComplete() {
-		return getBoolean("isComplete");
+		return getBoolean("is_complete");
 	}
 
 }

@@ -1,10 +1,11 @@
 package com.quickrant.rave.service;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -14,83 +15,79 @@ import javax.servlet.http.Cookie;
 import org.apache.log4j.Logger;
 
 import com.quickrant.rave.Configuration;
-
 import com.quickrant.rave.database.Database;
 import com.quickrant.rave.database.DatabaseUtils;
-import com.quickrant.rave.jobs.PurgeCookiesJob;
-import com.quickrant.rave.utils.DateUtils;
+import com.quickrant.rave.model.Visitor;
+import com.quickrant.rave.utils.TimeUtils;
 
 public class CookieService {
 	
 	public static final String COOKIE_NAME = "quickrant-uuid";
+	public static int COOKIE_AGE;
+	public static int INTERVAL_IN_MIN;
 	
 	private static Logger log = Logger.getLogger(CookieService.class);	
 	private static ConcurrentMap<Timestamp, String> cookies = new ConcurrentHashMap<Timestamp, String>();
-	private static int cookieAge;
 	
-	private Configuration conf;
+	private Timer timer;
 	private boolean initialized = false;
 		
 	public CookieService(Configuration conf) {
-		this.conf = conf;
+		COOKIE_AGE = conf.getOptionalInt("cookie-age", 10);
+		INTERVAL_IN_MIN = conf.getOptionalInt("clean-cookies-interval", 5);
 	}
 	
+	/**
+	 * Initialize CookieService
+	 */
 	public void initialize() {
 		if (initialized) return;
-		getConfig();
-		startPurgeJob();
-		populateCache();
+		
+		/* Start the CleanCacheTask */
+		timer = new Timer();
+        timer.schedule(new CleanCacheTask(), 5000, INTERVAL_IN_MIN*60*1000);
+		
+        populateCookieCache();
 		initialized = true;
 	}
-
-	private void getConfig() {
-		cookieAge = conf.getOptionalInt("cookie-age", 10);
-	}
-
-	private void startPurgeJob() {
-		PurgeCookiesJob purgeOreos = new PurgeCookiesJob(conf);
-		purgeOreos.start();
-	}
-		
+	
 	/**
-	 * Populate the cookie cache. This ensures *active* users that were 
-	 * issued a cookie prior to a web server restart are able to post 
-	 * without service interruption, as posting with an invalid cookie is 
-	 * not allowed.
+	 * Populate the cookie cache from the backend
 	 */
-	private void populateCache() {
+	private void populateCookieCache() {
 		Database database = null;
-	    PreparedStatement select = null;		    	    
-	    ResultSet resultSet = null;
-	    String selectSql = "select created_at, cookie from visitors where isActive = true";
 		try {
 			database = new Database();
 			database.open();
-			select = database.getPreparedStatement(selectSql);		
-			resultSet = select.executeQuery();
-			while (resultSet.next()) {
-				cookies.put(resultSet.getTimestamp(1),  resultSet.getString(2));
+			List<Visitor> visitors = Visitor.where("is_active = ?", true);
+			for (Visitor visitor : visitors) {
+				cookies.put(visitor.getCreatedAt(), visitor.getCookie());
 			}
 			log.info("Fetched " + cookies.size() + " cookies");
 		} catch (SQLException e) {
 			log.error("Error fetching cookies", e);
 		} finally {
-			DatabaseUtils.close(resultSet);
-			DatabaseUtils.close(select);
 			DatabaseUtils.close(database);			
 		}
 	}
 
-	public static int getCacheSize() {
-		return cookies.size();
-	}
-	
+	/**
+	 * Create an HTTP cookie
+	 * @return RantCookie
+	 */
+	public static Cookie newCookie() {
+	    Cookie cookie = new Cookie(COOKIE_NAME, Util.getRandomUUID());
+	    cookie.setMaxAge(COOKIE_AGE*60);
+	    cookies.put(TimeUtils.getNowTimestamp(), cookie.getValue());
+		return cookie;
+	}	
+
 	/**
 	 * Determine if a quickrant cookie exists in the cache
 	 * @param requestCookies
 	 * @return
 	 */
-	public static boolean inCache(Cookie[] requestCookies) {
+	public static boolean existsInCache(Cookie[] requestCookies) {
 		if(requestCookies == null || cookies.size() == 0) {
 		} else {
 			for(Cookie cookie : requestCookies) {
@@ -101,29 +98,6 @@ public class CookieService {
 	}
 	
 	/**
-	 * Create an HTTP cookie
-	 * @return RantCookie
-	 */
-	public static Cookie newCookie() {
-	    Cookie cookie = new Cookie(COOKIE_NAME, getRandomUUID());
-	    cookie.setMaxAge(cookieAge*60);
-	    putInCache(cookie);
-		return cookie;
-	}
-	
-	private static void putInCache(Cookie oreoCookie) {
-		cookies.put(DateUtils.getCurrentTimeStamp(), oreoCookie.getValue());
-	}
-
-	/**
-	 * Generate a decently random string
-	 * @return a random UUID (e.g. 067e6162-3b6f-4ae2-a171-2470b63dff0)
-	 */
-	private static String getRandomUUID() {
-		return String.valueOf(UUID.randomUUID());
-	}
-
-	/**
 	 * Update cookie with "*" to signify the AJAX 
 	 * response was received
 	 * @param cookie
@@ -131,40 +105,72 @@ public class CookieService {
 	 */
 	public static Cookie updateCookie(Cookie cookie) {
 		String newValue = cookie.getValue() + "*";
-		updateCache(cookie, newValue);
+		updateCookieInCache(cookie, newValue);
 		cookie.setValue(newValue);
-		cookie.setMaxAge(cookieAge*60);
+		cookie.setMaxAge(COOKIE_AGE*60);
 		cookie.setPath("/");
 		return cookie;
 	}
 	
 	/**
-	 * Update the cache with a new cookie value
+	 * Locate an existing cookie an update it
 	 * @param cookie
 	 * @param value
 	 */
-	private static void updateCache(Cookie cookie, String newValue) {
+	private static void updateCookieInCache(Cookie cookie, String newValue) {		
 		for(Map.Entry<Timestamp, String> temp : cookies.entrySet()) {
 			if(temp.getValue().equals(cookie.getValue())) {
 				cookies.put(temp.getKey(), newValue);
 			}
 		}
 	}
-
-	/*
-	 * Purge old cookies from the cache
+	
+	/**
+	 * Util class
 	 */
-	public static void clean() {
-		if(cookies != null) {
-			int start = cookies.size();
-			for(Timestamp temp : cookies.keySet()) {
-				long diff = System.currentTimeMillis() - temp.getTime();
-				if (diff > cookieAge*60*1000) { 
-					cookies.remove(temp);
-				}
-			}
-			int finish = cookies.size();
-	 		log.info("Cleaned up " + (start-finish) + " cached cookies (" + finish + " active)");
+	private static class Util {
+		/**
+		 * Generate a sufficiently random number
+		 * @return a random UUID (e.g. 067e6162-3b6f-4ae2-a171-2470b63dff0)
+		 */
+		public static String getRandomUUID() {
+			return String.valueOf(UUID.randomUUID());
 		}
 	}
+	
+    /**
+     * Clean the cookie cache every N minutes
+     */
+    private class CleanCacheTask extends TimerTask {    	
+    	@Override
+    	public void run() {
+    		cleanCache();
+    		log.info("Next run time: " + TimeUtils.getFutureTimestamp(INTERVAL_IN_MIN));
+        }
+    	
+    	/**
+    	 * Remove old cookies from the cache
+    	 */
+    	private void cleanCache() {
+    		if(cookies != null) {
+    			int start = cookies.size();
+    			for(Timestamp temp : cookies.keySet()) {
+    				if (shouldBeRemoved(temp)) {
+    					cookies.remove(temp);
+    				}
+    			}
+    	 		log.info("Cleaned up " + (start-cookies.size()) + " cached cookies (" + cookies.size() + " active)");
+    		}
+    	}
+    	
+    	/**
+    	 * Check to see if the cookie is older than the defined COOKIE_AGE
+    	 * @param Timestamp
+    	 * @return boolean
+    	 */
+    	private boolean shouldBeRemoved(Timestamp ts) {
+    		return (TimeUtils.getNow() - ts.getTime()) > COOKIE_AGE*60*1000;
+    	}
+    }
+	
 }

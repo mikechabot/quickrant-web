@@ -44,7 +44,7 @@ public class AegisService {
 	}
 	
 	private static boolean isCookieInCache(Params params) {
-		return CookieService.inCache(params.getCookies());
+		return CookieService.existsInCache(params.getCookies());
 	}
 	
 	/**

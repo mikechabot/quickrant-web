@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,6 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
-import com.quickrant.rave.utils.DayUtils;
 
 public class Params {
 
@@ -142,27 +139,6 @@ public class Params {
 			return getDouble(param);
 		}
 		return dft;
-	}
-
-	public Date getDate(String param) {
-		return getDate(param, DayUtils.INTERNAL_DATE_FORMAT);
-	}
-
-	public Date getDate(String param, Date dft) {
-		if(getDate(param) != null) {
-			return getDate(param);
-		}
-		return dft;
-	}
-
-	public Date getDate(String param, String format) {
-		String value = get(param);
-		if (value != null && format != null) {
-			if (value.length() == format.length()) {
-				return DayUtils.parse(value, format);
-			}
-		}
-		return null;
 	}
 
 	public String getMonth(String param) {
