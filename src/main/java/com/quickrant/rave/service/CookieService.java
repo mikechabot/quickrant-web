@@ -15,6 +15,7 @@ import javax.servlet.http.Cookie;
 import org.apache.log4j.Logger;
 
 import com.quickrant.rave.Configuration;
+import com.quickrant.rave.database.CustomSql;
 import com.quickrant.rave.database.Database;
 import com.quickrant.rave.database.DatabaseUtils;
 import com.quickrant.rave.model.Visitor;
@@ -23,7 +24,7 @@ import com.quickrant.rave.utils.TimeUtils;
 public class CookieService {
 	
 	public static final String COOKIE_NAME = "quickrant-uuid";
-	public static int COOKIE_AGE;
+	public static int COOKIE_AGE_IN_MIN;
 	public static int INTERVAL_IN_MIN;
 	
 	private static Logger log = Logger.getLogger(CookieService.class);	
@@ -33,8 +34,8 @@ public class CookieService {
 	private boolean initialized = false;
 		
 	public CookieService(Configuration conf) {
-		COOKIE_AGE = conf.getOptionalInt("cookie-age", 10);
-		INTERVAL_IN_MIN = conf.getOptionalInt("clean-cookies-interval", 5);
+		COOKIE_AGE_IN_MIN = conf.getOptionalInt("cookie-age", 1440);
+		INTERVAL_IN_MIN = conf.getOptionalInt("clean-cookie-cache-interval", 5);
 	}
 	
 	/**
@@ -59,7 +60,7 @@ public class CookieService {
 		try {
 			database = new Database();
 			database.open();
-			List<Visitor> visitors = Visitor.where("is_active = ?", true);
+			List<Visitor> visitors = Visitor.findBySQL(CustomSql.POPULATE_COOKIE_CACHE);
 			for (Visitor visitor : visitors) {
 				cookies.put(visitor.getCreatedAt(), visitor.getCookie());
 			}
@@ -77,7 +78,7 @@ public class CookieService {
 	 */
 	public static Cookie newCookie() {
 	    Cookie cookie = new Cookie(COOKIE_NAME, Util.getRandomUUID());
-	    cookie.setMaxAge(COOKIE_AGE*60);
+	    cookie.setMaxAge(COOKIE_AGE_IN_MIN*60);
 	    cookies.put(TimeUtils.getNowTimestamp(), cookie.getValue());
 		return cookie;
 	}	
@@ -107,7 +108,7 @@ public class CookieService {
 		String newValue = cookie.getValue() + "*";
 		updateCookieInCache(cookie, newValue);
 		cookie.setValue(newValue);
-		cookie.setMaxAge(COOKIE_AGE*60);
+		cookie.setMaxAge(COOKIE_AGE_IN_MIN*60);
 		cookie.setPath("/");
 		return cookie;
 	}
@@ -169,7 +170,7 @@ public class CookieService {
     	 * @return boolean
     	 */
     	private boolean shouldBeRemoved(Timestamp ts) {
-    		return (TimeUtils.getNow() - ts.getTime()) > COOKIE_AGE*60*1000;
+    		return (TimeUtils.getNow() - ts.getTime()) > COOKIE_AGE_IN_MIN*60*1000;
     	}
     }
 	

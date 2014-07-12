@@ -85,14 +85,6 @@ public class Visitor extends Model {
 	public int getScreenColor() {
 		return getInteger("screen_color");
 	}
-
-	public void setActive(boolean isActive) {
-		set("is_active", isActive);
-	}
-
-	public boolean isActive() {
-		return getBoolean("is_active");
-	}
 	
 	public void setComplete(boolean isComplete) {
 		set("is_complete", isComplete);

@@ -37,17 +37,18 @@ public class VisitorService {
 		return cookie;
 	}
 
-	public static void completeVisitor(Params params) {		
+	public static void completeVisitor(Params params) {
+		/* Get a temp visitor from the POST action */
+		Map<String, String> map = params.getMap();
+		Visitor temp = new Visitor();
+		temp.fromMap(map);
+		
 		Database database = null;
 		try {
+			/* Locate existing visitor */
 			database = new Database();
 			database.open();
 			Visitor visitor = Visitor.findFirst("cookie = ?", params.getCookieValue(CookieService.COOKIE_NAME));
-
-			/* Get a temp visitor from the POST action */
-			Map<String, String> map = params.getMap();
-			Visitor temp = new Visitor();
-			temp.fromMap(map);
 			
 			/* Update existing visitor */
 			visitor.setScreenColor(temp.getScreenColor());
@@ -62,6 +63,7 @@ public class VisitorService {
 			sb.append(temp.getScreenColor());
 			visitor.setFingerprint(sb.toString());
 			
+			/* Set complete and save */
 			visitor.setComplete(true);
 			visitor.saveIt();
 			
