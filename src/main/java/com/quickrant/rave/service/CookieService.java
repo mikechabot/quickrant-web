@@ -135,7 +135,6 @@ public class CookieService {
 		cookie.setValue(newValue);
 		cookie.setMaxAge(cookieAge*60);
 		cookie.setPath("/");
-		log.info(cookie.getValue());
 		return cookie;
 	}
 	

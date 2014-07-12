@@ -93,8 +93,8 @@
         <configuration>
           <driver>org.postgresql.Driver</driver>
           <url>jdbc:postgresql://localhost:5432/quickrant</url>
-          <username>quickrant</username>
-          <password>s00perhax0r!</password>
+          <username>postgres</username>
+          <password>Hax0r!</password>
         </configuration>
         <dependencies>
           <dependency>

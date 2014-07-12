@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 
 public abstract class Controller extends HttpServlet {
 
-	private static Logger log = Logger.getLogger(Controller.class);
 	private static final long serialVersionUID = 1L;
 	
 	private Action defaultAction;
