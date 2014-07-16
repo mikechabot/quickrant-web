@@ -34,9 +34,8 @@ $(document).ready(function () {
     // Hide error text on input
     $("div#rant-form-container textarea").keydown(function() {
     	$('p#error-text').slideUp(300);
-    });
-    
-    // All your specs are belong to us
+    });       
+
     if($.cookie("quickrant-uuid").indexOf("*") == -1) {
 	    $.ajax({
 	        context: this,

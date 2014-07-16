@@ -55,9 +55,11 @@ public class Params {
 	}
 	
 	public String getCookieValue(String name) {
-		for (Cookie temp : getCookies()) {
-			if(temp.getName().equals(name)) {
-				return temp.getValue();
+		if (getCookies() != null) {
+			for (Cookie temp : getCookies()) {
+				if(temp.getName().equals(name)) {
+					return temp.getValue();
+				}
 			}
 		}
 		return null;

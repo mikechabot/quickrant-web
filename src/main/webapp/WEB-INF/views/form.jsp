@@ -1,6 +1,16 @@
+<%@ page language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
     <!-- Show those faces
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
+
+<c:if test="${fn:length(emotions) > 0}">
+  <c:forEach items="${emotions}" var="emotion" varStatus="loop">
+    
+  </c:forEach>
+</c:if>
 
     <div class="container emotion">
       <div class="row">
@@ -35,19 +45,19 @@
       <button class="btn btn-success question" type="button">You know what's pretty good?</button>
     </div>
     <div class="container questions" id="sad">
-      <button class="btn btn-inverse question" type="button">You know what makes me cry?</button>
-      <button class="btn btn-inverse question" type="button">You know what's depressing?</button>
-      <button class="btn btn-inverse question" type="button">You know what makes me sad?</button>
-      <button class="btn btn-inverse question" type="button">You know what I wish had happened?</button>
-      <button class="btn btn-inverse question" type="button">You know what I miss?</button>
-      <button class="btn btn-inverse question" type="button">You know what sucks?</button>
-      <button class="btn btn-inverse question" type="button">You know what I regret?</button>
+      <button class="btn btn-primary question" type="button">You know what makes me cry?</button>
+      <button class="btn btn-primary question" type="button">You know what's depressing?</button>
+      <button class="btn btn-primary question" type="button">You know what makes me sad?</button>
+      <button class="btn btn-primary question" type="button">You know what I wish had happened?</button>
+      <button class="btn btn-primary question" type="button">You know what I miss?</button>
+      <button class="btn btn-primary question" type="button">You know what sucks?</button>
+      <button class="btn btn-primary question" type="button">You know what I regret?</button>
     </div>
     
     <!-- Holds the thank you message -->
     <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-label" aria-hidden="true">
 	  <div class="modal-header">
-	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">[×]</button>
 	    <h3 id="modal-label"></h3>
 	  </div>
 	  <div class="modal-body">

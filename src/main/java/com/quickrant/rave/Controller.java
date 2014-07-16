@@ -19,13 +19,13 @@ public abstract class Controller extends HttpServlet {
 	private Map<String, Action> actions = new HashMap<String, Action>();
 		
 	public void init(ServletConfig config) throws ServletException {
-		initActions();
+		initActions(config);
 		defaultAction = defaultAction();
 		if (defaultAction == null) throw new ServletException("A default action was not specified");
 		System.out.println("Loaded Controller with Base Path of: /"+basePath());
 	}
-	
-	protected abstract void initActions();
+
+	protected abstract void initActions(ServletConfig config);
 	protected abstract Action defaultAction();
 	protected abstract String basePath();
 	
@@ -57,6 +57,11 @@ public abstract class Controller extends HttpServlet {
 	
 	public interface Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception;
+	}
+
+	protected void initActions() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

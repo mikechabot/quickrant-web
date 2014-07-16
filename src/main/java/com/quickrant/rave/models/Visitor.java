@@ -1,4 +1,4 @@
-package com.quickrant.rave.model;
+package com.quickrant.rave.models;
 
 import java.sql.Timestamp;
 

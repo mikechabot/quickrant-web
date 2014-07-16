@@ -1,4 +1,4 @@
-package com.quickrant.rave.model;
+package com.quickrant.rave.models;
 
 import java.sql.Timestamp;
 
@@ -8,14 +8,14 @@ import com.quickrant.rave.utils.TimeUtils;
 
 public class Rant extends Model {
 	
-	static { validatePresenceOf("rant", "emotion", "question"); }
+	static { validatePresenceOf("rant", "emotion_id", "question_id"); }
 
-	public void setVisitorId(String visitorId) {
+	public void setVisitorId(int visitorId) {
 		set("visitor_id", visitorId);
 	}
 	
-	public String getVisitorId() {
-		return getString("visitor_id");
+	public int getVisitorId() {
+		return getInteger("visitor_id");
 	}
 
 	public void setVisitorName(String visitorName) {
@@ -34,20 +34,20 @@ public class Rant extends Model {
 		return getString("rant");
 	}
 	
-	public void setEmotion(String emotion) {
-		set("emotion", emotion);
+	public void setEmotionId(int emotionId) {
+		set("emotion_id", emotionId);
 	}
 	
-	public String getEmotion() {
-		return getString("emotion");
+	public int getEmotionId() {
+		return getInteger("emotion_id");
 	}
 
-	public void setQuestion(String question) {
-		set("question", question);
+	public void setQuestionId(int questionId) {
+		set("question_id", questionId);
 	}
 	
-	public String getQuestion() {
-		return getString("question");
+	public int getQuestionId() {
+		return getInteger("question_id");
 	}
 	
 	public void setLocation(String location) {

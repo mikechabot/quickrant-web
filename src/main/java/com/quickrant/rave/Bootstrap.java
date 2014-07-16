@@ -6,8 +6,8 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
+import com.quickrant.rave.cache.CookieCache;
 import com.quickrant.rave.database.Database;
-import com.quickrant.rave.service.CookieService;
 
 public class Bootstrap implements ServletContextListener {
 	
@@ -19,19 +19,21 @@ public class Bootstrap implements ServletContextListener {
         String path = context.getRealPath("WEB-INF/etc");
                 
         try {
+        	/* Load the version */
             Version.load();
             log.info("quickrant, v" + Version.display());
 
+            /* Load the configuration */
             Configuration conf = Configuration.getInstance();
             conf.initialize(path);
             log.info("Loaded rant.properties");
             
-            Database.verifyDatabaseConnectivity();
-
-            log.info("Initializing CookieService");
-            CookieService cookieSvc = new CookieService(conf);
-            cookieSvc.initialize();
+            Database.verifyDatabaseConnectivity();           
             
+            /* Initialize the cookie cache */
+            CookieCache cookieCache = CookieCache.getCache();
+            cookieCache.initialize(conf, "quickrant-uuid");
+            cookieCache.populateCookieCache();
         }
         catch (Exception e) {
             log.fatal("Could not start application", e);

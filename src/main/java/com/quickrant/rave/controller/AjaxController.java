@@ -1,25 +1,43 @@
 package com.quickrant.rave.controller;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.quickrant.rave.Controller;
 import com.quickrant.rave.Params;
-import com.quickrant.rave.service.CookieService;
-import com.quickrant.rave.service.VisitorService;
+import com.quickrant.rave.cache.CookieCache;
+import com.quickrant.rave.models.Visitor;
+import com.quickrant.rave.services.VisitorService;
+import com.quickrant.rave.utils.Utils;
 
 public class AjaxController extends Controller {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	private VisitorService visitorSvc;
+	private CookieCache cache;
+	
 	@Override
 	protected String basePath() { return ""; }
 	
 	@Override
-	protected void initActions() {
+	protected void initActions(ServletConfig config) {
+		/* Get a copy of the cache */
+		cache = CookieCache.getCache();
+		
+		/* Add dependencies */
+		setVisitorService(config.getInitParameter("visitor-service"));
+		
+		/* Add servlet actions */
 		addAction(null, new DefaultAction());
-		addAction("/phonehome", new CookieAction());
+		addAction("/phonehome", new PhoneHomeAction());
+	}
+	
+	@Override
+	protected void initActions() {
+		
 	}
 
 	@Override
@@ -27,28 +45,47 @@ public class AjaxController extends Controller {
 		return new DefaultAction();
 	}
 	
+	private void setVisitorService(String visitorSvcClass) {
+		visitorSvc = (VisitorService) Utils.newInstance(visitorSvcClass);
+	}
+
 	public class DefaultAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			return basePath();			
-		}		
+			return basePath();		
+		}
 	}
 	
-	public class CookieAction implements Action {
+	/**
+	 * Return a new cookie to the site visitor 
+	 * when the AJAX request is received
+	 */
+	public class PhoneHomeAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			
-			// No GET requests allowed
+
+			/* No GETs allowed */
 			Params params = new Params(request);
 			if (params.isGet()) {
 				response.sendRedirect(basePath() + "/index.jsp");
 				return null;
-			}
+			}			
+		
+			/* Get the old cookie from the request */
+			String oldCookie = params.getCookie(CookieCache.name).getValue();
+
+			/* Generate an updated cookie, and update the cache */
+			Cookie newCookie = cache.getCookie(oldCookie + "*");
+			cache.updateByValue(oldCookie, newCookie.getValue());
 			
-			VisitorService.completeVisitor(params);
-			Cookie cookie = CookieService.updateCookie(params.getCookie(CookieService.COOKIE_NAME));
-			response.addCookie(cookie);
+			/* Update existing Visitor associated to the cookie */
+			Visitor existing = (Visitor) visitorSvc.fetchFirst("cookie = ?", oldCookie);
+			visitorSvc.completeVisitor(existing, params, newCookie);
 			
+			/* Send the cookie back to the browser */
+			response.addCookie(newCookie);
 			return basePath();			
 		}		
 	}
+
+
 
 }
