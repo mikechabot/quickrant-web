@@ -4,8 +4,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
 import com.quickrant.rave.Controller;
 import com.quickrant.rave.Params;
 import com.quickrant.rave.models.Rant;
@@ -16,7 +14,6 @@ import com.quickrant.rave.utils.Utils;
 
 public class RantController extends Controller {
 
-	private static Logger log = Logger.getLogger(RantController.class);
 	private static final long serialVersionUID = 1L;
 	
 	private RantService rantSvc;

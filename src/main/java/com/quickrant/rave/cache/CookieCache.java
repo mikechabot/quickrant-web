@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 import com.quickrant.rave.database.CustomSql;
 import com.quickrant.rave.database.Database;
-import com.quickrant.rave.database.DatabaseUtils;
+import com.quickrant.rave.database.DatabaseUtil;
 import com.quickrant.rave.models.Visitor;
 
 /**
@@ -23,7 +23,7 @@ public class CookieCache extends Cache {
 private static Logger log = Logger.getLogger(CookieCache.class);
 
 	private static CookieCache cache;
-
+	
 	private CookieCache() { }
 	
 	public static CookieCache getCache() {
@@ -49,12 +49,13 @@ private static Logger log = Logger.getLogger(CookieCache.class);
 		} catch (SQLException e) {
 			log.error("Error fetching cookies", e);
 		} finally {
-			DatabaseUtils.close(database);
+			DatabaseUtil.close(database);
 		}
 	}
 
 	/**
-	 * Create an HTTP new cookie with a random string
+	 * Create a HTTP new cookie with a random string,
+	 * and put it in the cache
 	 *   (e.g. b0461f4e-e0e6-4c42-8f81-d77d287fad56)
 	 * @return Cookie
 	 */
@@ -71,7 +72,7 @@ private static Logger log = Logger.getLogger(CookieCache.class);
 	 */
 	public Cookie getCookie(String value) {
 		Cookie cookie = new Cookie(name, value);
-		cookie.setMaxAge(maxEntryAgeInMin);
+		cookie.setMaxAge(expiry * 60 * 365);
 		cookie.setPath("/");
 		return cookie;
 	}

@@ -34,6 +34,9 @@ public class Bootstrap implements ServletContextListener {
             CookieCache cookieCache = CookieCache.getCache();
             cookieCache.initialize(conf, "quickrant-uuid");
             cookieCache.populateCookieCache();
+            
+            log.info("Bootstrapping complete...");
+            
         }
         catch (Exception e) {
             log.fatal("Could not start application", e);

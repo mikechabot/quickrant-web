@@ -18,7 +18,7 @@ public class TimeUtils {
 	}
 	
 	public static String getFormattedDate(Timestamp timestamp) {
-		return new SimpleDateFormat("MM/dd/yyyy h:m a").format(timestamp);
+		return new SimpleDateFormat("MM/dd/yyyy h:mm a").format(timestamp);
 	}
 
 }

@@ -19,7 +19,7 @@ import com.quickrant.rave.security.Aegis;
 import com.quickrant.rave.utils.Utils;
 
 /**
- * Shield against HTTP requests
+ * Shield against certain HTTP requests
  * 
  */
 public class AegisFilter implements Filter {
@@ -45,12 +45,13 @@ public class AegisFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-		
+
 		if (aegis.protectFrom(new Params(request))) {
 			response.sendError(403);
 			return;
-		}		
-		chain.doFilter((ServletRequest) request, (ServletResponse) response);
+		}
+		
+		chain.doFilter(request, response);
 	}
 	
 	private void setAegis(String aegisClass) {

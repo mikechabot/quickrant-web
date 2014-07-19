@@ -34,11 +34,6 @@ public class AjaxController extends Controller {
 		addAction(null, new DefaultAction());
 		addAction("/phonehome", new PhoneHomeAction());
 	}
-	
-	@Override
-	protected void initActions() {
-		
-	}
 
 	@Override
 	protected Action defaultAction() {
@@ -85,7 +80,4 @@ public class AjaxController extends Controller {
 			return basePath();			
 		}		
 	}
-
-
-
 }

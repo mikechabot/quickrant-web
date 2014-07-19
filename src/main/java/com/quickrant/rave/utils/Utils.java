@@ -3,7 +3,7 @@ package com.quickrant.rave.utils;
 import org.apache.log4j.Logger;
 
 public class Utils {
-	
+
 	private static Logger log = Logger.getLogger(Utils.class);
 	
 	/**
@@ -20,7 +20,7 @@ public class Utils {
 		}
 		return clazz;
 	}
-	
+
 	public static Object newInstance(String fullyQualifiedClassName) {
 		Object object = null;
 		try {

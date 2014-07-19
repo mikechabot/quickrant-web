@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.javalite.activejdbc.Model;
 
 import com.quickrant.rave.database.Database;
-import com.quickrant.rave.database.DatabaseUtils;
+import com.quickrant.rave.database.DatabaseUtil;
 
 public abstract class ModelService {
 		
@@ -40,7 +40,7 @@ public abstract class ModelService {
 		} catch (SQLException e) {
 			log.error("Unable to open connection to database", e);
 		} finally {
-			DatabaseUtils.close(database);
+			DatabaseUtil.close(database);
 		}
 		return list;
 	}
@@ -60,7 +60,7 @@ public abstract class ModelService {
 		} catch (SQLException e) {
 			log.error("Unable to open connection to database", e);
 		} finally {
-			DatabaseUtils.close(database);
+			DatabaseUtil.close(database);
 		}
 		return model;
 	}
@@ -81,7 +81,7 @@ public abstract class ModelService {
 		} catch (SQLException e) {
 			log.error("Unable to open connection to database", e);
 		} finally {
-			DatabaseUtils.close(database);
+			DatabaseUtil.close(database);
 		}
 		return model;
 	}
@@ -99,7 +99,7 @@ public abstract class ModelService {
 		} catch (SQLException e) {
 			log.error("Unable to open connection to database", e);
 		} finally {
-			DatabaseUtils.close(database);
+			DatabaseUtil.close(database);
 		}
 		return true;
 	}
@@ -119,7 +119,7 @@ public abstract class ModelService {
 		} catch (SQLException e) {
 			log.error("Unable to open connection to database", e);
 		} finally {
-			DatabaseUtils.close(database);
+			DatabaseUtil.close(database);
 		}
 		return model;
 	}

@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import com.quickrant.rave.Params;
 import com.quickrant.rave.cache.CookieCache;
 import com.quickrant.rave.database.Database;
-import com.quickrant.rave.database.DatabaseUtils;
+import com.quickrant.rave.database.DatabaseUtil;
 
 public class Aegis {
 	
@@ -67,9 +67,9 @@ public class Aegis {
 		} catch (SQLException e) {
 			log.error("Unable to check for banned status", e);
 		} finally {
-			DatabaseUtils.close(resultSet);
-			DatabaseUtils.close(statement);
-			DatabaseUtils.close(database);
+			DatabaseUtil.close(resultSet);
+			DatabaseUtil.close(statement);
+			DatabaseUtil.close(database);
 		}
 		return false;
 	}

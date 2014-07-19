@@ -21,8 +21,9 @@ public abstract class Cache implements Cacheable {
 	public static String name;
 	
 	protected ConcurrentMap<Timestamp, String> entries = new ConcurrentHashMap<Timestamp, String>();
-	protected int maxEntryAgeInMin;
-	protected int cleanIntervalInMin;
+	
+	/* In minutes */
+	protected int expiry;
 
 	private Timer timer;
 	private boolean initialized = false;
@@ -36,12 +37,11 @@ public abstract class Cache implements Cacheable {
 		name = cacheName;
 		
 		/* Get configuration properties */
-		maxEntryAgeInMin = conf.getOptionalInt(name + "-age", 720);
-		cleanIntervalInMin = conf.getOptionalInt(name + "-clean-interval", maxEntryAgeInMin * 2);
+		expiry = conf.getRequiredInt(name + "-expiry");
 		
 		/* Start the CleanCacheTask */
 		timer = new Timer();
-        timer.schedule(new CleanCacheTask(), 5000, cleanIntervalInMin * 60 * 1000);
+        timer.schedule(new CleanCacheTask(), 5000, expiry * 60 * 1000);
         
 		initialized = true;
 	}
@@ -137,12 +137,12 @@ public abstract class Cache implements Cacheable {
     	
     	@Override
     	public void run() {
-    		log.info("Running cache clean for '" + name + "'");
-    		cleanCache();
-    		log.info("Completed cache clean for '" + name + "' - Next cleaning: " + TimeUtils.getFutureTimestamp(cleanIntervalInMin));
+    		log.info("Cleaned up " + cleanCache() + " cached cookies (" + entries.size() + " active)");
+    		log.info("Next cleaning: " + TimeUtils.getFutureTimestamp(expiry));
         }
 
-    	private void cleanCache() {    		
+    	private int cleanCache() {
+    		int cleaned = 0;
     		if(entries != null) {
     			int start = entries.size();
     			for(Timestamp temp : entries.keySet()) {
@@ -150,8 +150,9 @@ public abstract class Cache implements Cacheable {
     					entries.remove(temp);
     				}
     			}
-    	 		log.info("Cleaned up " + (start-entries.size()) + " cached cookies (" + entries.size() + " active)");
+    			cleaned = start - entries.size();
     		}
+    		return cleaned;
     	}
 
     	/**
@@ -160,7 +161,7 @@ public abstract class Cache implements Cacheable {
     	 * @return boolean
     	 */
     	private boolean shouldBeRemoved(Timestamp ts) {
-    		return (TimeUtils.getNow() - ts.getTime()) > maxEntryAgeInMin * 60 * 1000;
+    		return (TimeUtils.getNow() - ts.getTime()) > expiry * 60 * 1000;
     	}
     }
 
