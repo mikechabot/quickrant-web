@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="/WEB-INF/tags/helper.tld" prefix="helper" %> 
-<c:import url="header.jsp"/>
+<c:import url="/header.jsp"/>
 <c:import url="form.jsp"/>
 <c:if test="${fn:length(rants) > 0}">
 <div class="container stream">

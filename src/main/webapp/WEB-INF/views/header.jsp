@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>quickrant | say anything to everyone</title>
-    <meta name="description" content="Express yourself without yourself.">
+    <title>quickrant | express yourself without yourself</title>
+    <meta name="description" content="Say anything to everyone. Express yourself without yourself. No login required.">
     <meta name="author" content="Mike Chabot">
 
 	<!-- scripts -->
