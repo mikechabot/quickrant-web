@@ -8,13 +8,13 @@
   
   <!-- Bootstrap class runs during servlet container creation -->
   <listener>
-    <listener-class>com.quickrant.rave.Bootstrap</listener-class>
+    <listener-class>com.quickrant.web.Bootstrap</listener-class>
   </listener>
 
   <!-- Don't waste cycles on certain requests -->
   <filter>
     <filter-name>ExclusionFilter</filter-name>
-    <filter-class>com.quickrant.rave.filters.ExclusionFilter</filter-class>
+    <filter-class>com.quickrant.web.filters.ExclusionFilter</filter-class>
     <init-param>
       <param-name>exclusions</param-name>
       <param-value>\/img\/*,\/css\/*,\/js\/*,\/ico\/*</param-value>
@@ -28,10 +28,10 @@
   <!-- Reject gargage requests -->
   <filter>
     <filter-name>AegisFilter</filter-name>
-    <filter-class>com.quickrant.rave.filters.AegisFilter</filter-class>
+    <filter-class>com.quickrant.web.filters.AegisFilter</filter-class>
     <init-param>
       <param-name>aegis</param-name>
-      <param-value>com.quickrant.rave.security.Aegis</param-value>
+      <param-value>com.quickrant.web.security.Aegis</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -42,10 +42,10 @@
   <!-- Process incoming requests -->
   <filter>
     <filter-name>RequestFilter</filter-name>
-    <filter-class>com.quickrant.rave.filters.RequestFilter</filter-class>
+    <filter-class>com.quickrant.web.filters.RequestFilter</filter-class>
     <init-param>
       <param-name>visitor-service</param-name>
-      <param-value>com.quickrant.rave.services.VisitorService</param-value>
+      <param-value>com.quickrant.api.services.VisitorService</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -56,22 +56,22 @@
   <!-- Send /rant requests to RantController -->
   <servlet>
     <servlet-name>RantController</servlet-name>
-    <servlet-class>com.quickrant.rave.controller.RantController</servlet-class>
+    <servlet-class>com.quickrant.web.controller.RantController</servlet-class>
     <init-param>
       <param-name>visitor-service</param-name>
-      <param-value>com.quickrant.rave.services.VisitorService</param-value>
+      <param-value>com.quickrant.api.services.VisitorService</param-value>
     </init-param>
     <init-param>
       <param-name>rant-service</param-name>
-      <param-value>com.quickrant.rave.services.RantService</param-value>
+      <param-value>com.quickrant.api.services.RantService</param-value>
     </init-param>
     <init-param>
       <param-name>emotion-service</param-name>
-      <param-value>com.quickrant.rave.services.EmotionService</param-value>
+      <param-value>com.quickrant.api.services.EmotionService</param-value>
     </init-param>
     <init-param>
       <param-name>question-service</param-name>
-      <param-value>com.quickrant.rave.services.QuestionService</param-value>
+      <param-value>com.quickrant.api.services.QuestionService</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
@@ -82,10 +82,10 @@
   <!-- Send /ajax requests to AjaxController -->
   <servlet>
     <servlet-name>AjaxController</servlet-name>
-    <servlet-class>com.quickrant.rave.controller.AjaxController</servlet-class>
+    <servlet-class>com.quickrant.web.controller.AjaxController</servlet-class>
     <init-param>
       <param-name>visitor-service</param-name>
-      <param-value>com.quickrant.rave.services.VisitorService</param-value>
+      <param-value>com.quickrant.api.services.VisitorService</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
