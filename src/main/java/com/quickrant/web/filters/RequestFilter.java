@@ -1,4 +1,4 @@
-package com.quickrant.rave.filters;
+package com.quickrant.web.filters;
 
 import java.io.IOException;
 
@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
 import com.quickrant.api.services.VisitorService;
-import com.quickrant.rave.cache.CookieCache;
-import com.quickrant.rave.utils.Utils;
+import com.quickrant.web.cache.CookieCache;
+import com.quickrant.web.utils.Utils;
 
 public class RequestFilter implements Filter {
 

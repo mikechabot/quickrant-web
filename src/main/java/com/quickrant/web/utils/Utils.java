@@ -1,4 +1,4 @@
-package com.quickrant.rave.utils;
+package com.quickrant.web.utils;
 
 import org.apache.log4j.Logger;
 

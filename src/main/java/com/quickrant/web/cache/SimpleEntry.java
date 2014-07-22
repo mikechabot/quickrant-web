@@ -1,4 +1,4 @@
-package com.quickrant.rave.cache;
+package com.quickrant.web.cache;
 
 import java.util.Map;
 

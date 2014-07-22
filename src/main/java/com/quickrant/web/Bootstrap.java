@@ -1,4 +1,4 @@
-package com.quickrant.rave;
+package com.quickrant.web;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.quickrant.api.Configuration;
 import com.quickrant.api.database.Database;
-import com.quickrant.rave.cache.CookieCache;
+import com.quickrant.web.cache.CookieCache;
 
 
 public class Bootstrap implements ServletContextListener {

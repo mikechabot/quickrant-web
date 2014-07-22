@@ -1,4 +1,4 @@
-package com.quickrant.rave.filters;
+package com.quickrant.web.filters;
 
 import java.io.IOException;
 
@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
-import com.quickrant.rave.cache.CookieCache;
-import com.quickrant.rave.security.Aegis;
-import com.quickrant.rave.utils.Utils;
+import com.quickrant.web.cache.CookieCache;
+import com.quickrant.web.security.Aegis;
+import com.quickrant.web.utils.Utils;
 
 /**
  * Shield against certain HTTP requests

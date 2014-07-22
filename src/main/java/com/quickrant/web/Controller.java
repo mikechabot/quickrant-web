@@ -1,4 +1,4 @@
-package com.quickrant.rave;
+package com.quickrant.web;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -3,10 +3,10 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.quickrant.suite</groupId>
-  <artifactId>quickrant</artifactId>
+  <artifactId>quickrant-web</artifactId>
   <packaging>war</packaging>
   <version>0.3</version>
-  <name>quickrant-webapp</name>
+  <name>quickrant-web</name>
   <url>http://maven.apache.org</url> 
 
   <parent>

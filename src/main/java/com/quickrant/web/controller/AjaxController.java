@@ -1,4 +1,4 @@
-package com.quickrant.rave.controller;
+package com.quickrant.web.controller;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.Cookie;
@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.api.services.VisitorService;
-import com.quickrant.rave.Controller;
-import com.quickrant.rave.cache.CookieCache;
-import com.quickrant.rave.utils.Utils;
+import com.quickrant.web.Controller;
+import com.quickrant.web.cache.CookieCache;
+import com.quickrant.web.utils.Utils;
 
 public class AjaxController extends Controller {
 

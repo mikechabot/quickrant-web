@@ -1,4 +1,4 @@
-package com.quickrant.rave.controller;
+package com.quickrant.web.controller;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +9,8 @@ import com.quickrant.api.models.Rant;
 import com.quickrant.api.services.EmotionService;
 import com.quickrant.api.services.QuestionService;
 import com.quickrant.api.services.RantService;
-import com.quickrant.rave.Controller;
-import com.quickrant.rave.utils.Utils;
+import com.quickrant.web.Controller;
+import com.quickrant.web.utils.Utils;
 
 public class RantController extends Controller {
 

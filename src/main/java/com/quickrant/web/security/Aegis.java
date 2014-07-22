@@ -1,4 +1,4 @@
-package com.quickrant.rave.security;
+package com.quickrant.web.security;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import com.quickrant.api.Params;
 import com.quickrant.api.database.Database;
 import com.quickrant.api.database.DatabaseUtil;
-import com.quickrant.rave.cache.CookieCache;
+import com.quickrant.web.cache.CookieCache;
 
 public class Aegis {
 	

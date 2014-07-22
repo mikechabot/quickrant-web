@@ -1,4 +1,4 @@
-package com.quickrant.rave.filters;
+package com.quickrant.web.filters;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.rave.utils.StringUtils;
+import com.quickrant.web.utils.StringUtils;
 
 public class ExclusionFilter implements Filter {
 
