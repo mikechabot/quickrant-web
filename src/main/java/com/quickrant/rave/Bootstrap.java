@@ -6,8 +6,10 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
+import com.quickrant.api.Configuration;
+import com.quickrant.api.database.Database;
 import com.quickrant.rave.cache.CookieCache;
-import com.quickrant.rave.database.Database;
+
 
 public class Bootstrap implements ServletContextListener {
 

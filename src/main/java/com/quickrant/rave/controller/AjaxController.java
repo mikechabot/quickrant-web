@@ -5,11 +5,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.quickrant.api.Params;
+import com.quickrant.api.models.Visitor;
+import com.quickrant.api.services.VisitorService;
 import com.quickrant.rave.Controller;
-import com.quickrant.rave.Params;
 import com.quickrant.rave.cache.CookieCache;
-import com.quickrant.rave.models.Visitor;
-import com.quickrant.rave.services.VisitorService;
 import com.quickrant.rave.utils.Utils;
 
 public class AjaxController extends Controller {
@@ -73,7 +73,7 @@ public class AjaxController extends Controller {
 			
 			/* Update existing Visitor associated to the cookie */
 			Visitor existing = (Visitor) visitorSvc.fetchFirst("cookie = ?", oldCookie);
-			visitorSvc.completeVisitor(existing, params, newCookie);
+			visitorSvc.completeVisitor(existing, params, newCookie.getValue());
 			
 			/* Send the cookie back to the browser */
 			response.addCookie(newCookie);

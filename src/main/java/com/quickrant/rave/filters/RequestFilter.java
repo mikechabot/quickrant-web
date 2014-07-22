@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.rave.Params;
+import com.quickrant.api.Params;
+import com.quickrant.api.services.VisitorService;
 import com.quickrant.rave.cache.CookieCache;
-import com.quickrant.rave.services.VisitorService;
 import com.quickrant.rave.utils.Utils;
 
 public class RequestFilter implements Filter {
@@ -53,7 +53,7 @@ public class RequestFilter implements Filter {
 		Params params = new Params(request);
 		if (!cache.containsValue(params.getCookieValue(CookieCache.name))) {
 			Cookie cookie = cache.newCookie();
-			visitorSvc.save(params, cookie);
+			visitorSvc.save(params, cookie.getValue());
 			response.addCookie(cookie);
 		}
 		

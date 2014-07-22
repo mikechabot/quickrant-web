@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.rave.Configuration;
+import com.quickrant.api.Configuration;
 import com.quickrant.rave.utils.TimeUtils;
 
 /**

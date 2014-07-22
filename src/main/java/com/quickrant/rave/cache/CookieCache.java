@@ -8,10 +8,10 @@ import javax.servlet.http.Cookie;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.rave.database.CustomSql;
-import com.quickrant.rave.database.Database;
-import com.quickrant.rave.database.DatabaseUtil;
-import com.quickrant.rave.models.Visitor;
+import com.quickrant.api.database.CustomSql;
+import com.quickrant.api.database.Database;
+import com.quickrant.api.database.DatabaseUtil;
+import com.quickrant.api.models.Visitor;
 
 /**
  * Thread-safe, self-cleaning, singleton cache

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.rave.Params;
+import com.quickrant.api.Params;
 import com.quickrant.rave.cache.CookieCache;
 import com.quickrant.rave.security.Aegis;
 import com.quickrant.rave.utils.Utils;

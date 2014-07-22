@@ -1,9 +1,9 @@
 package com.quickrant.rave.web;
 
-import com.quickrant.rave.models.Emotion;
-import com.quickrant.rave.models.Question;
-import com.quickrant.rave.services.EmotionService;
-import com.quickrant.rave.services.QuestionService;
+import com.quickrant.api.models.Emotion;
+import com.quickrant.api.models.Question;
+import com.quickrant.api.services.EmotionService;
+import com.quickrant.api.services.QuestionService;
 
 public class Helper {
 

@@ -4,12 +4,12 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.quickrant.api.Params;
+import com.quickrant.api.models.Rant;
+import com.quickrant.api.services.EmotionService;
+import com.quickrant.api.services.QuestionService;
+import com.quickrant.api.services.RantService;
 import com.quickrant.rave.Controller;
-import com.quickrant.rave.Params;
-import com.quickrant.rave.models.Rant;
-import com.quickrant.rave.services.EmotionService;
-import com.quickrant.rave.services.QuestionService;
-import com.quickrant.rave.services.RantService;
 import com.quickrant.rave.utils.Utils;
 
 public class RantController extends Controller {

@@ -1,48 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>com.quickrant</groupId>
-    <artifactId>master</artifactId>
-    <version>0.2</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
-
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.quickrant.rave</groupId>
+  <groupId>com.quickrant.suite</groupId>
   <artifactId>quickrant</artifactId>
   <packaging>war</packaging>
-  <version>0.2</version>
+  <version>0.3</version>
   <name>quickrant-webapp</name>
   <url>http://maven.apache.org</url> 
+
+  <parent>
+    <groupId>com.quickrant</groupId>
+    <artifactId>suite</artifactId>
+    <version>0.3</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
   
   <build>
     <finalName>ROOT</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-          <source>1.7</source>
-          <target>1.7</target>
-          <compilerArgument>-Werror</compilerArgument>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.javalite</groupId>
-          <artifactId>activejdbc-instrumentation</artifactId>
-          <version>1.4.9</version>
-          <executions>
-            <execution>
-              <phase>process-classes</phase>
-              <goals>
-                <goal>instrument</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin> 
+    <plugins>      
       <plugin>
         <groupId>org.javalite</groupId>
         <artifactId>db-migrator-maven-plugin</artifactId>
@@ -61,14 +37,6 @@
           </dependency>
         </dependencies>
       </plugin>
-    </plugins>
-      
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-  </build>
+    </plugins>  </build>
   
 </project>

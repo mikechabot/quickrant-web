@@ -3,7 +3,7 @@ package com.quickrant.rave.cache;
 import java.sql.Timestamp;
 import java.util.Map.Entry;
 
-import com.quickrant.rave.Configuration;
+import com.quickrant.api.Configuration;
 
 public interface Cacheable {
 
