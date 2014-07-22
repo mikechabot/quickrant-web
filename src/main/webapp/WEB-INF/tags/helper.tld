@@ -6,14 +6,14 @@
 	<uri>/WEB-INF/tags</uri>
 	<function>
 		<name>getEmotion</name>
-		<function-class>com.quickrant.rave.web.Helper</function-class>
+		<function-class>com.quickrant.web.utils.WebTags</function-class>
 		<function-signature>
 			java.lang.String getEmotion(java.lang.String)
 		</function-signature>
 	</function>
     <function>
         <name>getQuestion</name>
-        <function-class>com.quickrant.rave.web.Helper</function-class>
+        <function-class>com.quickrant.web.utils.WebTags</function-class>
         <function-signature>
             java.lang.String getQuestion(java.lang.String)
         </function-signature>

@@ -5,7 +5,7 @@ import com.quickrant.api.models.Question;
 import com.quickrant.api.services.EmotionService;
 import com.quickrant.api.services.QuestionService;
 
-public class Helper {
+public class WebTags {
 
 	private static EmotionService emotionSvc = new EmotionService();
 	private static QuestionService questionSvc = new QuestionService();
