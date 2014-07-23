@@ -18,26 +18,6 @@
   
   <build>
     <finalName>ROOT</finalName>
-    <plugins>      
-      <plugin>
-        <groupId>org.javalite</groupId>
-        <artifactId>db-migrator-maven-plugin</artifactId>
-        <version>1.4.9</version>
-        <configuration>
-          <driver>org.postgresql.Driver</driver>
-          <url>jdbc:postgresql://localhost:5432/quickrant</url>
-          <username>postgres</username>
-          <password>Hax0r!</password>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.2-1003-jdbc4</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-    </plugins>  
   </build>
   
 </project>

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Configuration;
-import com.quickrant.rave.utils.TimeUtils;
+import com.quickrant.api.utils.TimeUtils;
 
 /**
  * Thread-safe, self-cleaning cache
