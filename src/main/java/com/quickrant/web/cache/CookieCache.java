@@ -8,7 +8,6 @@ import javax.servlet.http.Cookie;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.api.database.CustomSql;
 import com.quickrant.api.database.Database;
 import com.quickrant.api.database.DatabaseUtil;
 import com.quickrant.api.models.Visitor;
@@ -21,6 +20,8 @@ import com.quickrant.api.models.Visitor;
 public class CookieCache extends Cache {
 	
 private static Logger log = Logger.getLogger(CookieCache.class);
+
+    public static final String POPULATE_COOKIE_CACHE = "select * from visitors where created_at > (now() - interval '365 days')";
 
 	private static CookieCache cache;
 	
@@ -41,7 +42,7 @@ private static Logger log = Logger.getLogger(CookieCache.class);
 		try {
 			database = new Database();
 			database.open();
-			List<Visitor> visitors = Visitor.findBySQL(CustomSql.POPULATE_COOKIE_CACHE);
+			List<Visitor> visitors = Visitor.findBySQL(POPULATE_COOKIE_CACHE);
 			for (Visitor visitor : visitors) {
 				put(visitor.getCreatedAt(), visitor.getCookie());
 			}
