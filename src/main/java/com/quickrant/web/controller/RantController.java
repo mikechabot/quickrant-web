@@ -1,35 +1,52 @@
 package com.quickrant.web.controller;
 
+import java.util.Map;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Rant;
+import com.quickrant.api.models.Visitor;
 import com.quickrant.api.services.EmotionService;
 import com.quickrant.api.services.QuestionService;
 import com.quickrant.api.services.RantService;
+import com.quickrant.api.services.VisitorService;
 import com.quickrant.web.Controller;
+import com.quickrant.web.cache.CookieCache;
+import com.quickrant.web.security.Aegis;
 import com.quickrant.web.utils.Utils;
 
 public class RantController extends Controller {
 
 	private static final long serialVersionUID = 1L;
+	private static Logger log = Logger.getLogger(RantController.class);
 	
 	private RantService rantSvc;
 	private EmotionService emotionSvc;
+	private VisitorService visitorSvc;
 	private QuestionService questionSvc;
+	private Aegis aegis;
 	
 	@Override
 	protected String basePath() { return ""; }
 	
 	@Override
 	protected void initActions(ServletConfig config) {
+		log.info("Initializing controller");
+
 		/* Load dependencies */
 		setRantService(config.getInitParameter("rant-service"));
 		setEmotionService(config.getInitParameter("emotion-service"));
+		setVisitorService(config.getInitParameter("visitor-service"));
 		setQuestionService(config.getInitParameter("question-service"));
 		
+		/* Initialize Aegis */
+		aegis = new Aegis(CookieCache.getCache(), visitorSvc);
+				
 		/* Add servlet actions */
 		addAction(null, new DelegateAction());
 	}	
@@ -45,6 +62,10 @@ public class RantController extends Controller {
 	
 	private void setEmotionService(String emotionSvcClass) {
 		emotionSvc = (EmotionService) Utils.newInstance(emotionSvcClass);
+	}
+	
+	private void setVisitorService(String visitorSvcClass) {
+		visitorSvc = (VisitorService) Utils.newInstance(visitorSvcClass);
 	}
 
 	public void setQuestionService(String questionSvcClass) {
@@ -102,14 +123,33 @@ public class RantController extends Controller {
 	 */
 	public class PostAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			if (rantSvc.save(new Params(request).getMap())) {
+			
+			Params params = new Params(request);
+			
+			/* Get existing visitor from the request */
+			Visitor visitor = visitorSvc.getExistingVisitorFromCookie(params.getCookieValue(CookieCache.name));
+			
+			/* Reject POST if the visitor object isn't complete */
+			if (aegis.protectFromIncompleteVisitor(visitor, params)) {
+				response.sendError(403);
+				return null;
+			}
+			
+			/* Stuff the cookie in the map to be parsed out later */
+			Map<String, String> map = params.getMap();
+			map.put("cookie", visitor.getCookie());
+			
+			/* Save the rant */
+			if (rantSvc.save(map)) {
 				request.getSession().setAttribute("success", true);
 			} else {
 				request.getSession().setAttribute("success", false);
 			}
+			
 			response.sendRedirect(request.getContextPath() + "/" + basePath());
 			return null;
 		}
+
 	}
 	
 }

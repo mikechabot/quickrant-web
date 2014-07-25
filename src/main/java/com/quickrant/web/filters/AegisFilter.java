@@ -34,6 +34,15 @@ public class AegisFilter implements Filter {
 		
 		/* Load dependencies */
 		setAegis(config.getInitParameter("aegis"));
+		setCache(CookieCache.getCache());
+	}
+
+	private void setAegis(String aegisClass) {
+		aegis = (Aegis) Utils.newInstance(aegisClass);
+	}
+	
+	private void setCache(CookieCache cache) {
+		aegis.setCache(cache);
 	}
 
 	@Override
@@ -47,17 +56,13 @@ public class AegisFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) res;
 		
 		/* Deny the request if necessary */
-		if (aegis.protectFrom(new Params(request))) {
+		Params params = new Params(request);
+		if (aegis.protectFrom(params)) {
 			response.sendError(403);
 			return;
 		}
 		
 		chain.doFilter(request, response);
-	}
-	
-	private void setAegis(String aegisClass) {
-		aegis = (Aegis) Utils.newInstance(aegisClass);
-		aegis.setCache(CookieCache.getCache());
 	}
 
 }

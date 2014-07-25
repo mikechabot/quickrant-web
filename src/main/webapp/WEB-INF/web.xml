@@ -70,6 +70,10 @@
       <param-value>com.quickrant.api.services.EmotionService</param-value>
     </init-param>
     <init-param>
+      <param-name>visitor-service</param-name>
+      <param-value>com.quickrant.api.services.VisitorService</param-value>
+    </init-param>
+    <init-param>
       <param-name>question-service</param-name>
       <param-value>com.quickrant.api.services.QuestionService</param-value>
     </init-param>

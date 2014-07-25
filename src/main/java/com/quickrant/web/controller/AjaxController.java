@@ -5,6 +5,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.api.services.VisitorService;
@@ -15,6 +17,7 @@ import com.quickrant.web.utils.Utils;
 public class AjaxController extends Controller {
 
 	private static final long serialVersionUID = 1L;
+	private static Logger log = Logger.getLogger(AjaxController.class);
 	
 	private VisitorService visitorSvc;
 	private CookieCache cache;
@@ -24,6 +27,8 @@ public class AjaxController extends Controller {
 	
 	@Override
 	protected void initActions(ServletConfig config) {
+		log.info("Initializing controller");
+		
 		/* Get a copy of the cache */
 		cache = CookieCache.getCache();
 		

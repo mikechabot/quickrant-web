@@ -1,23 +1,30 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<c:if test="${success eq true}">
-  <c:set var="success" value="${null}" />
-  <script>
-    $('#modal-label').text("quickrant");
-    $('div.modal-body p').text("Thanks for speaking your mind.");
-    $('#modal').modal('show');
-     setTimeout(function() {
-         $('#modal').modal('hide');
-     }, 2000);
-  </script>
+
+SUCCESS: <c:out value="${success}" />
+<c:if test="${not empty success}">>
+<c:choose>
+    <c:when test="${success eq true}">
+	  <script>
+	    $('#modal-label').text("quickrant");
+	    $('div.modal-body p').text("Thanks for speaking your mind.");
+	    $('#modal').modal('show');
+	     setTimeout(function() {
+	         $('#modal').modal('hide');
+	     }, 2000);
+	  </script>
+    </c:when>
+    <c:otherwise>
+      **FALSE**
+	  <script>
+	    $('#modal-label').text("Something went wrong...");
+	    $('div.modal-body p').html("<h4><a href=\"https://www.google.com/search?q=dealwithit\" target=\"_blank\">#dealwithit</a></h4>");
+	    $('#modal').modal('show');
+	  </script>
+    </c:otherwise>
+</c:choose>
 </c:if>
-<c:if test="${success eq false}">
-  <script>
-     $('#modal-label').text("Something went wrong...");
-     $('div.modal-body p').html("https://www.google.com/search?q=dealwithit" target=\"_blank\">#dealwithit</a>");     
-     $('#modal').modal('show');
-  </script>
 <c:set var="success" value="${null}" />
-</c:if>
+
 <script>
 $('input[name=pageLoadTime]').val((new Date).getTime());
 </script>

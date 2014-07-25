@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 import com.quickrant.api.Params;
 import com.quickrant.api.database.Database;
 import com.quickrant.api.database.DatabaseUtil;
+import com.quickrant.api.models.Visitor;
+import com.quickrant.api.services.VisitorService;
 import com.quickrant.web.cache.CookieCache;
 
 public class Aegis {
@@ -18,40 +20,38 @@ public class Aegis {
 	
 	private CookieCache cache;
 	
-	public void setCache(CookieCache cache) {
-		this.cache = cache;
+	public Aegis() { }
+	
+	public Aegis(CookieCache cookieCache, VisitorService visitorService) {
+		cache = cookieCache;
 	}
 	
+	public void setCache(CookieCache cookieCache) {
+		cache = cookieCache;
+	}
+		
 	/**
-	 * Shield against HTTP requests
+	 * Shield against certain HTTP requests
 	 * @param request
 	 * @param response
 	 * @return boolean
 	 * @throws IOException
 	 */
-	public boolean protectFrom(Params params) throws IOException {	
-		/* Check for banned IP */
-		if (isBanned(params.getIpAddress())) {
-			log.info("Banned IP (" + params.getIpAddress() + ") detected");
-			return true;
-		}
-
-		/* If the POST didn't contain a cookie, deny access */
-		String cookieValue = params.getCookieValue(CookieCache.name);
-		if (params.isPost() && !cache.containsValue(cookieValue)) {
-			log.info("IP address (" + params.getIpAddress()	+ ") attempted a POST without a valie cookie");
-			return true;
-		}
-		
+	public boolean protectFrom(Params params) throws IOException {		
+		if (protectFromBannedIp(params)) return true;		
+		if (params.isPost()) {
+			if (protectFromNullCookie(params)) return true;
+			if (protectFromInvalidCookie(params)) return true;
+		}	
 		return false;
 	}
 	
 	/**
-	 * Check for IP ban 
-	 * @param ipAddress
+	 * Deny access if IP is banned
+	 * @param params
 	 * @return
 	 */
-	public boolean isBanned(String ipAddress) {
+	private boolean protectFromBannedIp(Params params) {
 	    Database database = null;
 	    PreparedStatement statement = null;
 	    ResultSet resultSet = null;
@@ -70,6 +70,50 @@ public class Aegis {
 			DatabaseUtil.close(resultSet);
 			DatabaseUtil.close(statement);
 			DatabaseUtil.close(database);
+		}
+//		log.info("Banned IP (" + params.getIpAddress() + ") detected");
+		return false;
+	}
+
+	/**
+	 * Deny access if the POST didn't contain a valid cookie 
+	 * @param params
+	 * @return boolean
+	 */
+	private boolean protectFromInvalidCookie(Params params) {
+		String cookieValue = params.getCookieValue(CookieCache.name);
+		
+		if (!cache.containsValue(cookieValue)) {
+			log.info("IP address (" + params.getIpAddress()	+ ") attempted a POST without a valid cookie");
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Deny access if the POST didn't contain an issued cookie
+	 * @param params
+	 * @return boolean
+	 */
+	private boolean protectFromNullCookie(Params params) {
+		String cookieValue = params.getCookieValue(CookieCache.name);
+		if (cookieValue == null || cookieValue.isEmpty()) {
+			log.info("IP address (" + params.getIpAddress()	+ ") attempted a POST without a null cookie");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Deny access if the visitor object isn't complete
+	 * @param params
+	 * @return boolean
+	 */
+	public boolean protectFromIncompleteVisitor(Visitor visitor, Params params) {
+		if (visitor == null) return true;
+		if (!visitor.isComplete()) {
+			log.info("IP address (" + params.getIpAddress()	+ ") attempted a POST without completing the AJAX roundtrip");
+			return true;
 		}
 		return false;
 	}
