@@ -1,16 +1,16 @@
 package com.quickrant.web.cache;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 
 import org.apache.log4j.Logger;
+import org.javalite.activejdbc.Model;
 
-import com.quickrant.api.database.Database;
-import com.quickrant.api.database.DatabaseUtil;
+import com.quickrant.api.Cache;
 import com.quickrant.api.models.Visitor;
+import com.quickrant.api.services.VisitorService;
 
 /**
  * Thread-safe, self-cleaning, singleton cache
@@ -23,37 +23,31 @@ private static Logger log = Logger.getLogger(CookieCache.class);
 
     public static final String POPULATE_COOKIE_CACHE = "select * from visitors where created_at > (now() - interval '30 days')";
 
-	private static CookieCache cache;
-	
+	private static CookieCache cache;	
+
 	private CookieCache() { }
 	
+
 	public static CookieCache getCache() {
 	    if (cache == null) {
 	    	cache = new CookieCache();
 	    }
 	    return cache;
 	}
-	
+		
 	/**
 	 * Populate the cookie cache from the backend
 	 */
 	public void populateCookieCache() {
-		Database database = null;
-		try {
-			database = new Database();
-			database.open();
-			List<Visitor> visitors = Visitor.findBySQL(POPULATE_COOKIE_CACHE);
-			for (Visitor visitor : visitors) {
-				put(visitor.getCreatedAt(), visitor.getCookie());
-			}
-			log.info("Loaded " + size() + " persisted cookie(s)...");
-		} catch (SQLException e) {
-			log.error("Error fetching cookies", e);
-		} finally {
-			DatabaseUtil.close(database);
+		VisitorService visitorSvc = new VisitorService();
+		List<Model> visitors = visitorSvc.fetchBySql(POPULATE_COOKIE_CACHE);
+		for (Model each : visitors) {
+			Visitor visitor = (Visitor) each; 
+			put(visitor.getCreatedAt(), visitor.getCookie());
 		}
+		log.info("Loaded " + size() + " persisted cookie(s)...");
 	}
-
+	
 	/**
 	 * Create a HTTP new cookie with a random string,
 	 * and put it in the cache
@@ -103,6 +97,6 @@ private static Logger log = Logger.getLogger(CookieCache.class);
 		public static String getRandomUUID() {
 			return String.valueOf(UUID.randomUUID());
 		}
-	}
+	}	
 
 }

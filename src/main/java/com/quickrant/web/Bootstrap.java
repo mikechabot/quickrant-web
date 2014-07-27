@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.quickrant.api.Configuration;
 import com.quickrant.api.database.Database;
+import com.quickrant.api.services.CacheStatsService;
 import com.quickrant.web.cache.CookieCache;
 
 
@@ -36,9 +37,9 @@ public class Bootstrap implements ServletContextListener {
 
 			/* Initialize the cookie cache */
 			CookieCache cookieCache = CookieCache.getCache();
-			cookieCache.initialize(conf, "quickrant-uuid");
+			cookieCache.initializeCache(conf, "quickrant-uuid", true);
 			cookieCache.populateCookieCache();
-
+			
 			log.info("Bootstrapping complete...");
 
 		} catch (Exception e) {

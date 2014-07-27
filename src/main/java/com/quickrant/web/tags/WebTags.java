@@ -1,4 +1,4 @@
-package com.quickrant.web.utils;
+package com.quickrant.web.tags;
 
 import com.quickrant.api.models.Emotion;
 import com.quickrant.api.models.Question;
