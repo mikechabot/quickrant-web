@@ -18,12 +18,14 @@ import com.quickrant.api.utils.TimeUtils;
  */
 public abstract class Cache {
 	
+	private static Logger log = Logger.getLogger(Cache.class);
+	
 	public static String name;
 	
 	protected ConcurrentMap<Timestamp, String> entries = new ConcurrentHashMap<Timestamp, String>();
 	
 	/* In minutes */
-	protected int expiry;
+	protected long expiry;
 
 	private Timer timer;
 	private boolean initialized = false;
@@ -34,9 +36,13 @@ public abstract class Cache {
 		
 		/* Set cache name */
 		name = cacheName;
-		
+
 		/* Get configuration properties */
-		expiry = conf.getRequiredInt(name + "-expiry");
+		expiry = conf.getRequiredLong(name + "-expiry");
+		
+		log.info("expiry="+expiry);
+		log.info("expiry="+expiry * 60 * 1000);
+		
 		
 		/* Start the CleanCacheTask */
 		timer = new Timer();

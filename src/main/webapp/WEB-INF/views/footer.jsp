@@ -1,6 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-SUCCESS: <c:out value="${success}" />
 <c:if test="${not empty success}">>
 <c:choose>
     <c:when test="${success eq true}">
@@ -24,10 +22,6 @@ SUCCESS: <c:out value="${success}" />
 </c:choose>
 </c:if>
 <c:set var="success" value="${null}" />
-
-<script>
-$('input[name=pageLoadTime]').val((new Date).getTime());
-</script>
 <script src="/js/rant.js"></script>
 <script src="/js/jquery.simplyCountable.js"></script>
 <script src="/js/jquery.cookie.js"></script>

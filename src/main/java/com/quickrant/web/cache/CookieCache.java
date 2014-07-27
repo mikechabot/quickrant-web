@@ -21,7 +21,7 @@ public class CookieCache extends Cache {
 	
 private static Logger log = Logger.getLogger(CookieCache.class);
 
-    public static final String POPULATE_COOKIE_CACHE = "select * from visitors where created_at > (now() - interval '365 days')";
+    public static final String POPULATE_COOKIE_CACHE = "select * from visitors where created_at > (now() - interval '30 days')";
 
 	private static CookieCache cache;
 	
@@ -73,7 +73,7 @@ private static Logger log = Logger.getLogger(CookieCache.class);
 	 */
 	public Cookie getCookie(String value) {
 		Cookie cookie = new Cookie(name, value);
-		cookie.setMaxAge(expiry * 60 * 365);
+		cookie.setMaxAge((int) expiry * 60);
 		cookie.setPath("/");
 		return cookie;
 	}

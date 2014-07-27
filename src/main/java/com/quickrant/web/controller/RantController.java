@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.javalite.activejdbc.Model;
 
 import com.quickrant.api.Params;
-import com.quickrant.api.models.Rant;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.api.services.EmotionService;
 import com.quickrant.api.services.QuestionService;
@@ -103,7 +103,7 @@ public class RantController extends Controller {
 				request.setAttribute("emotions", emotionSvc.fetch());
 				request.setAttribute("rants", rantSvc.fetch());
 			} else if (action.matches("\\/([0-9]+)$")) {
-				Rant rant = (Rant) rantSvc.fetchById(getId(action));
+				Model rant = rantSvc.fetchById(getId(action));
 				if (rant == null) { 
 					response.sendError(404); 
 					return null;
@@ -122,23 +122,21 @@ public class RantController extends Controller {
 	 * Handle POST requests to /rant
 	 */
 	public class PostAction implements Action {
-		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
+			Params params = new Params(request);			
+			String cookie = params.getCookieValue(CookieCache.name);
 			
-			Params params = new Params(request);
-			
-			/* Get existing visitor from the request */
-			Visitor visitor = visitorSvc.getExistingVisitorFromCookie(params.getCookieValue(CookieCache.name));
-			
-			/* Reject POST if the visitor object isn't complete */
+			/* Reject the POST if the visitor isn't complete */
+			Visitor visitor = visitorSvc.getExistingVisitorFromCookie(cookie);
 			if (aegis.protectFromIncompleteVisitor(visitor, params)) {
 				response.sendError(403);
 				return null;
-			}
-			
-			/* Stuff the cookie in the map to be parsed out later */
+			}			
+
+			/* Stuff the cookie in the map */
 			Map<String, String> map = params.getMap();
-			map.put("cookie", visitor.getCookie());
-			
+			map.put("cookie", cookie);			
+
 			/* Save the rant */
 			if (rantSvc.save(map)) {
 				request.getSession().setAttribute("success", true);
