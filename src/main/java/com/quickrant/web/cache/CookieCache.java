@@ -19,7 +19,7 @@ import com.quickrant.api.services.VisitorService;
  */
 public class CookieCache extends Cache {
 	
-private static Logger log = Logger.getLogger(CookieCache.class);
+	private static Logger log = Logger.getLogger(CookieCache.class);
 
     public static final String POPULATE_COOKIE_CACHE = "select * from visitors where created_at > (now() - interval '30 days')";
 

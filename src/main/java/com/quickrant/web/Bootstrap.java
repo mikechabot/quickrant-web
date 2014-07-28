@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import com.quickrant.api.Configuration;
 import com.quickrant.api.database.Database;
-import com.quickrant.api.services.CacheStatsService;
 import com.quickrant.web.cache.CookieCache;
 
 
