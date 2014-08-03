@@ -15,15 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
-import com.quickrant.api.services.VisitorService;
+import com.quickrant.api.models.Visitor;
 import com.quickrant.web.cache.CookieCache;
-import com.quickrant.web.utils.Utils;
 
 public class RequestFilter implements Filter {
 
 	private static Logger log = Logger.getLogger(RequestFilter.class);
-
-	private VisitorService visitorSvc;
+	
 	private CookieCache cache;
 
 	@Override
@@ -31,9 +29,6 @@ public class RequestFilter implements Filter {
 		log.info("Initializing filter");
 		/* Get a copy of the cache */
 		cache = (CookieCache) CookieCache.getCache();
-		
-		/* Load dependencies */
-		setVisitorService(config.getInitParameter("visitor-service"));
 	}
 
 	@Override
@@ -49,20 +44,33 @@ public class RequestFilter implements Filter {
 		/* Set response headers to 'no-cache' */
 		setResponseHeaders(response);
 		
-		/* If necessary, attach a cookie to the response */
+		/* If necessary, create a new Visitor and attach a cookie to the response */
 		Params params = new Params(request);
 		if (!cache.containsValue(params.getCookieValue(CookieCache.name))) {
 			Cookie cookie = cache.newCookie();
-			visitorSvc.save(params, cookie.getValue());
+			Visitor visitor = new Visitor();
+			visitor.setCookie(cookie.getValue());
+			visitor.setIpAddress(params.getIpAddress());
+			visitor.setUserAgent(params.getUserAgent());
+			visitor.setFingerprint(getFingerprint(params));
+			visitor.setComplete(false);
+			visitor.saveIt();
 			response.addCookie(cookie);
 		}
 		
 		chain.doFilter(request, response);
 	}
 
-	private void setVisitorService(String visitorSvcClass) {
-		visitorSvc = (VisitorService) Utils.newInstance(visitorSvcClass);
+
+	/**
+	 * Generate a fingerprint
+	 * @param params
+	 * @return
+	 */
+	private String getFingerprint(Params params) {
+		return params.getIpAddress() + ":" + params.getUserAgent();
 	}
+
 	/**
 	 * Require the client to request fresh content
 	 * @param response

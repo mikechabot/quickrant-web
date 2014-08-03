@@ -6,29 +6,26 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.javalite.activejdbc.Model;
 
 import com.quickrant.api.Params;
+import com.quickrant.api.models.Emotion;
+import com.quickrant.api.models.Question;
+import com.quickrant.api.models.Rant;
 import com.quickrant.api.models.Visitor;
-import com.quickrant.api.services.EmotionService;
-import com.quickrant.api.services.QuestionService;
-import com.quickrant.api.services.RantService;
-import com.quickrant.api.services.VisitorService;
+import com.quickrant.api.utils.TimeUtils;
 import com.quickrant.web.Controller;
 import com.quickrant.web.cache.CookieCache;
 import com.quickrant.web.security.Aegis;
-import com.quickrant.web.utils.Utils;
 
+@SuppressWarnings("serial")
 public class RantController extends Controller {
 
-	private static final long serialVersionUID = 1L;
+	private static final String RANT_SQL = "select id, created_at, emotion_id, question_id, rant, visitor_name, location from rants order by id desc limit 40";
 	private static Logger log = Logger.getLogger(RantController.class);
 	
-	private RantService rantSvc;
-	private EmotionService emotionSvc;
-	private VisitorService visitorSvc;
-	private QuestionService questionSvc;
 	private Aegis aegis;
 	
 	@Override
@@ -36,17 +33,9 @@ public class RantController extends Controller {
 	
 	@Override
 	protected void initActions(ServletConfig config) {
-		log.info("Initializing controller");
-
-		/* Load dependencies */
-		setRantService(config.getInitParameter("rant-service"));
-		setEmotionService(config.getInitParameter("emotion-service"));
-		setVisitorService(config.getInitParameter("visitor-service"));
-		setQuestionService(config.getInitParameter("question-service"));
-		
+		log.info("Initializing controller");		
 		/* Initialize Aegis */
-		aegis = new Aegis(CookieCache.getCache(), visitorSvc);
-				
+		aegis = new Aegis(CookieCache.getCache());				
 		/* Add servlet actions */
 		addAction(null, new DelegateAction());
 	}	
@@ -56,25 +45,8 @@ public class RantController extends Controller {
 		return new DelegateAction();
 	}
 
-	private void setRantService(String rantSvcClass) {
-		rantSvc = (RantService) Utils.newInstance(rantSvcClass);
-	}	
-	
-	private void setEmotionService(String emotionSvcClass) {
-		emotionSvc = (EmotionService) Utils.newInstance(emotionSvcClass);
-	}
-	
-	private void setVisitorService(String visitorSvcClass) {
-		visitorSvc = (VisitorService) Utils.newInstance(visitorSvcClass);
-	}
-
-	public void setQuestionService(String questionSvcClass) {
-		questionSvc = (QuestionService) Utils.newInstance(questionSvcClass);		
-	}
-
 	/**
 	 * Dispatch request based on method type
-	 * @author Mike
 	 *
 	 */
 	public class DelegateAction implements Action {
@@ -99,11 +71,11 @@ public class RantController extends Controller {
 			
 			/* Match action to root (/rant/) or /rant/[number] */
 			if (action == null || action.equals("") || action.equals("/")) {
-				request.setAttribute("questions", questionSvc.fetch());
-				request.setAttribute("emotions", emotionSvc.fetch());
-				request.setAttribute("rants", rantSvc.fetch());
+				request.setAttribute("questions", Question.findAll());
+				request.setAttribute("emotions", Emotion.findAll());
+				request.setAttribute("rants", Rant.findBySQL(RANT_SQL));
 			} else if (action.matches("\\/([0-9]+)$")) {
-				Model rant = rantSvc.fetchById(getId(action));
+				Model rant = Rant.findById(getId(action));
 				if (rant == null) { 
 					response.sendError(404); 
 					return null;
@@ -125,20 +97,16 @@ public class RantController extends Controller {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
 			Params params = new Params(request);			
 			String cookie = params.getCookieValue(CookieCache.name);
-			
+
 			/* Reject the POST if the visitor isn't complete */
-			Visitor visitor = visitorSvc.getExistingVisitorFromCookie(cookie);
+			Visitor visitor = getExistingVisitorFromCookie(cookie);
 			if (aegis.protectFromIncompleteVisitor(visitor, params)) {
 				response.sendError(403);
 				return null;
-			}			
-
-			/* Stuff the cookie in the map */
-			Map<String, String> map = params.getMap();
-			map.put("cookie", cookie);			
+			}
 
 			/* Save the rant */
-			if (rantSvc.save(map)) {
+			if (saveRant(params.getMap(), cookie)) {
 				request.getSession().setAttribute("success", true);
 			} else {
 				request.getSession().setAttribute("success", false);
@@ -147,7 +115,72 @@ public class RantController extends Controller {
 			response.sendRedirect(request.getContextPath() + "/" + basePath());
 			return null;
 		}
-
-	}
+		
+		public Visitor getExistingVisitorFromCookie(String cookie) {
+			if (cookie == null || cookie.isEmpty()) return null;
+			return (Visitor) Visitor.findFirst("cookie = ?", cookie);
+		}
+		
+		public boolean saveRant(Map<String, String> map, String cookie) {
+			Rant rant = new Rant();
+			Visitor visitor = new Visitor();
+			Emotion emotion = new Emotion();
+			Question question = new Question();
+			
+			/* Parse objects from parameter map */
+			rant.fromMap(map);
+			visitor.fromMap(map);
+			emotion.fromMap(map);
+			question.fromMap(map);
+			
+			/* Scrub the text of any bullshit */
+			scrubRant(rant);
+			
+			/* Set some defaults if necessary */
+			setDefaults(rant);
+			
+			/* Fetch question and emotion */
+			visitor = Visitor.findFirst("cookie = ?", cookie);
+			emotion = Emotion.findFirst("emotion = ?", emotion.getEmotion());
+			question = Question.findFirst("question = ?", question.getQuestion());
 	
+			/* Set last rant time */
+			visitor.setLastRant(TimeUtils.getNowTimestamp());
+	
+			/* Set foreign keys */
+			rant.setVisitorId((int) visitor.getId());
+			rant.setEmotionId((int) emotion.getId());
+			rant.setQuestionId((int) question.getId());
+	
+			/* Check if rant is valid, then save */
+			if (!rant.isValid()) return false;
+			if (!visitor.isValid()) return false;
+			rant.saveIt();
+			visitor.saveIt();
+			
+			return true;
+		}
+
+		/**
+		* Set default data on some fields
+		* @param rant
+		*/
+		private void setDefaults(Rant rant) {
+			if (rant.getVisitorName() == null || rant.getVisitorName().isEmpty()) {
+			rant.setVisitorName("Anonymous");
+			}
+			if (rant.getLocation() == null || rant.getLocation().isEmpty()) {
+			rant.setLocation("Earth");
+			}
+		}
+
+		/*
+		 * Escape harmful characters
+		 */
+		private void scrubRant(Rant rant) {
+			rant.setRant(StringEscapeUtils.escapeHtml(rant.getRant()));
+			rant.setVisitorName(StringEscapeUtils.escapeHtml(rant.getVisitorName()));
+			rant.setLocation(StringEscapeUtils.escapeHtml(rant.getLocation()));
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package com.quickrant.web.cache;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,8 +10,8 @@ import org.apache.log4j.Logger;
 import org.javalite.activejdbc.Model;
 
 import com.quickrant.api.Cache;
+import com.quickrant.api.database.Database;
 import com.quickrant.api.models.Visitor;
-import com.quickrant.api.services.VisitorService;
 
 /**
  * Thread-safe, self-cleaning, singleton cache
@@ -25,8 +26,7 @@ public class CookieCache extends Cache {
 
 	private static CookieCache cache;	
 
-	private CookieCache() { }
-	
+	private CookieCache() { }	
 
 	public static CookieCache getCache() {
 	    if (cache == null) {
@@ -36,14 +36,20 @@ public class CookieCache extends Cache {
 	}
 		
 	/**
-	 * Populate the cookie cache from the backend
+	 * Populate the cookie cache
 	 */
 	public void populateCookieCache() {
-		VisitorService visitorSvc = new VisitorService();
-		List<Model> visitors = visitorSvc.fetchBySql(POPULATE_COOKIE_CACHE);
-		for (Model each : visitors) {
-			Visitor visitor = (Visitor) each; 
-			put(visitor.getCreatedAt(), visitor.getCookie());
+		try {
+			Database.open();
+			List<Model> visitors = Visitor.findBySQL(POPULATE_COOKIE_CACHE);
+			for (Model each : visitors) {
+				Visitor visitor = (Visitor) each; 
+				put(visitor.getCreatedAt(), visitor.getCookie());
+			}
+		} catch (SQLException e) {
+			log.error("Unable to populate cookie cache", e);
+		} finally {
+			Database.close();
 		}
 		log.info("Loaded " + size() + " persisted cookie(s)...");
 	}
@@ -97,6 +103,6 @@ public class CookieCache extends Cache {
 		public static String getRandomUUID() {
 			return String.valueOf(UUID.randomUUID());
 		}
-	}	
+	}
 
 }

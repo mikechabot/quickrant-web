@@ -11,6 +11,16 @@
     <listener-class>com.quickrant.web.Bootstrap</listener-class>
   </listener>
 
+  <!-- Open a connection for each request -->
+  <filter>
+    <filter-name>ActiveJdbcFilter</filter-name>
+    <filter-class>com.quickrant.api.filters.ActiveJdbcFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>ActiveJdbcFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
   <!-- Don't waste cycles on certain requests -->
   <filter>
     <filter-name>ExclusionFilter</filter-name>
@@ -43,10 +53,6 @@
   <filter>
     <filter-name>RequestFilter</filter-name>
     <filter-class>com.quickrant.web.filters.RequestFilter</filter-class>
-    <init-param>
-      <param-name>visitor-service</param-name>
-      <param-value>com.quickrant.api.services.VisitorService</param-value>
-    </init-param>
   </filter>
   <filter-mapping>
     <filter-name>RequestFilter</filter-name>
@@ -57,26 +63,6 @@
   <servlet>
     <servlet-name>RantController</servlet-name>
     <servlet-class>com.quickrant.web.controller.RantController</servlet-class>
-    <init-param>
-      <param-name>visitor-service</param-name>
-      <param-value>com.quickrant.api.services.VisitorService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>rant-service</param-name>
-      <param-value>com.quickrant.api.services.RantService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>emotion-service</param-name>
-      <param-value>com.quickrant.api.services.EmotionService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>visitor-service</param-name>
-      <param-value>com.quickrant.api.services.VisitorService</param-value>
-    </init-param>
-    <init-param>
-      <param-name>question-service</param-name>
-      <param-value>com.quickrant.api.services.QuestionService</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>RantController</servlet-name>
@@ -87,10 +73,6 @@
   <servlet>
     <servlet-name>AjaxController</servlet-name>
     <servlet-class>com.quickrant.web.controller.AjaxController</servlet-class>
-    <init-param>
-      <param-name>visitor-service</param-name>
-      <param-value>com.quickrant.api.services.VisitorService</param-value>
-    </init-param>
   </servlet>
   <servlet-mapping>
     <servlet-name>AjaxController</servlet-name>

@@ -11,7 +11,6 @@ import com.quickrant.api.Params;
 import com.quickrant.api.database.Database;
 import com.quickrant.api.database.DatabaseUtil;
 import com.quickrant.api.models.Visitor;
-import com.quickrant.api.services.VisitorService;
 import com.quickrant.web.cache.CookieCache;
 
 public class Aegis {
@@ -22,7 +21,7 @@ public class Aegis {
 	
 	public Aegis() { }
 	
-	public Aegis(CookieCache cookieCache, VisitorService visitorService) {
+	public Aegis(CookieCache cookieCache) {
 		cache = cookieCache;
 	}
 	
@@ -58,7 +57,6 @@ public class Aegis {
 	    String sql = "select version()";
 		try {
 			database = new Database();
-			database.open();
 			statement = database.getPreparedStatement(sql);		
 			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
@@ -69,7 +67,6 @@ public class Aegis {
 		} finally {
 			DatabaseUtil.close(resultSet);
 			DatabaseUtil.close(statement);
-			DatabaseUtil.close(database);
 		}
 //		log.info("Banned IP (" + params.getIpAddress() + ") detected");
 		return false;

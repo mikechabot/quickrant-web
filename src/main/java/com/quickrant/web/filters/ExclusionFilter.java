@@ -48,6 +48,7 @@ public class ExclusionFilter implements Filter {
 		String path = request.getServletPath();
 		if (path != null) {
 			if (matchesExclusions(path)) {
+				/* Skip the remaining filters */
 				request.getRequestDispatcher(path).forward(request,  response);
 				return;
 			}
