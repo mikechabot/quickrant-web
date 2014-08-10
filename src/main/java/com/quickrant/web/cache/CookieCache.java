@@ -43,8 +43,10 @@ public class CookieCache extends Cache {
 			Database.open();
 			List<Model> visitors = Visitor.findBySQL(POPULATE_COOKIE_CACHE);
 			for (Model each : visitors) {
-				Visitor visitor = (Visitor) each; 
-				put(visitor.getCreatedAt(), visitor.getCookie());
+				Visitor visitor = (Visitor) each;
+				if (visitor.isComplete()) {
+					put(visitor.getCreatedAt(), visitor.getCookie());
+				}
 			}
 		} catch (SQLException e) {
 			log.error("Unable to populate cookie cache", e);

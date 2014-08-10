@@ -1,248 +1,131 @@
 /* GLOBAL STYLES
 -------------------------------------------------- */
-/* Padding below the footer and lighter body text */
 
 body {
-padding-bottom: 40px;
-font-family: Open Sans, Arial, sans serif;
+  font-family: Open Sans, Arial, sans serif;
 }
 
 blockquote {
-border-left: 5px solid #D8D8D8;
-margin: 3px 0px 0px 0px;
-}
-
-h5 {
-margin-top: 2px;
-}
-
-.shadow {
--webkit-border-radius: 4px;
-        border-radius: 4px;
--webkit-box-shadow: 0px 0px 0px 1px #CCCCCC;
-        box-shadow: 0px 0px 0px 1px #CCCCCC;
+  border-left: 5px solid #D8D8D8;
+  margin: 3px 0px 0px 0px;
 }
 
 .dark-bold {
-font-weight: 700;
+  font-weight: 700;
 }
 
 .mild-bold {
-font-weight: 600;
+  font-weight: 600;
 }
 
-.over {
-color: red;
+.panel-footer {
+  text-align: right;
 }
 
 .center {
-text-align: center;
-}
-
-.small-bottom-margin {
-margin-bottom: 5px;
+  text-align: center;
 }
 
 .smaller {
-font-size: 10px;
+  font-size: 10px;
 }
 
-.center-legend {
-    width: 100%;
-    text-align: center;
+.full-width {
+  width: 100%;
 }
 
 .wide {
-width: 95%; 
+  width: 95%; 
 }
 
-/* CUSTOMIZE THE NAVBAR
+.hide {
+  display: none;
+}
+
+#error-text {
+  margin-top: 10px;
+}
+
+#legend {
+  font-size: 20px;
+}
+
+
+/* Inherited class from simpleCountable.js */
+.over {
+  color: #a94442;
+}
+
+/* EMOTIONS CONTENT
 -------------------------------------------------- */
 
-/* Special class on .container surrounding .navbar, used for positioning it into place. */
-.navbar-wrapper {
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-z-index: 10;
-margin-top: 20px;
-}
-.navbar-wrapper .navbar {
-
-}
-
-/* Remove border and change up box shadow for more contrast */
-.navbar .navbar-inner {
-border: 0;
--webkit-box-shadow: 0 2px 10px rgba(0,0,0,.25);
- -moz-box-shadow: 0 2px 10px rgba(0,0,0,.25);
-      box-shadow: 0 2px 10px rgba(0,0,0,.25);
-}
-
-/* Downsize the brand/project name a bit */
-.navbar .brand {
-padding: 14px 20px 16px; /* Increase vertical padding to match navbar links */
-font-size: 16px;
-font-weight: bold;
-text-shadow: 0 -1px 0 rgba(0,0,0,.5);
-}
-
-/* Navbar links: increase padding for taller navbar */
-.navbar .nav > li > a {
-padding: 15px 20px;
-}
-
-/* Offset the responsive button for proper vertical alignment */
-.navbar .btn-navbar {
-margin-top: 10px;
+.emotions-container {
+   margin-bottom: 15px;
 }
 
 /* QUESTIONS CONTENT
 -------------------------------------------------- */
 
-.questions {
-text-align: center;
-display: none;
-width: 60%;
-margin-bottom: 10px;
+.question-buttons {
+  text-align: center;
+  display: none;
+  width: 60%;
+  margin-bottom: 20px;
 }
 
-button.question {
-margin: 3px;
+.question-button {
+  margin: 4px;
 }
 
-.stream-question {
-margin-top: 2px;
-font-size: 12px;
-font-weight: 600;
+.question {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-/* FORM CONTENT
--------------------------------------------------- */
-.hidden-error-text{
-display: none;
-}
-
-/* STREAM & RANT CONTENT
+/* RANT CONTENT
 -------------------------------------------------- */
 
-.stream { 
-margin-top: 30px;
-width: 35%;  
+.rants-container { 
+  margin-top: 30px;
+  width: 35%;  
 }
 
-.single-stream { 
-margin-top: 30px;
-width: 40%;  
+.rant-container { 
+  margin-top: 30px;
+  width: 40%;  
 }
 
-
-.rant-form-container {
-text-align: center;
-display: none; 
-width: 35%;
-margin-bottom: 10px;
+.form-container {
+  text-align: center;
+  display: none;
+  width: 35%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
-.rant-form-container label {
-font-style: italic;
-font-weight: bold;
+#form-container-textarea {
+  margin: 10px;	
+  width: 75%;
 }
 
-.rant-form-container textarea{   
-width: 75%;
-}       
-
-.rant-container {
-padding: 5px;
-margin: 10px;
-clear: both;
+.rant-blockquote {
+  margin-left: 20px;
 }
 
-.rant-text-container {  
-overflow:hidden; 
-text-overflow:hidden;
-}
-
-.rant-single-text-container {
-padding-left: 2%;
-overflow:hidden; 
-text-overflow:hidden;
+.rants-text {
+  font-size: 20px;
+  font-weight: 300;
+  margin-bottom: 10px;
 }
 
 .rant-text {
-font-size: 20px;
-font-weight: 300;
-margin-bottom: 10px;
+  font-size: 36px;
+  font-weight: 300;
+  margin-bottom: 20px;
 }
 
-.rant-single-block {
-margin: 10px 5px 10px 15px;
-}
-
-.rant-single-text {
-font-size: 36px;
-font-weight: 300;
-margin-bottom: 20px;
-}
-
-.rant-single-info {
-margin-top: 10px;
-font-size: 20px;
-}
-
-.rant-details {
-margin-left: 5px;
-margin-right: 10px;
-}
-
-/* EMOTION CONTENT
--------------------------------------------------- */
-
-/* Center align the text within the three columns below the carousel */
-
-.emotion {
-margin-top: 90px;
-margin-bottom: 10px;
-}
-
-.emotion .span4 {
-text-align: center;
-}
-.emotion h2 {
-font-weight: normal;
-}
-.emotion .span4 p {
-margin-left: 10px;
-margin-right: 10px;
-}
-
-
-/* RESPONSIVE CSS
--------------------------------------------------- */
-
-@media (max-width: 979px) {
-
-.container.navbar-wrapper {
-margin-bottom: 0;
-width: auto;        
-}
-.navbar-inner {
-border-radius: 0;
-margin: -20px 0;
-}
-
-}
-
-@media (max-width: 767px) {
-
-.navbar-inner {
-margin: -20px;
-}
-
-.emotion .span4 + .span4 {
-margin-top: 40px;
-}
-
+.rant-info {
+  margin-top: 10px;
+  font-size: 20px;
 }

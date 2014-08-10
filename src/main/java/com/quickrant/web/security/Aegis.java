@@ -68,7 +68,7 @@ public class Aegis {
 			DatabaseUtil.close(resultSet);
 			DatabaseUtil.close(statement);
 		}
-//		log.info("Banned IP (" + params.getIpAddress() + ") detected");
+//		log.warn("Banned IP (" + params.getIpAddress() + ") detected");
 		return false;
 	}
 
@@ -81,7 +81,7 @@ public class Aegis {
 		String cookieValue = params.getCookieValue(CookieCache.name);
 		
 		if (!cache.containsValue(cookieValue)) {
-			log.info("IP address (" + params.getIpAddress()	+ ") attempted a POST without a valid cookie");
+			log.warn("IP address (" + params.getIpAddress()	+ ") attempted a POST without a valid cookie");
 			return true;
 		}
 		return false;
@@ -95,7 +95,7 @@ public class Aegis {
 	private boolean protectFromNullCookie(Params params) {
 		String cookieValue = params.getCookieValue(CookieCache.name);
 		if (cookieValue == null || cookieValue.isEmpty()) {
-			log.info("IP address (" + params.getIpAddress()	+ ") attempted a POST without a null cookie");
+			log.warn("IP address (" + params.getIpAddress()	+ ") attempted a POST without a null cookie");
 			return true;
 		}
 		return false;
@@ -109,7 +109,7 @@ public class Aegis {
 	public boolean protectFromIncompleteVisitor(Visitor visitor, Params params) {
 		if (visitor == null) return true;
 		if (!visitor.isComplete()) {
-			log.info("IP address (" + params.getIpAddress()	+ ") attempted a POST without completing the AJAX roundtrip");
+			log.warn("IP address (" + params.getIpAddress()	+ ") attempted a POST without completing the AJAX roundtrip");
 			return true;
 		}
 		return false;

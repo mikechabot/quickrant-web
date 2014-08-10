@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
+import com.quickrant.api.models.Rant;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.web.Controller;
 import com.quickrant.web.cache.CookieCache;
@@ -28,23 +29,17 @@ public class AjaxController extends Controller {
 		
 		/* Get a copy of the cache */
 		cache = CookieCache.getCache();		
-		
+
 		/* Add servlet actions */
-		addAction(null, new DefaultAction());
-		addAction("/phonehome", new PhoneHomeAction());
+		addAction(null, new OffsetAction());
+		addAction("/phonehome", new PhoneHomeAction());		
 	}
 
 	@Override
 	protected Action defaultAction() {
-		return new DefaultAction();
+		return new OffsetAction();
 	}	
 
-	public class DefaultAction implements Action {
-		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			return basePath();		
-		}
-	}
-	
 	/**
 	 * Return a new cookie to the site visitor 
 	 * when the AJAX request is received
@@ -58,24 +53,31 @@ public class AjaxController extends Controller {
 				response.sendRedirect(basePath() + "/index.jsp");
 				return null;
 			}			
-			
+
 			/* Get the cookie, modify it, and update the cache */
 			String oldCookie = params.getCookie(CookieCache.name).getValue();		
 			Cookie newCookie = cache.getCookie(oldCookie + "*");
 			cache.updateByValue(oldCookie, newCookie.getValue());
-			
+
 			/* Retrieve the existing visitor record, and update it */
 			Visitor existing = Visitor.findFirst("cookie = ?", oldCookie);
-			Visitor incoming = new Visitor();
-			incoming.fromMap(params.getMap());
-			completeVisitor(existing, incoming, newCookie.getValue());
-			existing.saveIt();
-			
-			/* Send the cookie back to the browser */
-			response.addCookie(newCookie);
-			return basePath();			
+			if (existing != null) {
+				Visitor incoming = new Visitor();
+				incoming.fromMap(params.getMap());
+				log.info(incoming.toString());
+				completeVisitor(existing, incoming, newCookie.getValue());
+				existing.saveIt();
+				
+				/* Send the cookie back to the browser */
+				response.addCookie(newCookie);
+				return basePath();	
+			} else {
+				log.warn("IP address (" + params.getIpAddress()	+ ") is phoning home, but we can't find the existing cookie");
+				response.sendError(500);
+				return basePath();
+			}
 		}
-		
+
 		/**
 		* Complete the visitor by adding additional client-side information
 		* @param existing
@@ -109,6 +111,18 @@ public class AjaxController extends Controller {
 			sb.append(incoming.getScreenWidth() + ":");
 			sb.append(incoming.getScreenColor());
 			return sb.toString();
+		}
+	}
+	
+	public class OffsetAction implements Action {
+		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+			
+			String path = request.getPathInfo();
+			log.info("PATH=" + path);
+			
+			
+			request.setAttribute("rants", Rant.findBySQL(RantController.RANT_SQL));
+			return basePath() + "/rants.jsp";			
 		}
 	}
 }

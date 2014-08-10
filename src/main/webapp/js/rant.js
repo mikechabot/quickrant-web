@@ -3,7 +3,7 @@
 $(document).ready(function () {
   "use strict";
   // Rant textarea character counter
-  $('#countable').simplyCountable();
+  $('#form-container-textarea').simplyCountable();
 
   // Permalink tooltip hover
   $(".permalink").tooltip({ title: "permalink", placement: "top", trigger: "hover"});
@@ -11,15 +11,20 @@ $(document).ready(function () {
   // Set the page load time
   $('input[name=pageLoadTime]').val((new Date()).getTime());
 
+  $('.scrollspy').jscroll({
+	loadingHtml: '<img src="/img/ajax-loader.gif" alt="Loading" />',
+	nextSelector: 'a.next-selector:last',
+  });  
+  
   // Controls display for questionnaire UI
-  $("a.emoticon").click(function () {
+  $("a.emotion").click(function () {
     $(".retract").each(function () {
       $(this).slideUp(150);
     });
     var id = $(this).prop("id"),
-      visible = $("div.questions:visible").prop("id");
+      visible = $("div.question-buttons:visible").prop("id");
     if (id !== visible) {
-      $("div.questions:visible").slideToggle(150);
+      $("div.question-buttons:visible").slideToggle(150);
       $("div#" + id).slideToggle(150);
     } else {
       $("div#" + id).slideToggle(150);
@@ -28,14 +33,27 @@ $(document).ready(function () {
   });
 
   // Show form and alter legend
-  $("button.question").click(function () {
-    if (!$('#rant-form-container').is(':visible')) { $('#rant-form-container').slideToggle(150); }
+  $("button.question-button").click(function () {
+    if (!$('#form-container').is(':visible')) { $('#form-container').slideToggle(150); }
+    
+    var panel = undefined;
+    if ($(this).hasClass('btn-success')) {
+    	panel = 'panel-success';
+    } else if ($(this).hasClass('btn-danger')){
+    	panel = 'panel-danger';
+    } else if ($(this).hasClass('btn-primary')){
+    	panel = 'panel-info';
+    } else {
+    	panel = 'panel-default';
+    }    
+
+    $('#form-container div.panel').removeClass().addClass('panel').addClass(panel);
     $('#legend').text($(this).text());
     return false;
   });
 
   // Hide error text on input
-  $("div#rant-form-container textarea").keydown(function () {
+  $("div#form-container textarea").keydown(function () {
     $('p#error-text').slideUp(300);
   });
 
@@ -51,7 +69,7 @@ $(document).ready(function () {
 
 function validate() {
   var validForm = true,
-    text = $.trim($("div#rant-form-container textarea").val()),
+    text = $.trim($("div#form-container textarea").val()),
     pageLoaded = $("#pageLoadTime").val(),
     now = (new Date()).getTime(),
     limitInSeconds =  7;
@@ -61,7 +79,7 @@ function validate() {
       $('p#error-text').text("Don't you want to say something?").slideDown(300);
       validForm = false;
     } else {
-      $('input[name=emotion]').val($("div.questions:visible").prop("id"));
+      $('input[name=emotion]').val($("div.question-buttons:visible").prop("id"));
       $('input[name=question]').val($('#legend').text());
     }
   } else {

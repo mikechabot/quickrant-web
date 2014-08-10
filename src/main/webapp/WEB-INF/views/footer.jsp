@@ -23,6 +23,7 @@
 </c:if>
 <c:set var="success" value="${null}" />
 <script src="/js/rant.js"></script>
+<script src="/js/jquery.jscroll.min.js"></script>
 <script src="/js/jquery.simplyCountable.js"></script>
 <script src="/js/jquery.cookie.js"></script>
 </body>

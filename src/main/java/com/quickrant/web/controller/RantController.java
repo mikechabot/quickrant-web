@@ -1,8 +1,10 @@
 package com.quickrant.web.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,7 +25,7 @@ import com.quickrant.web.security.Aegis;
 @SuppressWarnings("serial")
 public class RantController extends Controller {
 
-	private static final String RANT_SQL = "select id, created_at, emotion_id, question_id, rant, visitor_name, location from rants order by id desc limit 40";
+	public static final String RANT_SQL = "select id, created_at, emotion_id, question_id, rant, visitor_name, location from rants order by id desc limit 20";
 	private static Logger log = Logger.getLogger(RantController.class);
 	
 	private Aegis aegis;
@@ -68,11 +70,13 @@ public class RantController extends Controller {
 	public class GetAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 			String action = request.getPathInfo();
-			
+
 			/* Match action to root (/rant/) or /rant/[number] */
 			if (action == null || action.equals("") || action.equals("/")) {
 				request.setAttribute("questions", Question.findAll());
 				request.setAttribute("emotions", Emotion.findAll());
+				List<Rant> rants = Rant.findBySQL(RANT_SQL);
+				request.setAttribute("maxId", rants.get(0).getId());
 				request.setAttribute("rants", Rant.findBySQL(RANT_SQL));
 			} else if (action.matches("\\/([0-9]+)$")) {
 				Model rant = Rant.findById(getId(action));

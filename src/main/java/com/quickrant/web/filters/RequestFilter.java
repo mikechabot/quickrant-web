@@ -46,8 +46,10 @@ public class RequestFilter implements Filter {
 		
 		/* If necessary, create a new Visitor and attach a cookie to the response */
 		Params params = new Params(request);
-		if (!cache.containsValue(params.getCookieValue(CookieCache.name))) {
+		String value = params.getCookieValue(CookieCache.name);
+		if (!cache.containsValue(value)) {
 			Cookie cookie = cache.newCookie();
+			response.addCookie(cookie);
 			Visitor visitor = new Visitor();
 			visitor.setCookie(cookie.getValue());
 			visitor.setIpAddress(params.getIpAddress());
@@ -55,12 +57,11 @@ public class RequestFilter implements Filter {
 			visitor.setFingerprint(getFingerprint(params));
 			visitor.setComplete(false);
 			visitor.saveIt();
-			response.addCookie(cookie);
+			value = visitor.getCookie();
 		}
-		
+		request.setAttribute("cookieValue", value);
 		chain.doFilter(request, response);
 	}
-
 
 	/**
 	 * Generate a fingerprint
