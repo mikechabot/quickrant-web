@@ -5,28 +5,32 @@
 
 <c:forEach items="${rants}" var="rant">
   <c:if test="${not empty rant}">
-   <!-- 
-    <div class="rant-container shadow">
-      <div class="rant-details pull-left">
-        <img src="/img/${helper:getEmotion(rant.emotionId)}-small.gif">
-      </div>
-     
-     -->
-	<div class="panel panel-default shadow">
+	<div class="row panel">
+	  <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
+	  <hr>
 	  <div class="panel-heading">
-	    <h3 class="panel-title"><img src="/img/${helper:getEmotion(rant.emotionId)}-small.gif">&nbsp;&nbsp;${helper:getQuestion(rant.questionId)}</h3>
+	    <div class="row">
+	      <div class="col-lg-1 col-sm-1 col-xs-2">
+	        <img src="/img/${helper:getEmotion(rant.emotionId)}-small.gif">
+	      </div>
+	      <div class="col-lg-10 col-sm-10 col-xs-8">
+	        <h2 class="panel-title">${helper:getQuestion(rant.questionId)}</h2>
+	      </div>
+	      <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
+	        <a href="/rant/${rant.id}" class="permalink glyphicon glyphicon-plus"></a>
+	      </div>
+	    </div>
 	  </div>
 	  <div class="panel-body">
-        <blockquote class="pull-left wide rant-blockquote">
+        <blockquote>
         <p class="rants-text">${rant.rant}</p>
-        <small><b class="dark-bold">${rant.visitorName}</b>, ${rant.location}</small>
+        <small><span class="mild-bold">${rant.visitorName}</span> // ${rant.location} // <span class="rant-created timeago" title="${rant.created}"></span></small>
         </blockquote>
 	  </div>
-	  <div class="panel-footer"><small>${rant.created}</small></div>
+      </div>
 	</div>	
-	
   </c:if>
 </c:forEach>
 
-<a class="next-selector" href="ajax/${maxId}"><button type="button" class="btn btn-default">Moar!</button></a>
+<a class="next-selector" href="ajax/${maxId}"></a>
 

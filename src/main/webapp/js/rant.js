@@ -2,29 +2,34 @@
 /*global  $*/
 $(document).ready(function () {
   "use strict";
-  // Rant textarea character counter
+  
+  /* Initialize simplyCountable */
   $('#form-container-textarea').simplyCountable();
 
-  // Permalink tooltip hover
-  $(".permalink").tooltip({ title: "permalink", placement: "top", trigger: "hover"});
+  /* Permalink tooltip hover */
+  $(".permalink").tooltip({ title: "permalink", placement: "left", trigger: "hover"});
 
-  // Set the page load time
-  $('input[name=pageLoadTime]').val((new Date()).getTime());
+  /* Set the page load time */
+  $('#pageLoadTime').val((new Date()).getTime());
 
+  /* Display post time with timeago */
+  $("span.timeago").timeago();
+  
+  /* Load content on scroll */
   $('.scrollspy').jscroll({
 	loadingHtml: '<img src="/img/ajax-loader.gif" alt="Loading" />',
 	nextSelector: 'a.next-selector:last',
   });  
   
-  // Controls display for questionnaire UI
+  /* Control the display of questions and emotion faces */
   $("a.emotion").click(function () {
-    $(".retract").each(function () {
+    $(".retractable").each(function () {
       $(this).slideUp(150);
     });
     var id = $(this).prop("id"),
-      visible = $("div.question-buttons:visible").prop("id");
+      visible = $("div.questions-container:visible").prop("id");
     if (id !== visible) {
-      $("div.question-buttons:visible").slideToggle(150);
+      $("div.questions-container:visible").slideToggle(150);
       $("div#" + id).slideToggle(150);
     } else {
       $("div#" + id).slideToggle(150);
@@ -32,7 +37,7 @@ $(document).ready(function () {
     return false;
   });
 
-  // Show form and alter legend
+  /* Show form and set legend text */
   $("button.question-button").click(function () {
     if (!$('#form-container').is(':visible')) { $('#form-container').slideToggle(150); }
     
@@ -45,18 +50,19 @@ $(document).ready(function () {
     	panel = 'panel-info';
     } else {
     	panel = 'panel-default';
-    }    
+    }
 
-    $('#form-container div.panel').removeClass().addClass('panel').addClass(panel);
+    $('#form-container div.panel').removeClass().addClass('row panel').addClass(panel);
     $('#legend').text($(this).text());
     return false;
   });
 
-  // Hide error text on input
+  /* Hide error text on input */
   $("div#form-container textarea").keydown(function () {
     $('p#error-text').slideUp(300);
   });
 
+  /* Complete the handshake */
   if ($.cookie("quickrant-uuid").indexOf("*") === -1) {
     $.ajax({
       context: this,
@@ -69,21 +75,21 @@ $(document).ready(function () {
 
 function validate() {
   var validForm = true,
-    text = $.trim($("div#form-container textarea").val()),
+    text = $.trim($("#form-container-textarea").val()),
     pageLoaded = $("#pageLoadTime").val(),
     now = (new Date()).getTime(),
     limitInSeconds =  7;
 
   if ((now - pageLoaded) > limitInSeconds * 1000) {
     if (!text) {
-      $('p#error-text').text("Don't you want to say something?").slideDown(300);
+      $('#error-text').text("Don't you want to say something?").slideDown(300);
       validForm = false;
     } else {
-      $('input[name=emotion]').val($("div.question-buttons:visible").prop("id"));
+      $('input[name=emotion]').val($("div.questions-container:visible").prop("id"));
       $('input[name=question]').val($('#legend').text());
     }
   } else {
-    $('p#error-text').text("Slow down, you can't post that quick.").slideDown(300);
+    $('#error-text').text("Slow down, you can't post that quick.").slideDown(300);
     validForm = false;
   }
   if (validForm) { $('#submit').attr('disabled', 'disabled'); }

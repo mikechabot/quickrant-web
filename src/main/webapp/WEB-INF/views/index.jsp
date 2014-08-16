@@ -6,7 +6,7 @@
 
 <c:choose>
   <c:when test="${fn:length(rants) > 0}">
-    <div class="container rants-container scrollspy">
+    <div id="rant-container" class="container scrollspy">
       <c:import url="rants.jsp"/>
     </div>
   </c:when>

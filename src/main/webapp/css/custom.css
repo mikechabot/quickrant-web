@@ -3,129 +3,112 @@
 
 body {
   font-family: Open Sans, Arial, sans serif;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+hr {
+  padding: 0px;
+  margin: 20px 0px;
+  border: none;
+  border-top: 1px solid #999999;
+  color: #999999;
+  text-align: center;
+}
+
+hr:after {
+  content: "//";
+  display: inline-block;
+  position: relative;
+  top: -0.7em;
+  font-size: 1.5em;
+  padding: 0 0.25em;
+  background: white;
 }
 
 blockquote {
-  border-left: 5px solid #D8D8D8;
-  margin: 3px 0px 0px 0px;
+  padding: 10px 20px 0px;
+  margin-left: 15px;
+  border-left: 5px solid #777777;
 }
 
-.dark-bold {
-  font-weight: 700;
+
+a.permalink {
+  color: #000000;
+}
+
+a.permalink:hover {
+  text-decoration: none;
+}
+
+.section {
+  margin-bottom: 25px;
 }
 
 .mild-bold {
   font-weight: 600;
 }
 
-.panel-footer {
-  text-align: right;
-}
-
-.center {
-  text-align: center;
-}
-
-.smaller {
-  font-size: 10px;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.wide {
-  width: 95%; 
-}
-
-.hide {
-  display: none;
-}
-
-#error-text {
-  margin-top: 10px;
-}
-
-#legend {
-  font-size: 20px;
-}
-
-
-/* Inherited class from simpleCountable.js */
+/* Override simplyCountable.js */
 .over {
   color: #a94442;
-}
-
-/* EMOTIONS CONTENT
--------------------------------------------------- */
-
-.emotions-container {
-   margin-bottom: 15px;
 }
 
 /* QUESTIONS CONTENT
 -------------------------------------------------- */
 
-.question-buttons {
-  text-align: center;
+.questions-container {
   display: none;
-  width: 60%;
-  margin-bottom: 20px;
 }
 
 .question-button {
   margin: 4px;
 }
 
-.question {
-  margin-top: 2px;
-  font-size: 12px;
-  font-weight: 600;
+/* FORM CONTENT
+-------------------------------------------------- */
+
+#form-container {
+  display: none;
+}
+
+#form-container .form-control {
+  margin: 5px;
+  width: 100%;
+}
+
+##form-container 
+
+#form-container-textarea {
+  width: 100%;
 }
 
 /* RANT CONTENT
 -------------------------------------------------- */
 
-.rants-container { 
-  margin-top: 30px;
-  width: 35%;  
-}
-
-.rant-container { 
-  margin-top: 30px;
-  width: 40%;  
-}
-
-.form-container {
-  text-align: center;
-  display: none;
-  width: 35%;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-#form-container-textarea {
-  margin: 10px;	
-  width: 75%;
-}
-
-.rant-blockquote {
-  margin-left: 20px;
-}
-
 .rants-text {
-  font-size: 20px;
-  font-weight: 300;
+  font-size: 24px;
   margin-bottom: 10px;
 }
 
-.rant-text {
-  font-size: 36px;
-  font-weight: 300;
-  margin-bottom: 20px;
+#rant-container .panel {  
+  border: 0px;
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 0px;
 }
 
-.rant-info {
-  margin-top: 10px;
-  font-size: 20px;
+#rant-container .panel-title {
+  padding-top: 5px;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+#rant-container .panel-body {
+  overflow: hidden;
+  padding: 15px 15px 0px;
+}
+
+#rant-container .timeago {
+    font-size: 12px;
 }
