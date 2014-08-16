@@ -17,7 +17,7 @@
 	        <h2 class="panel-title">${helper:getQuestion(rant.questionId)}</h2>
 	      </div>
 	      <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-	        <a href="/rant/${rant.id}" class="permalink glyphicon glyphicon-plus"></a>
+	        <a href="/rant/${rant.id}" class="permalink glyphicon glyphicon-leaf"></a>
 	      </div>
 	    </div>
 	  </div>
