@@ -4,17 +4,16 @@
 
 <!-- Display emotions -->
  <c:if test="${fn:length(emotions) > 0}">
-   <div class="row section">
-     <div class="col-lg-offset-3 col-sm-offset-2">
+ <div class="container">
+   <div class="row section text-center">
      <c:forEach items="${emotions}" var="emotion" varStatus="loop">
-       <div class="col-lg-3 col-sm-4 col-xs-4">
+       <div class="col-lg-4 col-sm-4 col-xs-4">
          <a class="emotion" id="${emotion.emotion}" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/${emotion.emotion}.gif"></a>
        </div>
      </c:forEach>
-     </div>
    </div>
+ </div>
  </c:if>
-
 <!-- Display emotions -->
 <c:if test="${fn:length(emotions) > 0}">
   <c:forEach items="${emotions}" var="emotion" varStatus="loop">
