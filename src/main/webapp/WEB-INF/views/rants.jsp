@@ -7,7 +7,6 @@
   <c:if test="${not empty rant}">
 	<div class="row panel">
 	  <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-	  <hr>
 	  <div class="panel-heading">
 	    <div class="row">
 	      <div class="col-lg-1 col-sm-1 col-xs-2">
@@ -27,6 +26,7 @@
         <small><span class="mild-bold">${rant.visitorName}</span> // ${rant.location} // <span class="rant-created timeago" title="${rant.created}"></span></small>
         </blockquote>
 	  </div>
+	  <hr>
       </div>
 	</div>	
   </c:if>

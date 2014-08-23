@@ -3,7 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:import url="/header.jsp"/>
 <c:import url="form.jsp"/>
-
 <c:choose>
   <c:when test="${fn:length(rants) > 0}">
     <div id="rant-container" class="container scrollspy">

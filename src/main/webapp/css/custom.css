@@ -70,14 +70,13 @@ a.permalink:hover {
 
 #form-container {
   display: none;
+  margin-bottom: 0px;
 }
 
 #form-container .form-control {
   margin: 5px;
   width: 100%;
 }
-
-##form-container 
 
 #form-container-textarea {
   width: 100%;
