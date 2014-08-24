@@ -5,7 +5,7 @@
 <!-- Display emotions -->
  <c:if test="${fn:length(emotions) > 0}">
  <div class="container">
-   <div class="row section text-center">
+   <div class="row margin-bottom-lg text-center">
      <c:forEach items="${emotions}" var="emotion" varStatus="loop">
        <div class="col-lg-4 col-sm-4 col-xs-4">
          <a class="emotion" id="${emotion.emotion}" href="#"><img class="img-circle" data-src="holder.js/140x140" src="/img/${emotion.emotion}.gif"></a>
@@ -18,7 +18,7 @@
 <c:if test="${fn:length(emotions) > 0}">
   <c:forEach items="${emotions}" var="emotion" varStatus="loop">
     <div class="container text-center questions-container"  id="${emotion.emotion}">
-      <div class="row section">
+      <div class="row margin-bottom-lg">
 	    <div class="col-lg-offset-1 col-lg-10">
 		  <c:if test="${fn:length(questions) > 0}">
 		    <c:forEach items="${questions}" var="question" varStatus="loop">
@@ -46,7 +46,7 @@
 
 <div class="container retractable text-center" id="form-container">
   <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-  <div class="panel panel-default row section">
+  <div class="panel panel-default row margin-bottom-lg">
     <div class="panel-heading">
       <h3 class="panel-title" id="legend"></h3>
     </div>
