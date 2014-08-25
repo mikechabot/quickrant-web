@@ -1,6 +1,18 @@
 /* GLOBAL STYLES
 -------------------------------------------------- */
 
+/*** NEW ANGULAR ****/
+.question {
+  margin: 4px;
+}
+
+.form-container .form-control {
+  margin: 5px;
+  width: 100%;
+}
+
+/****************/
+
 body {
   font-family: Open Sans, Arial, sans serif;
   font-size: 12px;
@@ -32,6 +44,12 @@ blockquote {
   border-left: 5px solid #777777;
 }
 
+textarea { 
+  resize: vertical;
+  min-height: 50px;
+  max-height: 
+}
+
 a.permalink {
   color: #000000;
 }
@@ -40,12 +58,12 @@ a.permalink:hover {
   text-decoration: none;
 }
 
-.margin-bottom-lg {
-  margin-bottom: 25px;
-}
-
 .mild-bold {
   font-weight: 600;
+}
+
+.margin-bottom-lg {
+  margin-bottom: 25px;
 }
 
 /* Override simplyCountable.js */
@@ -56,14 +74,23 @@ a.permalink:hover {
 /* QUESTIONS CONTENT
 -------------------------------------------------- */
 
-.question {
+.questions-container {
+  display: none;
+}
+
+.question-button {
   margin: 4px;
 }
 
 /* FORM CONTENT
 -------------------------------------------------- */
 
-.form-control {
+#form-container {
+  display: none;
+  margin-bottom: 0px;
+}
+
+#form-container .form-control {
   margin: 5px;
   width: 100%;
 }
@@ -99,5 +126,5 @@ a.permalink:hover {
 }
 
 #rant-container .timeago {
-  font-size: 12px;
+    font-size: 12px;
 }

@@ -1,15 +1,24 @@
-# Postgres URL
-postgres-url=
+# [Required] Database host
+postgres-hostname=
 
-# Postgres credentials
-postgres-user=
-postgres-pass=
+# [Required] Database name
+postgres-database=
 
-# Cookie age (in minutes) (Default: 21600)
-#cookie-age=
+# [Required] Database credentials
+postgres-username=
+postgres-password=
 
-# Initial delay of the FlushCookieJob task (in seconds) (Default: 60)
-#cookie-flush-delay=
+# [Optional] BoneCP: Partition count (Default: 5)
+#bonecp-partitions=
 
-# Following the delay, the recurring interval of the FlushCookiesJob task (in seconds) (Default: 180)
-#cookie-flush-interval=
+# [Optional] BoneCP: Min # of connection threads per pool (Default: 5)
+#bonecp-min-pool-size=
+
+# [Optional] BoneCP: Max # of connection threads per pool (Default: 100)
+#bonecp-max-pool-size=
+
+# [Optional] BoneCP: Regularly take and save connection pool statistics (Default: False)
+bonecp-run-stats-job=
+
+# [Required] Cookie age (in minutes)
+quickrant-uuid-expiry=

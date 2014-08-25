@@ -4,7 +4,7 @@
 
 <!-- Display emotions -->
  <c:if test="${fn:length(emotions) > 0}">
- <div class="container">
+ <div class="container section">
    <div class="row margin-bottom-lg text-center">
      <c:forEach items="${emotions}" var="emotion" varStatus="loop">
        <div class="col-lg-4 col-sm-4 col-xs-4">
@@ -17,7 +17,7 @@
 <!-- Display emotions -->
 <c:if test="${fn:length(emotions) > 0}">
   <c:forEach items="${emotions}" var="emotion" varStatus="loop">
-    <div class="container text-center questions-container"  id="${emotion.emotion}">
+    <div class="container text-center questions-container section"  id="${emotion.emotion}">
       <div class="row margin-bottom-lg">
 	    <div class="col-lg-offset-1 col-lg-10">
 		  <c:if test="${fn:length(questions) > 0}">
@@ -44,7 +44,7 @@
   </c:forEach>
 </c:if>
 
-<div class="container retractable text-center" id="form-container">
+<div class="container retractable text-center section" id="form-container">
   <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
   <div class="panel panel-default row margin-bottom-lg">
     <div class="panel-heading">
