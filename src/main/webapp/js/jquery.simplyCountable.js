@@ -94,13 +94,11 @@
       }
       else if (count < 0 && counter.hasClass(options.safeClass)){
         counter.removeClass(options.safeClass).addClass(options.overClass);
-        options.onOverCount(countInt(), countable, counter);
-        $('#submit').attr('disabled', 'disabled');
+        options.onOverCount(countInt(), countable, counter);       
       }
       else if (count >= 0 && counter.hasClass(options.overClass)){
         counter.removeClass(options.overClass).addClass(options.safeClass);
-        options.onSafeCount(countInt(), countable, counter);
-        $('#submit').removeAttr("disabled");
+        options.onSafeCount(countInt(), countable, counter);       
       }
       
     };
