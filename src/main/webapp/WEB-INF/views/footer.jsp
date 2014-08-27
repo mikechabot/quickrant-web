@@ -1,5 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<div id="modal" class="modal fade">
+<div id="modal" class="modal fade" style="margin-top: 5%;">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -21,7 +21,7 @@
 	    $('#modal').modal('show');
 	     setTimeout(function() {
 	         $('#modal').modal('hide');
-	     }, 60000);
+	     }, 2250);
 	  </script>
     </c:when>
     <c:otherwise>

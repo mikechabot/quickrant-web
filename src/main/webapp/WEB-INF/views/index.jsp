@@ -5,12 +5,12 @@
 <c:import url="form.jsp"/>
 <c:choose>
   <c:when test="${fn:length(rants) > 0}">
-    <div id="rant-container" class="container scrollspy">
+    <div id="rants-container" class="container scrollspy">
       <c:import url="rants.jsp"/>
     </div>
   </c:when>
   <c:otherwise>
-     <div class="container rant-container">
+     <div id="rant-container" class="container">
        <c:import url="rant.jsp"/>
      </div>
   </c:otherwise>

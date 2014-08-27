@@ -73,8 +73,6 @@ public class RantController extends Controller {
 
 			/* Match action to root (/rant/) or /rant/[number] */
 			if (action == null || action.equals("") || action.equals("/")) {
-				request.setAttribute("questions", Question.findAll());
-				request.setAttribute("emotions", Emotion.findAll());
 				List<Rant> rants = Rant.findBySQL(RANT_SQL);
 				request.setAttribute("maxId", rants.get(0).getId());
 				request.setAttribute("rants", Rant.findBySQL(RANT_SQL));
@@ -86,6 +84,9 @@ public class RantController extends Controller {
 				}
 				request.setAttribute("rant", rant);
 			}
+			/* Set emotions and question */
+			request.setAttribute("questions", Question.findAll());
+			request.setAttribute("emotions", Emotion.findAll());
 			return basePath() + "/index.jsp";
 		}
 		
