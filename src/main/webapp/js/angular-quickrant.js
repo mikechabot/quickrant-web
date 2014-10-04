@@ -1,7 +1,7 @@
 (function() {
 
-  var app = angular.module('quickrant', ['ngCookies']);
-
+  var app = angular.module('quickrant', ['ngCookies', 'firebase']);
+  
   app.controller('UuidController', function($cookies) {
     this.value = $cookies['quickrant-uuid'] || 'No cookies?';
   });
@@ -10,9 +10,31 @@
     return {
       restrict: 'E',
       templateUrl: 'rants.html',
-      controllerAs: 'rantsCtrl',
-      controller: function($scope, $element, $attrs) {
-        this.rants = rants;
+      controller: function($scope, $element, $attrs, rantService) {
+    	  
+    	var url = 'https://blazing-heat-6301.firebaseio.com/';
+	    var dataRef = new Firebase(url);
+	   
+	    dataRef.on('child_added', function (snapshot) {
+	      var rant = snapshot.val();
+	      console.log("visitor: " + rant.visitor);
+	      console.log("rant: " + rant.rant);
+	    });
+
+        $scope.rants = [];
+        loadRants();
+
+        function setRants(newRants) {
+	      $scope.rants = newRants;
+	      console.log($scope.rants);
+        }
+        
+        function loadRants() {
+          rantService.getRants().then(function(data) {
+            setRants(data); 
+          }); 
+	    }
+        
       }
     };
   });
@@ -26,31 +48,31 @@
         this.emotions = emotions;
 
         /* Select a face or a question */
-        $scope.select = function(option, emotion) {
+        $scope.select = function(element, emotion) {
           /* Return if already selected */
-          if (option.selected) {
-            option.selected = false;
+          if (element.selected) {
+        	element.selected = false;
             $scope.legend = undefined;
             return;
           }
           /* Set the 'selected' flag whether a face or a question */
-          if (angular.isDefined(option.id)) {
+          if (angular.isDefined(element.id)) {
             angular.forEach(emotions, function(emotion) {
               emotion.selected = false;
             });
             $scope.legend = undefined;
           } else {
-            $scope.legend = option.text;
+            $scope.legend = element.text;
             angular.forEach(emotion.questions, function(question) {
               question.selected = false;
             });
             $scope.bgStyle = emotion.bgStyle || emotion.style;
           }
-          option.selected = true;
+          element.selected = true;
         };
 
-        $scope.isSelected = function(option) {
-          return option.selected;
+        $scope.isSelected = function(element) {
+          return element.selected;
         };
 
         $scope.isQuestionSelected = function() {
@@ -87,41 +109,22 @@
       templateUrl: 'form.html'
     };
   });
-
-  var rants = [{
-    "id": 1,
-    "visitor": "John",
-    "location": "Boston, MA",
-    "created": "2014-08-10 21:49:58.495",
-    "rant": "Weekends - they're just fantastic.",
-    "emotion": "happy",
-    "question": "You know what's cool?"
-  }, {
-    "id": 2,
-    "visitor": "John",
-    "location": "Boston, MA",
-    "created": "2014-08-10 21:49:58.495",
-    "rant": "The end of a damn fine weekend.",
-    "emotion": "sad",
-    "question": "You know what sucks?"
-  }, {
-    "id": 3,
-    "visitor": "Anonymous",
-    "location": "Earth",
-    "created": "2014-08-10 21:49:58.495",
-    "rant": "When I'm thinking I'm making good time, but then I hit a ton of traffic, and all is lost - all is lost...",
-    "emotion": "angry",
-    "question": "You know what makes me mad?"
-  }, {
-    "id": 4,
-    "visitor": "Some Guy",
-    "location": "Earth",
-    "created": "2014-08-10 21:49:58.495",
-    "rant": "Ice cream, tons of it - with caramel and chocolate and strawberries",
-    "emotion": "happy",
-    "question": "You know what's cool?"
-  }];
-
+  
+  app.service("rantService", function($firebase) {
+    
+	return ({ getRants: getRants });
+      
+      function getRants() {
+    	var url = 'https://blazing-heat-6301.firebaseio.com/';
+    	var data = $firebase(new Firebase(url)).$asObject();
+        return data.$loaded();
+      }
+      
+      
+      
+    }
+  );
+  
   var emotions = [{
     "id": "happy",
     "image": "happy.gif",
