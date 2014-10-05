@@ -15,11 +15,11 @@
     	var url = 'https://blazing-heat-6301.firebaseio.com/';
 	    var dataRef = new Firebase(url);
 	   
-	    dataRef.on('child_added', function (snapshot) {
-	      var rant = snapshot.val();
-	      console.log("visitor: " + rant.visitor);
-	      console.log("rant: " + rant.rant);
-	    });
+//	    dataRef.on('child_added', function (snapshot) {
+//	      var rant = snapshot.val();
+//	      console.log("visitor: " + rant.visitor);
+//	      console.log("rant: " + rant.rant);
+//	    });
 
         $scope.rants = [];
         loadRants();

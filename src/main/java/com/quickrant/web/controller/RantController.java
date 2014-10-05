@@ -1,11 +1,9 @@
 package com.quickrant.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,7 +11,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.javalite.activejdbc.Model;
 
-import com.google.gson.Gson;
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Emotion;
 import com.quickrant.api.models.Question;
@@ -29,7 +26,6 @@ public class RantController extends Controller {
 
 	public static final String RANT_SQL = "select id, created_at, emotion_id, question_id, rant, visitor_name, location from rants order by id desc limit 20";
 	private static Logger log = Logger.getLogger(RantController.class);
-	private static Gson gson = new Gson();
 	
 	private Aegis aegis;
 	
