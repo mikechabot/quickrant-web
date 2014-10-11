@@ -2,7 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="/WEB-INF/tags/helper.tld" prefix="helper" %>
-
 <c:forEach items="${rants}" var="rant">
   <c:if test="${not empty rant}">
 	<div class="row panel">
@@ -31,6 +30,6 @@
 	</div>	
   </c:if>
 </c:forEach>
-
-<a class="next-selector" href="ajax/${maxId}"></a>
-
+<div class="text-center">
+<a href="ajax/${maxId}" class="next-selector btn-default btn btn-lg">More</a>
+</div>

@@ -82,32 +82,47 @@ a.permalink:hover {
   width: 100%;
 }
 
-/* RANT CONTENT
+/* RANTS CONTENT
 -------------------------------------------------- */
 
-.rants-text {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-#rant-container .panel {  
+#rants-container .panel {  
   border: 0px;
   border-radius: 0;
   box-shadow: none;
   margin-bottom: 0px;
 }
 
-#rant-container .panel-title {
+#rants-container .panel-title {
   padding-top: 5px;
   font-size: 18px;
   font-weight: 300;
 }
 
-#rant-container .panel-body {
+#rants-container .panel-body {
   overflow: hidden;
   padding: 5px 15px 0px;
 }
 
-#rant-container .timeago {
+#rants-container .panel-body p {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#rants-container .timeago {
     font-size: 12px;
+}
+
+/* RANT CONTAINER 
+-------------------------------------------------- */
+
+#rant-container .panel-body p {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+#rant-container .panel-title {
+  padding-top: 5px;
+  font-size: 22px;
+  font-weight: 300;
+  margin-left: -15px;
 }

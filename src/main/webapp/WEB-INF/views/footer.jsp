@@ -1,20 +1,32 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<div id="modal" class="modal fade" style="margin-top: 5%;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 id="modal-title" class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+        <p></p>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <c:if test="${not empty success}">>
 <c:choose>
     <c:when test="${success eq true}">
 	  <script>
-	    $('#modal-label').text("quickrant");
-	    $('div.modal-body p').text("Thanks for speaking your mind.");
+	    $('#modal-title').text("quickrant");
+	    $('div.modal-body p').html("<h5>Thanks for speaking your mind.</h5>");
 	    $('#modal').modal('show');
 	     setTimeout(function() {
 	         $('#modal').modal('hide');
-	     }, 2000);
+	     }, 2250);
 	  </script>
     </c:when>
     <c:otherwise>
-      **FALSE**
 	  <script>
-	    $('#modal-label').text("Something went wrong...");
+	    $('#modal-title').text("Something went wrong...");
 	    $('div.modal-body p').html("<h4><a href=\"https://www.google.com/search?q=dealwithit\" target=\"_blank\">#dealwithit</a></h4>");
 	    $('#modal').modal('show');
 	  </script>

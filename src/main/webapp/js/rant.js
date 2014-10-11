@@ -15,11 +15,13 @@ $(document).ready(function () {
   /* Display post time with timeago */
   $("span.timeago").timeago();
   
+  
   /* Load content on scroll */
   $('.scrollspy').jscroll({
 	loadingHtml: '<img src="/img/ajax-loader.gif" alt="Loading" />',
 	nextSelector: 'a.next-selector:last',
-  });  
+	autoTrigger: false
+  });
   
   /* Control the display of questions and emotion faces */
   $("a.emotion").click(function () {
