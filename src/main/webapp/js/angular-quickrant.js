@@ -12,27 +12,17 @@
       templateUrl: 'rants.html',
       controller: function($scope, $element, $attrs, rantService) {
     	  
-    	var url = 'https://blazing-heat-6301.firebaseio.com/';
-	    var dataRef = new Firebase(url);
-	   
-//	    dataRef.on('child_added', function (snapshot) {
-//	      var rant = snapshot.val();
-//	      console.log("visitor: " + rant.visitor);
-//	      console.log("rant: " + rant.rant);
-//	    });
-
         $scope.rants = [];
         loadRants();
 
         function setRants(newRants) {
 	      $scope.rants = newRants;
-	      console.log($scope.rants);
         }
         
         function loadRants() {
           rantService.getRants().then(function(data) {
             setRants(data); 
-          }); 
+          });
 	    }
         
       }
@@ -113,14 +103,18 @@
   app.service("rantService", function($firebase) {
     
 	return ({ getRants: getRants });
+   
+    dataRef.on('child_added', function (snapshot) {
+      var rant = snapshot.val();
+      console.log("visitor: " + rant.visitor);
+      console.log("rant: " + rant.rant);
+    });
       
-      function getRants() {
-    	var url = 'https://blazing-heat-6301.firebaseio.com/';
-    	var data = $firebase(new Firebase(url)).$asObject();
-        return data.$loaded();
-      }
-      
-      
+    function getRants() {
+	  var dataRef = new Firebase('https://blazing-heat-6301.firebaseio.com/');
+	  var data = $firebase(dataRef);
+      return data.$asObject().$loaded();
+    } 
       
     }
   );
