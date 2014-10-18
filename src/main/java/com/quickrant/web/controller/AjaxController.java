@@ -1,5 +1,7 @@
 package com.quickrant.web.controller;
 
+import java.util.List;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Rant;
+import com.quickrant.api.models.Rant.RantNotFoundException;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.web.Controller;
 import com.quickrant.web.cache.CookieCache;
@@ -116,13 +119,34 @@ public class AjaxController extends Controller {
 	
 	public class OffsetAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			
-			String path = request.getPathInfo();
-			log.info("PATH=" + path);
-			
-			
-			request.setAttribute("rants", Rant.findBySQL(RantController.RANT_SQL));
-			return basePath() + "/rants.jsp";			
+			long offset = getOffset(request.getPathInfo());
+			if (offset > 0) {				
+				try {
+					List<Rant> rants = Rant.getBySql(getSql(offset));
+					request.setAttribute("rants", rants);
+					request.setAttribute("minId", rants.get(rants.size()-1).getId());
+					return basePath() + "/rants.jsp";
+				} catch (RantNotFoundException ex) {
+					log.info("Visitor " + request.getRemoteAddr() + " reached the end of the line");
+					return basePath() + "/no-rants.jsp";
+				}
+			} else {
+				log.warn("IP address (" + request.getRemoteAddr() + ") is attempting an offset with an malformed request: /" + request.getPathInfo());
+				response.sendError(500);
+				return basePath();
+			}
 		}
+	}
+	
+	public long getOffset(String path) {
+		if (path.matches("\\/([0-9]+)$")) {
+			return Long.valueOf(path.replace("/", ""));
+		} else {
+			return -1L;
+		}
+	}
+	
+	public String getSql(long offset) {
+		return RantController.GET_RANTS_OFFSET.replace("?", String.valueOf(offset));
 	}
 }

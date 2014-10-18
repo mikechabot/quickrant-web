@@ -15,7 +15,7 @@
 	        <h2 class="panel-title">${helper:getQuestion(rant.questionId)}</h2>
 	      </div>
 	      <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-	        <a href="/rant/${rant.id}" class="permalink glyphicon glyphicon-leaf"></a>
+	        <a rel="tooltip" href="/rant/${rant.id}" class="permalink glyphicon glyphicon-leaf"></a>
 	      </div>
 	    </div>
 	  </div>
@@ -31,5 +31,5 @@
   </c:if>
 </c:forEach>
 <div class="text-center">
-<a href="ajax/${maxId}" class="next-selector btn-default btn btn-lg">More</a>
+<a href="ajax/${minId}" class="next-selector btn-default btn btn-lg">More</a>
 </div>

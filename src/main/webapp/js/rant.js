@@ -6,9 +6,6 @@ $(document).ready(function () {
   /* Initialize simplyCountable */
   $('#form-container-textarea').simplyCountable();
 
-  /* Permalink tooltip hover */
-  $(".permalink").tooltip({ title: "permalink", placement: "left", trigger: "hover"});
-
   /* Set the page load time */
   $('#pageLoadTime').val((new Date()).getTime());
 
@@ -73,6 +70,16 @@ $(document).ready(function () {
       data: { "ajax": true, "screen_height": window.screen.availHeight, "screen_width": window.screen.availWidth, "screen_color": window.screen.colorDepth }
     });
   }
+});
+
+/* Permalink tooltip hover */
+
+
+$('body').tooltip({
+    selector: '.permalink',
+    title: "permalink", 
+    placement: "left", 
+    trigger: "hover"
 });
 
 function validate() {

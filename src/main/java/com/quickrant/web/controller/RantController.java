@@ -4,29 +4,34 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
-import org.javalite.activejdbc.Model;
 
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Emotion;
 import com.quickrant.api.models.Question;
 import com.quickrant.api.models.Rant;
+import com.quickrant.api.models.Rant.RantNotFoundException;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.api.utils.TimeUtils;
 import com.quickrant.web.Controller;
 import com.quickrant.web.cache.CookieCache;
 import com.quickrant.web.security.Aegis;
 
+/**
+ * RESTful controller that handles HTTP requests to /rant
+ */
 @SuppressWarnings("serial")
 public class RantController extends Controller {
 
-	public static final String RANT_SQL = "select id, created_at, emotion_id, question_id, rant, visitor_name, location from rants order by id desc limit 20";
 	private static Logger log = Logger.getLogger(RantController.class);
+	
+	public static final String RANT_SQL = "select id, created_at, emotion_id, question_id, rant, visitor_name, location from rants ";
+	public static final String GET_RANTS = RANT_SQL + "order by id desc limit 20";
+	public static String GET_RANTS_OFFSET = RANT_SQL + "where id < ? order by id desc limit 20";
 	
 	private Aegis aegis;
 	
@@ -35,7 +40,7 @@ public class RantController extends Controller {
 	
 	@Override
 	protected void initActions(ServletConfig config) {
-		log.info("Initializing controller");		
+		log.info("Initializing controller");	
 		/* Initialize Aegis */
 		aegis = new Aegis(CookieCache.getCache());				
 		/* Add servlet actions */
@@ -58,7 +63,7 @@ public class RantController extends Controller {
 			if (method.equals("GET")) return new GetAction().execute(request, response);
 			if (method.equals("POST")) return new PostAction().execute(request, response);
 			
-			/* We really should get here, but if we do, just redirect back home */
+			/* We really shouldn't  get here, but if we do, just redirect back home */
 			response.sendRedirect(request.getContextPath() + "/" + basePath());
 			return null;
 		}
@@ -69,27 +74,62 @@ public class RantController extends Controller {
 	 */
 	public class GetAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
-			String action = request.getPathInfo();
-
-			/* Match action to root (/rant/) or /rant/[number] */
-			if (action == null || action.equals("") || action.equals("/")) {
-				List<Rant> rants = Rant.findBySQL(RANT_SQL);
-				request.setAttribute("maxId", rants.get(0).getId());
-				request.setAttribute("rants", Rant.findBySQL(RANT_SQL));
-			} else if (action.matches("\\/([0-9]+)$") && Rant.findById(getId(action)) != null) {
-				request.setAttribute("rant", Rant.findById(getId(action)));
-			} else {
+			String path = request.getPathInfo();
+			int action = getAction(path);
+			switch(getAction(path)) {
+			case -1: 
 				response.sendError(404);
 				return null;
+			case 0:
+				List<Rant> rants = Rant.findBySQL(GET_RANTS);
+				request.setAttribute("minId", rants.get(rants.size()-1).getId());
+				request.setAttribute("rants", rants);
+				break;
+			case 1:
+				try {
+					request.setAttribute("rant", Rant.getById(getId(path)));
+				} catch (RantNotFoundException ex) {
+					response.sendError(404);
+					return null;
+				}
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown action: " + action + " via " + path);
 			}
 			request.setAttribute("questions", Question.findAll());
 			request.setAttribute("emotions", Emotion.findAll());
-			return basePath() + "/index.jsp";
+			return basePath() + "/index.jsp";			
 		}
 		
-		private int getId(String action) {
-			return Integer.valueOf(action.replaceAll("/", ""));
-		}		
+		/**
+		 * @param action
+		 * Return scenarios:
+		 *   Action		Return
+		 *   (null)		0
+		 *   /			0
+		 *   /52		1
+		 *   /52foo		-1
+		 *   /foobar	-1
+		 * @return int
+		 */
+		private int getAction(String action) {
+			if (action == null || action.equals("/") || action.equals("")) {
+				return 0;
+			} else if (action.matches("\\/([0-9]+)$"))  {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+		
+		/**
+		 * Replace "/52" with 52
+		 * @param action
+		 * @return long
+		 */
+		private long getId(String action) {
+			return Long.valueOf(action.replace("/", ""));
+		}
 	}
 
 	/**
@@ -123,6 +163,7 @@ public class RantController extends Controller {
 			return (Visitor) Visitor.findFirst("cookie = ?", cookie);
 		}
 		
+		// TODO: what is gods name are we doing here.
 		public boolean saveRant(Map<String, String> map, String cookie) {
 			Rant rant = new Rant();
 			Visitor visitor = new Visitor();

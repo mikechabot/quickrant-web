@@ -32,6 +32,7 @@ public abstract class Controller extends HttpServlet {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		String action = request.getPathInfo();
 		String view = null;
+		System.out.println("action="+action);
 		try {
 			if (action == null || action.equals("") || action.equals("/") || action.matches("\\/([0-9]+)$")) {
 				view = defaultAction.execute(request, response);
