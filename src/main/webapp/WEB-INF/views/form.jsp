@@ -14,7 +14,7 @@
    </div>
  </div>
  </c:if>
-<!-- Display emotions -->
+<!-- Display questions -->
 <c:if test="${fn:length(emotions) > 0}">
   <c:forEach items="${emotions}" var="emotion" varStatus="loop">
     <div class="container text-center questions-container"  id="${emotion.emotion}">

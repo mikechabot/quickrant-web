@@ -59,10 +59,5 @@ public abstract class Controller extends HttpServlet {
 	public interface Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception;
 	}
-
-	protected void initActions() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

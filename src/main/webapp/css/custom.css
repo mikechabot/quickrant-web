@@ -85,6 +85,10 @@ a.permalink:hover {
 /* RANTS CONTENT
 -------------------------------------------------- */
 
+#rants-container {
+  position: relative;
+}
+
 #rants-container .panel {  
   border: 0px;
   border-radius: 0;

@@ -20,8 +20,9 @@
 	
     <!-- styles -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/3d-corner-ribbons.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
-	
+    	
     <!-- fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/ico/apple-touch-icon-114-precomposed.png">
@@ -45,6 +46,6 @@
         <p class="navbar-text navbar-right">
          <a class="navbar-link" href="/uid/${cookieValue}">${cookieValue}</a>
         </p>
-      </div>    
+      </div>   
     </div>
   </nav>

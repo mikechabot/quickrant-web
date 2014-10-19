@@ -15,7 +15,7 @@ $(document).ready(function () {
   
   /* Load content on scroll */
   $('.scrollspy').jscroll({
-	loadingHtml: '<img src="/img/ajax-loader.gif" alt="Loading" />',
+	loadingHtml: '<div class="text-center"><img src="/img/ajax-loader.gif" alt="Loading"/></div>',
 	nextSelector: 'a.next-selector:last',
 	autoTrigger: false
   });
@@ -69,12 +69,10 @@ $(document).ready(function () {
       type: "POST",
       data: { "ajax": true, "screen_height": window.screen.availHeight, "screen_width": window.screen.availWidth, "screen_color": window.screen.colorDepth }
     });
-  }
+  }  
 });
 
 /* Permalink tooltip hover */
-
-
 $('body').tooltip({
     selector: '.permalink',
     title: "permalink", 

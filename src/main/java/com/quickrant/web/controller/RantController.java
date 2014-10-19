@@ -22,7 +22,7 @@ import com.quickrant.web.cache.CookieCache;
 import com.quickrant.web.security.Aegis;
 
 /**
- * RESTful controller that handles HTTP requests to /rant
+ * RESTful controller that handles HTTP requests to "/rant"
  */
 @SuppressWarnings("serial")
 public class RantController extends Controller {
@@ -75,13 +75,14 @@ public class RantController extends Controller {
 	public class GetAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 			String path = request.getPathInfo();
-			int action = getAction(path);
-			switch(getAction(path)) {
+			int action = getRESTAction(path);
+			switch(action) {
 			case -1: 
 				response.sendError(404);
 				return null;
 			case 0:
 				List<Rant> rants = Rant.findBySQL(GET_RANTS);
+				request.setAttribute("maxId", rants.get(0).getId());
 				request.setAttribute("minId", rants.get(rants.size()-1).getId());
 				request.setAttribute("rants", rants);
 				break;
@@ -102,6 +103,8 @@ public class RantController extends Controller {
 		}
 		
 		/**
+		 * Determine the state by examining the URL
+		 * 
 		 * @param action
 		 * Return scenarios:
 		 *   Action		Return
@@ -112,7 +115,7 @@ public class RantController extends Controller {
 		 *   /foobar	-1
 		 * @return int
 		 */
-		private int getAction(String action) {
+		private int getRESTAction(String action) {
 			if (action == null || action.equals("/") || action.equals("")) {
 				return 0;
 			} else if (action.matches("\\/([0-9]+)$"))  {
