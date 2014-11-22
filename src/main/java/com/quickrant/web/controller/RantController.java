@@ -82,9 +82,11 @@ public class RantController extends Controller {
 				return null;
 			case 0:
 				List<Rant> rants = Rant.findBySQL(GET_RANTS);
-				request.setAttribute("maxId", rants.get(0).getId());
-				request.setAttribute("minId", rants.get(rants.size()-1).getId());
-				request.setAttribute("rants", rants);
+				if (rants != null && !rants.isEmpty()) {
+					request.setAttribute("maxId", rants.get(0).getId());
+					request.setAttribute("minId", rants.get(rants.size()-1).getId());
+					request.setAttribute("rants", rants);
+				}
 				break;
 			case 1:
 				try {
