@@ -1,6 +1,6 @@
-<div ng-repeat="emotion in person.emotions" >
-  <div ng-show="isSelected(emotion)" class="row margin-bottom-lg">
-    <div class="col-lg-offset-1 col-lg-10">
+<div ng-repeat="emotion in model.data" >
+  <div class="row margin-bottom-lg">
+    <div ng-if="isFaceSelected" class="col-lg-offset-1 col-lg-10">
       <button ng-repeat="question in emotion.questions" ng-click="select(question, emotion)" class="btn btn-{{emotion.style}} question" type="button">{{question.text}}</button>
     </div>
   </div>

@@ -50,7 +50,7 @@ public class AjaxController extends Controller {
 			/* No GETs allowed */
 			Params params = new Params(request);
 			if (params.isGet()) {
-				response.sendRedirect(basePath() + "/index.jsp");
+				response.sendRedirect(basePath() + "/index.html");
 				return null;
 			}			
 

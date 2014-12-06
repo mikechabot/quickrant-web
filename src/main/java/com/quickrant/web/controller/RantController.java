@@ -86,7 +86,7 @@ public class RantController extends Controller {
 			/* Set emotions and question */
 			request.setAttribute("questions", Question.findAll());
 			request.setAttribute("emotions", Emotion.findAll());
-			return basePath() + "/index.jsp";
+			return basePath() + "/index.html";
 		}
 		
 		private int getId(String action) {
