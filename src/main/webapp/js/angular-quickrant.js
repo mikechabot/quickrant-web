@@ -29,6 +29,10 @@ app.directive('controls', function() {
         $scope.$apply(function() {
           setFaceSelected(data.selected);
           setEmotion(data.emotion);
+
+          if (data.selected == false) {
+            setQuestionSelected(false);
+          }
         });
       });
 
