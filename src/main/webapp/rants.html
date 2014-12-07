@@ -5,20 +5,20 @@
         <div class="panel-heading">
           <div class="row">
             <div class="col-lg-1 col-sm-1 col-xs-2">
-              <img ng-src="/img/{{rant.emotion}}-small.gif">
+              <img ng-src="/img/{{::rant.emotion}}-small.gif">
             </div>
             <div class="col-lg-10 col-sm-10 col-xs-8">
-              <h2 class="panel-title">{{rant.question}}</h2>
+              <h2 class="panel-title">{{::rant.question}}</h2>
             </div>
             <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-              <a href="/rant/{{rant.id}}" class="permalink glyphicon glyphicon-leaf"></a>
+              <a href="/rant/{{::rant.id}}" class="permalink glyphicon glyphicon-leaf"></a>
             </div>
           </div>
         </div>
         <div class="panel-body">
           <blockquote>
-            <p>{{rant.rant}}</p>
-            <small><span class="mild-bold">{{rant.visitor}}</span> // {{rant.location}} // <span class="rant-created timeago" title="{{rant.created}}"></span></small>
+            <p>{{::rant.rant}}</p>
+            <small><span class="mild-bold">{{::rant.visitor}}</span> // {{::rant.location}} // <span class="rant-created timeago" title="{{::rant.created}}"></span></small>
           </blockquote>
         </div>
       </div>

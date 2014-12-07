@@ -12,11 +12,13 @@
     
     <!-- scripts -->
     <script src="/js/third-party/firebase.js"></script>
-    <script src="/js/third-party/angular.min.js"></script>
-    <script src="/js/third-party/angular-fire.js"></script>
-    <script src="/js/third-party/angular-cookies.min.js"></script>
+    <script src="/js/third-party/angular/angular.js"></script>
+    <script src="/js/third-party/angular/angular-fire.js"></script>
+    <script src="/js/third-party/angular/angular-cookies.min.js"></script>
     <script src="/js/angular-quickrant.js"></script>
     <script src="/js/directives.js"></script>
+    <script src="/js/services.js"></script>
+    <script src="/js/data.js"></script>
     
     <!-- fonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
@@ -38,17 +40,29 @@
   <body ng-controller="QuickrantCtrl">
     <div ng-include="navigation"></div>
     <div controls class="container text-center">
+      <faces></faces>
+	    <questions ng-if="ui.showQuestions"></questions>
 
-       <faces></faces>
-	       <questions ng-if="isFaceSelected"></questions>
-	  <rant-form ng-if="isQuestionSelected"></rant-form>
-	  <hr>
+      <div ng-if="ui.showForm" class="row">
+        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9 form-container">
+          <div class="panel {{::ui.panelStyle}} margin-bottom-lg">
+            <div class="panel-heading">
+              <h3 class="panel-title" id="legend">{{ui.question}}</h3>
+            </div>
+            <div class="panel-body">
+                <div ng-include="form"></div>
+              <h5 class="text-danger" id="error-text"></h5>
+            </div>
+          </div>
+        </div>
+      </div>
+
+	    <hr>
   	</div>
 
   	<rants></rants>
-    <script src="/js/third-party/jquery.js"></script>
-    <script src="/js/third-party/jquery.timeago.js"></script>
-    <script src="/js/third-party/jquery.simplyCountable.js"></script>
-    <script src="/js/third-party/bootstrap.min.js"></script>
+    <script src="/js/third-party/jquery/jquery.js"></script>
+    <script src="/js/third-party/jquery/jquery.timeago.js"></script>
+    <script src="/js/third-party/jquery/jquery.simplyCountable.js"></script>
   </body>
 </html>

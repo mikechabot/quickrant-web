@@ -2,6 +2,7 @@ var app = angular.module('quickrant', ['ngCookies', 'firebase']);
 
 app.controller('QuickrantCtrl', function($scope) {
   $scope.navigation = 'navigation.html';
+  $scope.form = 'form.html';
   $scope.model = {};
   $scope.model.data = data;
 });
@@ -10,37 +11,47 @@ app.directive('controls', function() {
   return {
     restrict: 'A',
     link: function($scope) {
+      $scope.ui = {};
 
-      $scope.controls = {};
-
-      var setFaceSelected = function(selected) {
-        $scope.isFaceSelected = selected;
+      var showQuestions = function(show) {
+        $scope.ui.showQuestions = show;
+        if (!show) showForm(false);
       };
 
-      var setQuestionSelected = function(selected) {
-        $scope.isQuestionSelected = selected;
+      var showForm = function(showForm) {
+        $scope.ui.showForm = showForm;
       }
 
-      var setEmotion = function(emotion) {
-        $scope.controls.emotion = emotion;
+      var setCurrentEmotion = function(emotion) {
+        $scope.ui.emotion = emotion;
       };
+
+      var setQuestion = function(question) {
+        $scope.ui.question = question;
+      }
+
+      var setPanelStyle = function(style) {
+        $scope.ui.panelStyle = 'panel-' + style;
+      }
 
       $scope.$on('faceSelected', function(event, data) {
         $scope.$apply(function() {
-          setFaceSelected(data.selected);
-          setEmotion(data.emotion);
-
-          if (data.selected == false) {
-            setQuestionSelected(false);
+          showQuestions(data.showQuestions);
+          setCurrentEmotion(data.emotion);
+          if (!data.selected) {
+            showForm(false);
           }
         });
       });
 
-      $scope.$on('questionSelected', function(event, isSelected) {
+      $scope.$on('questionSelected', function(event, data) {
         $scope.$apply(function() {
-          setQuestionSelected(isSelected)
+          showForm(data.showForm);
+          setQuestion(data.question);
+          setPanelStyle(data.style);
         });
       });
+
     }
   }
 });
@@ -51,40 +62,35 @@ app.directive('faces', function() {
     require: '^controls',
     template: '<div class="row margin-bottom-lg ">'
             + '  <div ng-repeat="face in model.data" class="col-lg-4 col-sm-4 col-xs-4">'
-            + '    <face id="{{face.emotion}}"></face>'
+            + '    <face emotion="{{::face.emotion}}"></face>'
             + '  </div>'
             + '</div>',
     controller: function ($scope) {
-
       var faces = [];
 
       this.addFace = function (face) {
         faces.push(face);
       };
 
-      var selected = function (face) {
-        return face.selected;
-      };
-
       var deselect = function (face) {
         face.selected = false;
       }
 
-      var emitFaceSelected = function (data) {
+      var emit = function (data) {
         $scope.$emit('faceSelected', data);
       }
 
       this.select = function (face, emotion) {
-        if (selected(face)) {
+        if (face.selected) {
           deselect(face);
-          emitFaceSelected({selected: false});
+          emit({showQuestions: false});
           return;
         }
         angular.forEach(faces, function (face) {
           deselect(face);
         });
         face.selected = true;
-        emitFaceSelected({selected: true, emotion: emotion});
+        emit({showQuestions: true, emotion: emotion});
       };
 
     }
@@ -95,10 +101,10 @@ app.directive('face', function() {
   return {
     restrict: 'E',
     require: '^faces',
-    template: '<a href><img class="img-circle" ng-src="/img/{{face.emotion}}.gif"></a>',
+    template: '<a href><img class="img-circle" ng-src="/img/{{::face.emotion}}.gif"></a>',
     link: function($scope, $element, $attrs, facesCtrl) {
       $element.bind('click', function(){
-        facesCtrl.select($scope, $attrs['id']);
+        facesCtrl.select($scope, $attrs.emotion);
       });
       facesCtrl.addFace($scope);
     }
@@ -110,11 +116,9 @@ app.directive('questions', function() {
     restrict: 'E',
     require: '^controls',
     template: '<div ng-repeat="face in model.data" >'
-            + '  <div ng-if="face.emotion == controls.emotion" class="row margin-bottom-lg">'
+            + '  <div ng-if="face.emotion === ui.emotion" class="row margin-bottom-lg">'
             + '    <div class="col-lg-offset-1 col-lg-10">'
-            + '      <div style="display: inline;" ng-repeat="question in face.questions">'
-            + '        <question></question>'
-            + '      </div>'
+            + '      <question ng-repeat="question in face.questions" panel-style="{{face.altStyle || face.style}}"></question>'
             + '    </div>'
             + '  </div>'
             + '</div>',
@@ -125,29 +129,25 @@ app.directive('questions', function() {
         questions.push(question);
       };
 
-      var selected = function (question) {
-        return question.selected;
-      };
-
       var deselect = function (question) {
         question.selected = false;
       }
 
-      var emitQuestionSelected = function (selected) {
+      var emit = function (selected) {
         $scope.$emit('questionSelected', selected);
       }
 
-      this.select = function (question) {
-        if (selected(question)) {
+      this.select = function (question, style) {
+        if (question.selected) {
           deselect(question);
-          emitQuestionSelected(false);
+          emit({showForm: false});
           return;
         }
         angular.forEach(questions, function (question) {
           deselect(question);
         });
         question.selected = true;
-        emitQuestionSelected(true);
+        emit({showForm: true, question: question.question.text, style: style});
       };
 
     }
@@ -158,85 +158,32 @@ app.directive('question', function() {
    return {
      restrict: 'E',
      require: '^questions',
-     template: '<button class="btn btn-{{face.style}} question" type="button">{{question.text}}</button>',
+     template: '<button class="btn btn-{{::face.style}} question" type="button">{{::question.text}}</button>',
      link: function($scope, $element, $attrs, questionsCtrl) {
-       $element.bind("click", function(){
-         questionsCtrl.select($scope);
+       $element.bind('click', function(){
+         questionsCtrl.select($scope, $attrs.panelStyle);
        });
        questionsCtrl.addQuestion($scope);
      }
    }
 });
 
-app.directive('rantForm', function() {
+app.directive('rantTextarea', function($parse) {
   return {
-    restrict: 'E',
-    templateUrl: 'form.html'
-  };
+    restrict: 'A',
+    require: 'ngModel',
+    controller: function($scope) {
+      $scope.maxChars = 500;
+      $scope.rant = "";
+      $scope.charsLeft = function() {
+        return $scope.maxChars - $scope.rant.length;
+      }
+    },
+    link: function($scope, $element, $attrs, ngModelCtrl) {
+      ngModelCtrl.$viewChangeListeners.push(function(){
+        $parse($attrs.ngModel).assign($scope, ngModelCtrl.$viewValue);
+        $scope.hasError = ngModelCtrl.$error.maxlength
+      });
+    }
+  }
 });
-
-app.service("rantService", function($firebase) {
-
-return ({ getRants: getRants });
-
-  function getRants() {
-  var dataRef = new Firebase('https://blazing-heat-6301.firebaseio.com/');
-  var data = $firebase(dataRef);
-    return data.$asObject().$loaded();
-  }
-
-  }
-);
-
-var data = [{
-  "emotion": "happy",
-  "style": "success",
-  "questions": [{
-    "text": "You know what I love?"
-  }, {
-    "text": "You know what I like?"
-  }, {
-    "text": "You know what's cool?"
-  }, {
-    "text": "You know what make me happy?"
-  }, {
-    "text": "You know what I can't live without?"
-  }, {
-    "text": "You know what's pretty good?"
-  }]
-}, {
-  "emotion": "angry",
-  "style": "danger",
-  "questions": [{
-    "text": "You know what I hate?"
-  }, {
-    "text": "You know what's bullshit?"
-  }, {
-    "text": "You know what sucks?"
-  }, {
-    "text": "You know what I don't like?"
-  }, {
-    "text": "You know what I can't stand?"
-  }, {
-    "text": "You know what makes me angry?"
-  }]
-}, {
-  "emotion": "sad",
-  "style": "primary",
-  "bgStyle": "info",
-  "questions": [{
-    "text": "You know what makes me cry?"
-  }, {
-    "text": "You know what's depressing?"
-  }, {
-    "text": "You know what makes me sad?"
-  }, {
-    "text": "You know what I wish had happened?"
-  }, {
-    "text": "You know what sucks?"
-  }, {
-    "text": "You know what I miss?"
-  }, {
-    "text": "You know what I regret?"
-  }]
-}];
