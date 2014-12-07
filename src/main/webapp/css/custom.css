@@ -120,54 +120,23 @@ textarea {
   margin-bottom: 0px;
 }
 
-#rants-container .panel-title {
+.rant-container .panel-title {
   margin-left: -5px;
   padding-top: 5px;
   font-size: 16px;
   font-weight: 300;
 }
 
-#rants-container .panel-body {
+.rant-container .panel-body {
   overflow: hidden;
   padding: 5px 15px 0px;
 }
 
-#rants-container .panel-body p {
+.rant-container .panel-body p {
   font-size: 22px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
-#rants-container .timeago {
+.rant-container .timeago {
     font-size: 12px;
-}
-
-/* SINGLE RANT (PERMALINK) */
-
-#rant-container {
-  margin-top: 50px;
-}
-
-#rant-container .panel-title {
-  margin-left: -15px;
-  padding-top: 3px;
-  font-size: 24px;
-  font-weight: 300;
-}
-
-#rant-container .panel-body {
-  overflow: hidden;
-  padding: 5px 15px 0px;
-}
-
-#rant-container .panel-body p {
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-#rant-container .panel-body small {
-  font-size: 100%;
-}
-
-#rant-container .timeago {
-    font-size: 14px;
 }

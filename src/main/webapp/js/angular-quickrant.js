@@ -1,6 +1,6 @@
 var app = angular.module('quickrant', ['ngCookies', 'firebase']);
 
-app.controller('QuickrantCtrl', function($scope) {
+app.controller('MainCtrl', function($scope) {
   $scope.navigation = 'navigation.html';
   $scope.form = 'form.html';
   $scope.model = {};
@@ -12,6 +12,11 @@ app.directive('controls', function() {
     restrict: 'A',
     link: function($scope) {
       $scope.ui = {};
+
+      $scope.ui.visitor = 'Anonymous';
+      $scope.ui.location = 'Earth';
+
+      $scope.isCollapsed = true;
 
       var showQuestions = function(show) {
         $scope.ui.showQuestions = show;
@@ -174,16 +179,56 @@ app.directive('rantTextarea', function($parse) {
     require: 'ngModel',
     controller: function($scope) {
       $scope.maxChars = 500;
+      $scope.minChars = 2;
       $scope.rant = "";
       $scope.charsLeft = function() {
         return $scope.maxChars - $scope.rant.length;
       }
+      $scope.charsToGo = function() {
+        return $scope.minChars - $scope.rant.length;
+      }
     },
     link: function($scope, $element, $attrs, ngModelCtrl) {
+      $scope.minLengthErr = true;
       ngModelCtrl.$viewChangeListeners.push(function(){
         $parse($attrs.ngModel).assign($scope, ngModelCtrl.$viewValue);
-        $scope.hasError = ngModelCtrl.$error.maxlength
+        $scope.ui.rant = ngModelCtrl.$viewValue;
+        $scope.minLengthErr = ngModelCtrl.$viewValue.length == 0 || ngModelCtrl.$error.minlength;
       });
     }
   }
+});
+
+app.directive('visitor', function() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    controller: function($scope) {
+      $scope.defaultVisitor = $scope.ui.visitor;
+    },
+    link: function($scope, $element, $attrs, ngModelCtrl) {
+      ngModelCtrl.$viewChangeListeners.push(function(){
+        $scope.ui.visitor =  ngModelCtrl.$viewValue.length > 0 ? ngModelCtrl.$viewValue : $scope.defaultVisitor;
+      });
+    }
+  }
+});
+
+app.directive('location', function() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    controller: function($scope) {
+      $scope.defaultLocation = $scope.ui.location;
+    },
+    link: function($scope, $element, $attrs, ngModelCtrl) {
+      ngModelCtrl.$viewChangeListeners.push(function(){
+        $scope.ui.location =  ngModelCtrl.$viewValue.length > 0 ? ngModelCtrl.$viewValue : $scope.defaultLocation;
+      });
+    }
+  }
+});
+
+app.controller('CollapseDemoCtrl', function ($scope) {
+  $scope.isCollapsed = false;
 });

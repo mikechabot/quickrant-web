@@ -11,10 +11,11 @@
     <title>quickrant | express yourself without yourself</title>
     
     <!-- scripts -->
-    <script src="/js/third-party/firebase.js"></script>
+    <script src="/js/third-party/firebase/firebase.js"></script>
     <script src="/js/third-party/angular/angular.js"></script>
     <script src="/js/third-party/angular/angular-fire.js"></script>
     <script src="/js/third-party/angular/angular-cookies.min.js"></script>
+    <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
     <script src="/js/angular-quickrant.js"></script>
     <script src="/js/directives.js"></script>
     <script src="/js/services.js"></script>
@@ -37,32 +38,56 @@
     <link rel="apple-touch-icon-precomposed" href="/ico/apple-touch-icon-57-precomposed.png">
     
   </head>
-  <body ng-controller="QuickrantCtrl">
+  <body ng-controller="MainCtrl">
     <div ng-include="navigation"></div>
-    <div controls class="container text-center">
-      <faces></faces>
-	    <questions ng-if="ui.showQuestions"></questions>
+    <div controls class="container">
+      <faces class="text-center"></faces>
+	    <questions class="text-center" ng-if="ui.showQuestions"></questions>
 
       <div ng-if="ui.showForm" class="row">
-        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9 form-container">
+        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9 form-container text-center">
           <div class="panel {{::ui.panelStyle}} margin-bottom-lg">
             <div class="panel-heading">
               <h3 class="panel-title" id="legend">{{ui.question}}</h3>
             </div>
             <div class="panel-body">
                 <div ng-include="form"></div>
-              <h5 class="text-danger" id="error-text"></h5>
             </div>
           </div>
         </div>
+
+      <div ng-if="ui.rant" class="rant-container" class="row">
+        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-lg-1 col-sm-1 col-xs-2">
+                  <img ng-src="/img/{{ui.emotion}}-small.gif">
+                </div>
+                <div class="col-lg-8 col-sm-10 col-xs-8">
+                  <h2 class="panel-title">{{ui.question}}</h2>
+                </div>
+                <div class="col-lg-3 col-sm-1 col-xs-2 text-right">
+                  <span class="mild-bold">Preview</span>
+                  <span class="permalink glyphicon glyphicon-eye-open"></span>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <blockquote>
+                <p>{{ui.rant}}</p>
+                <small><span class="mild-bold">{{ui.visitor}}</span> // {{ui.location}}</small>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
 
 	    <hr>
   	</div>
 
   	<rants></rants>
-    <script src="/js/third-party/jquery/jquery.js"></script>
-    <script src="/js/third-party/jquery/jquery.timeago.js"></script>
-    <script src="/js/third-party/jquery/jquery.simplyCountable.js"></script>
   </body>
 </html>
