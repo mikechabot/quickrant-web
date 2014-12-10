@@ -45,49 +45,43 @@
 	    <questions class="text-center" ng-if="ui.showQuestions"></questions>
 
       <div ng-if="ui.showForm" class="row">
-        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9 form-container text-center">
+        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9 form-container">
           <div class="panel {{::ui.panelStyle}} margin-bottom-lg">
             <div class="panel-heading">
-              <h3 class="panel-title" id="legend">{{ui.question}}</h3>
+              <h3 class="panel-title text-center" id="legend">{{ui.question}}</h3>
             </div>
             <div class="panel-body">
                 <div ng-include="form"></div>
             </div>
           </div>
-        </div>
 
-      <div ng-if="ui.rant" class="rant-container" class="row">
-        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <div class="row">
-                <div class="col-lg-1 col-sm-1 col-xs-2">
-                  <img ng-src="/img/{{ui.emotion}}-small.gif">
+          <div collapse="!ui.showPreview" class="rant-container" class="row">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <div class="row">
+                    <div class="col-lg-1 col-sm-1 col-xs-2">
+                      <img ng-src="/img/{{ui.emotion}}-small.gif">
+                    </div>
+                    <div class="col-lg-8 col-sm-10 col-xs-8">
+                      <h2 class="panel-title">{{ui.question}}</h2>
+                    </div>
+                    <div class="col-lg-3 col-sm-1 col-xs-2 text-right">
+                      <span class="permalink glyphicon glyphicon-leaf"></span>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-lg-8 col-sm-10 col-xs-8">
-                  <h2 class="panel-title">{{ui.question}}</h2>
-                </div>
-                <div class="col-lg-3 col-sm-1 col-xs-2 text-right">
-                  <span class="mild-bold">Preview</span>
-                  <span class="permalink glyphicon glyphicon-eye-open"></span>
+                <div class="panel-body">
+                  <blockquote>
+                    <p>{{ui.rant}}</p>
+                    <small><span class="mild-bold">{{ui.visitor}}</span> // {{ui.location}}</small>
+                  </blockquote>
                 </div>
               </div>
-            </div>
-            <div class="panel-body">
-              <blockquote>
-                <p>{{ui.rant}}</p>
-                <small><span class="mild-bold">{{ui.visitor}}</span> // {{ui.location}}</small>
-              </blockquote>
-            </div>
           </div>
         </div>
       </div>
-      </div>
-
 	    <hr>
   	</div>
-
   	<rants></rants>
   </body>
 </html>

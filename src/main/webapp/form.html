@@ -15,9 +15,16 @@
       <textarea rant-textarea ng-model="rant" name="rant" ng-minlength="{{minChars}}" ng-maxlength="{{maxChars}}" class="form-control" id="form-container-textarea" rows="5" placeholder="Say something..."></textarea>
     </div>
   </div>
-  <span class="help-block">
+  <span class="help-block text-center">
     <span ng-class="{'text-danger': form.$error.maxlength}">{{charsLeft()}} characters left</span>
     <span ng-if="minLengthErr"><em>({{charsToGo()}} more to go)</em></span>
   </span>
-  <button ng-class="{disabled: (form.$error.maxlength || minLengthErr)}" type="submit" id="submit" class="btn btn-default">Post</button>
+  <div class="text-center">
+    <button popover="Post Rant" popover-trigger="mouseenter" popover-placement="left" ng-class="{disabled: (form.$error.maxlength || minLengthErr)}" type="submit" id="submit" class="btn btn-default">
+      <span class="glyphicon glyphicon-send"></span>
+    </button>
+    <button popover="{{ui.previewPopover}}" popover-trigger="mouseenter" popover-placement="right" type="button" ng-class="{disabled: minLengthErr}" class="btn btn-default" ng-click="ui.showPreview = !ui.showPreview">
+      <span class="glyphicon" ng-class="{'glyphicon-eye-open': !ui.showPreview, 'glyphicon-eye-close': ui.showPreview}"></span>
+    </button>
+  </div>
 </form>

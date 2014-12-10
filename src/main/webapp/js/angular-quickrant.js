@@ -1,4 +1,4 @@
-var app = angular.module('quickrant', ['ngCookies', 'firebase']);
+var app = angular.module('quickrant', ['ngCookies', 'firebase', 'ui.bootstrap']);
 
 app.controller('MainCtrl', function($scope) {
   $scope.navigation = 'navigation.html';
@@ -11,12 +11,11 @@ app.directive('controls', function() {
   return {
     restrict: 'A',
     link: function($scope) {
-      $scope.ui = {};
 
+      $scope.ui = {};
       $scope.ui.visitor = 'Anonymous';
       $scope.ui.location = 'Earth';
-
-      $scope.isCollapsed = true;
+      $scope.ui.showPreview = false;
 
       var showQuestions = function(show) {
         $scope.ui.showQuestions = show;
@@ -38,6 +37,11 @@ app.directive('controls', function() {
       var setPanelStyle = function(style) {
         $scope.ui.panelStyle = 'panel-' + style;
       }
+
+      $scope.$watch('ui.showPreview', function(newVal, oldVal) {
+//        $scope.ui.previewPopover = newVal ? "Show Preview" : "Hide Preview";
+        $scope.ui.previewPopover = newVal ? "Hide Preview" : "Show Preview";
+      });
 
       $scope.$on('faceSelected', function(event, data) {
         $scope.$apply(function() {
@@ -227,8 +231,4 @@ app.directive('location', function() {
       });
     }
   }
-});
-
-app.controller('CollapseDemoCtrl', function ($scope) {
-  $scope.isCollapsed = false;
 });
