@@ -17,8 +17,9 @@
     <script src="/js/third-party/angular/angular-cookies.min.js"></script>
     <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
     <script src="/js/angular-quickrant.js"></script>
+    <script src="/js/services/rant-service.js"></script>
+    <script src="/js/services/session-service.js"></script>
     <script src="/js/directives.js"></script>
-    <script src="/js/services.js"></script>
     <script src="/js/data.js"></script>
     
     <!-- fonts -->
@@ -40,7 +41,7 @@
   </head>
   <body ng-controller="MainCtrl">
     <div ng-include="navigation"></div>
-    <div controls class="container">
+    <div user-controls class="container">
       <faces class="text-center"></faces>
 	    <questions class="text-center" ng-if="ui.showQuestions"></questions>
 

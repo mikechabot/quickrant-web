@@ -11,10 +11,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.quickrant.web.service.SessionService;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
-import com.quickrant.web.cache.CookieCache;
 import com.quickrant.web.security.Aegis;
 import com.quickrant.web.utils.Utils;
 
@@ -34,14 +34,14 @@ public class AegisFilter implements Filter {
 		
 		/* Load dependencies */
 		setAegis(config.getInitParameter("aegis"));
-		setCache(CookieCache.getCache());
+		setCache(SessionService.getInstance());
 	}
 
 	private void setAegis(String aegisClass) {
 		aegis = (Aegis) Utils.newInstance(aegisClass);
 	}
 	
-	private void setCache(CookieCache cache) {
+	private void setCache(SessionService cache) {
 		aegis.setCache(cache);
 	}
 

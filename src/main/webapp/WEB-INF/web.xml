@@ -78,6 +78,17 @@
     <servlet-name>AjaxController</servlet-name>
     <url-pattern>/ajax/*</url-pattern>
   </servlet-mapping>
+
+
+  <!-- Send /session requests to SessionController -->
+  <servlet>
+    <servlet-name>SessionController</servlet-name>
+    <servlet-class>com.quickrant.web.controller.SessionController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SessionController</servlet-name>
+    <url-pattern>/session/*</url-pattern>
+  </servlet-mapping>
   
   <!-- Error pages -->
   <error-page>

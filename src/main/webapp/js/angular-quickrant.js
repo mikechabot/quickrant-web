@@ -1,13 +1,36 @@
 var app = angular.module('quickrant', ['ngCookies', 'firebase', 'ui.bootstrap']);
 
-app.controller('MainCtrl', function($scope) {
+app.controller('MainCtrl', ['$scope', '$timeout', 'SessionService', function($scope, $timeout, SessionService) {
   $scope.navigation = 'navigation.html';
   $scope.form = 'form.html';
   $scope.model = {};
   $scope.model.data = data;
-});
 
-app.directive('controls', function() {
+  $scope.user = {};
+  $scope.user.session = SessionService.getSession();
+
+  var authenticate = function(session) {
+    if (!SessionService.isAuthenticated(session)) {
+      SessionService.authenticate()
+        .then(function (data) {
+          $timeout(function() {
+            if (data.data.success) {
+              $scope.user.session = SessionService.getSession();
+            } else {
+              $scope.user.session = $scope.user.session + '-X';
+            }
+          }, 250);
+        });
+    }
+  }
+
+  if (!SessionService.isAuthenticated($scope.user.session)) {
+    authenticate($scope.user.session);
+  }
+
+}]);
+
+app.directive('userControls', function() {
   return {
     restrict: 'A',
     link: function($scope) {

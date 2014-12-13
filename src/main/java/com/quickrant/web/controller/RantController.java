@@ -7,6 +7,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.quickrant.web.service.SessionService;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.javalite.activejdbc.Model;
@@ -18,7 +19,6 @@ import com.quickrant.api.models.Rant;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.api.utils.TimeUtils;
 import com.quickrant.web.Controller;
-import com.quickrant.web.cache.CookieCache;
 import com.quickrant.web.security.Aegis;
 
 @SuppressWarnings("serial")
@@ -28,6 +28,7 @@ public class RantController extends Controller {
 	private static Logger log = Logger.getLogger(RantController.class);
 	
 	private Aegis aegis;
+    private SessionService cache = SessionService.getInstance();
 	
 	@Override
 	protected String basePath() { return ""; }
@@ -36,7 +37,7 @@ public class RantController extends Controller {
 	protected void initActions(ServletConfig config) {
 		log.info("Initializing controller");		
 		/* Initialize Aegis */
-		aegis = new Aegis(CookieCache.getCache());				
+		aegis = new Aegis(SessionService.getInstance());
 		/* Add servlet actions */
 		addAction(null, new DelegateAction());
 	}	
@@ -100,7 +101,7 @@ public class RantController extends Controller {
 	public class PostAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
 			Params params = new Params(request);			
-			String cookie = params.getCookieValue(CookieCache.name);
+			String cookie = params.getCookieValue(cache.getId());
 
 			/* Reject the POST if the visitor isn't complete */
 			Visitor visitor = getExistingVisitorFromCookie(cookie);

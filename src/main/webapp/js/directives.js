@@ -15,7 +15,7 @@ app.directive('rants', function() {
   return {
     restrict: 'E',
     templateUrl: 'rants.html',
-    controller: function($scope, $element, $attrs, rantService) {
+    controller: function($scope, $element, $attrs, RantService) {
 
       $scope.rants = [];
       loadRants();
@@ -25,7 +25,7 @@ app.directive('rants', function() {
       }
 
       function loadRants() {
-        rantService.getRants().then(function(data) {
+        RantService.getRants().then(function(data) {
           setRants(data);
         });
       }

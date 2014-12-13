@@ -4,11 +4,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import com.quickrant.web.service.SessionService;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Configuration;
 import com.quickrant.api.database.Database;
-import com.quickrant.web.cache.CookieCache;
 
 
 public class Bootstrap implements ServletContextListener {
@@ -36,10 +36,9 @@ public class Bootstrap implements ServletContextListener {
 			log.info("Database reached: " + database.getVersion());
 
 			/* Initialize the cookie cache */
-			CookieCache cookieCache = CookieCache.getCache();
-			cookieCache.initializeCache(conf, "quickrant-uuid", true);
-			cookieCache.populateCookieCache();
-			
+			SessionService sessionCache = SessionService.getInstance();
+            sessionCache.initializeCache(conf, "quickrant-uuid", true);
+
 			log.info("Bootstrapping complete...");
 
 		} catch (Exception e) {

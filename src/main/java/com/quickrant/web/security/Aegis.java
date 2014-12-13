@@ -5,34 +5,33 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.quickrant.web.service.SessionService;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
 import com.quickrant.api.database.Database;
 import com.quickrant.api.database.DatabaseUtil;
 import com.quickrant.api.models.Visitor;
-import com.quickrant.web.cache.CookieCache;
 
 public class Aegis {
 	
 	private static Logger log = Logger.getLogger(Aegis.class);
 	
-	private CookieCache cache;
+	private SessionService cache;
 	
 	public Aegis() { }
 	
-	public Aegis(CookieCache cookieCache) {
+	public Aegis(SessionService cookieCache) {
 		cache = cookieCache;
 	}
 	
-	public void setCache(CookieCache cookieCache) {
+	public void setCache(SessionService cookieCache) {
 		cache = cookieCache;
 	}
 		
 	/**
 	 * Shield against certain HTTP requests
-	 * @param request
-	 * @param response
+	 * @param params
 	 * @return boolean
 	 * @throws IOException
 	 */
@@ -78,7 +77,7 @@ public class Aegis {
 	 * @return boolean
 	 */
 	private boolean protectFromInvalidCookie(Params params) {
-		String cookieValue = params.getCookieValue(CookieCache.name);
+		String cookieValue = params.getCookieValue(cache.getId());
 		
 		if (!cache.containsValue(cookieValue)) {
 			log.warn("IP address (" + params.getIpAddress()	+ ") attempted a POST without a valid cookie");
@@ -93,7 +92,7 @@ public class Aegis {
 	 * @return boolean
 	 */
 	private boolean protectFromNullCookie(Params params) {
-		String cookieValue = params.getCookieValue(CookieCache.name);
+		String cookieValue = params.getCookieValue(cache.getId());
 		if (cookieValue == null || cookieValue.isEmpty()) {
 			log.warn("IP address (" + params.getIpAddress()	+ ") attempted a POST without a null cookie");
 			return true;
@@ -109,7 +108,7 @@ public class Aegis {
 	public boolean protectFromIncompleteVisitor(Visitor visitor, Params params) {
 		if (visitor == null) return true;
 		if (!visitor.isComplete()) {
-			log.warn("IP address (" + params.getIpAddress()	+ ") attempted a POST without completing the AJAX roundtrip");
+			log.warn("IP address (" + params.getIpAddress()	+ ") attempted a POST without completing the roundtrip");
 			return true;
 		}
 		return false;

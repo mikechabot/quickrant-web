@@ -15,9 +15,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.quickrant.web.utils.StringUtil;
 import org.apache.log4j.Logger;
-
-import com.quickrant.web.utils.StringUtils;
 
 public class ExclusionFilter implements Filter {
 
@@ -30,7 +29,7 @@ public class ExclusionFilter implements Filter {
 		log.info("Initializing filter");
 		
 		/* Compile the exclusion patterns */
-		List<String> exclusions = StringUtils.getListFromCsv(config.getInitParameter("exclusions"));
+		List<String> exclusions = StringUtil.getListFromCsv(config.getInitParameter("exclusions"));
 		compilePatterns(exclusions);
 	}
 	
@@ -69,7 +68,7 @@ public class ExclusionFilter implements Filter {
 	
 	private void compilePatterns(List<String> exclusions) {
 		for (String each : exclusions) {
-			log.info("Adding exclusion: " + StringUtils.despecialize(each));
+			log.info("Adding exclusion: " + StringUtil.despecialize(each));
 			Pattern pattern = Pattern.compile(each);
 			patterns.add(pattern);
 		}

@@ -12,7 +12,7 @@ var data = [{
   }, {
     "text": "You know what makes me smile?"
   }, {
-    "text": "You know what make me happy?"
+    "text": "You know what makes me happy?"
   }, {
     "text": "You know what I like?"
   }, {

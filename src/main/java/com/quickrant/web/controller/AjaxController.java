@@ -5,20 +5,20 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.quickrant.web.service.SessionService;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Rant;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.web.Controller;
-import com.quickrant.web.cache.CookieCache;
 
 @SuppressWarnings("serial")
 public class AjaxController extends Controller {
 
 	private static Logger log = Logger.getLogger(AjaxController.class);
 	
-	private CookieCache cache;
+	private SessionService cache;
 	
 	@Override
 	protected String basePath() { return ""; }
@@ -28,7 +28,7 @@ public class AjaxController extends Controller {
 		log.info("Initializing controller");
 		
 		/* Get a copy of the cache */
-		cache = CookieCache.getCache();		
+		cache = SessionService.getInstance();
 
 		/* Add servlet actions */
 		addAction(null, new OffsetAction());
@@ -55,8 +55,8 @@ public class AjaxController extends Controller {
 			}			
 
 			/* Get the cookie, modify it, and update the cache */
-			String oldCookie = params.getCookie(CookieCache.name).getValue();		
-			Cookie newCookie = cache.getCookie(oldCookie + "*");
+			String oldCookie = params.getCookie(cache.getId()).getValue();
+			Cookie newCookie = cache.generateCookie(oldCookie + "*");
 			cache.updateByValue(oldCookie, newCookie.getValue());
 
 			/* Retrieve the existing visitor record, and update it */

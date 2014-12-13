@@ -12,23 +12,23 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.quickrant.web.service.SessionService;
 import org.apache.log4j.Logger;
 
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Visitor;
-import com.quickrant.web.cache.CookieCache;
 
 public class RequestFilter implements Filter {
 
 	private static Logger log = Logger.getLogger(RequestFilter.class);
 	
-	private CookieCache cache;
+	private SessionService cache;
 
 	@Override
 	public void init(FilterConfig config) {
 		log.info("Initializing filter");
 		/* Get a copy of the cache */
-		cache = (CookieCache) CookieCache.getCache();
+		cache = (SessionService) SessionService.getInstance();
 	}
 
 	@Override
@@ -46,9 +46,9 @@ public class RequestFilter implements Filter {
 		
 		/* If necessary, create a new Visitor and attach a cookie to the response */
 		Params params = new Params(request);
-		String value = params.getCookieValue(CookieCache.name);
+		String value = params.getCookieValue(cache.getId());
 		if (!cache.containsValue(value)) {
-			Cookie cookie = cache.newCookie();
+			Cookie cookie = cache.createNewSession();
 			response.addCookie(cookie);
 			Visitor visitor = new Visitor();
 			visitor.setCookie(cookie.getValue());
