@@ -4,13 +4,19 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.quickrant.web.service.SessionService;
+
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SessionController extends JsonRestService {
 
@@ -48,35 +54,43 @@ public class SessionController extends JsonRestService {
         @Override
         public JsonElement execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-            JsonObject results = new JsonObject();
+            Results results = null;
 
             /* Get the session cookie */
             Cookie cookie = getSessionCookie(request);
 
-            /* Deny access if there's no session */
+            /* Deny access if there's no session cookie */
             if (cookie == null) {
                 String message = request.getRemoteAddr() + " is attempting to authenticate without session cookie";
-                results.addProperty("success", false);
-                results.addProperty("message", message);
-                log.warn(message);
+                results = resultsFactory.getSuccessWithMessage(message);
+                log.warn(results.getMessage());
             } else {
-                /* Deny access if session cookie is invalid */
-                if (!sessionService.sessionExists(cookie)) {
-                    String message = request.getRemoteAddr() + " is attempting to authenticate without a valid session cookie";
-                    results.addProperty("success", false);
-                    results.addProperty("message", message);
-                    log.warn(message);
-                } else {
+                /* Can't authenticate if the session doesn't exist */
+                if (!sessionService.cookieExists(cookie)) {
+                    results = resultsFactory.getFailureWithMessage(request.getRemoteAddr() + " is attempting to authenticate without a valid session cookie");
+                    log.warn(results.getMessage());
+                } else if (!isAuthenticated(cookie)) {
                     Cookie authCookie = sessionService.generateCookie(cookie.getValue() + "*");
-                    String message = request.getRemoteAddr() + " is attempting to authenticate without a valid session cookie BERNDDS";
-                    results.addProperty("message", message);
-                    sessionService.updateByValue(cookie.getValue(), authCookie.getValue());
+                    sessionService.updateSession(cookie.getValue(), authCookie.getValue());
                     response.addCookie(authCookie);
-                    results.addProperty("success", true);
+                    results = resultsFactory.getSuccess();
                 }
             }
+            JsonObject object = new JsonParser().parse(new Gson().toJson(results)).getAsJsonObject();
+            return object;
+        }
 
-            return results;
+        /**
+         * Determine if the cookie ends with "*"
+         * This can be spoofed, but it won't do any good
+         *
+         * @param cookie
+         * @return
+         */
+        public boolean isAuthenticated(Cookie cookie) {
+            Pattern pattern = Pattern.compile("\\*$");
+            Matcher matcher = pattern.matcher(cookie.getValue());
+            return matcher.find();
         }
 
         /**
@@ -85,10 +99,17 @@ public class SessionController extends JsonRestService {
          * @return
          */
         public Cookie getSessionCookie(HttpServletRequest request) {
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals(sessionService.getId())) return cookie;
+            Cookie[] cookies = request.getCookies();
+            if (cookies == null || cookies.length == 0) {
+                return null;
+            } else {
+                for (Cookie cookie : request.getCookies()) {
+                    if (cookie.getName().equals(sessionService.getId())) {
+                        return cookie;
+                    }
+                }
+                return null;
             }
-            return null;
         }
     }
 

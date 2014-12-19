@@ -14,8 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.quickrant.web.service.SessionService;
 import org.apache.log4j.Logger;
 
-import com.quickrant.api.Params;
-import com.quickrant.web.security.Aegis;
+import com.quickrant.web.security.AegisService;
 import com.quickrant.web.utils.Utils;
 
 /**
@@ -26,23 +25,23 @@ public class AegisFilter implements Filter {
 
 	private static Logger log = Logger.getLogger(AegisFilter.class);
 
-	private Aegis aegis;
+	private AegisService aegisService;
 
 	@Override
 	public void init(FilterConfig config) {
 		log.info("Initializing filter");
 		
 		/* Load dependencies */
-		setAegis(config.getInitParameter("aegis"));
+		setAegisService(config.getInitParameter("aegis"));
 		setCache(SessionService.getInstance());
 	}
 
-	private void setAegis(String aegisClass) {
-		aegis = (Aegis) Utils.newInstance(aegisClass);
+	private void setAegisService(String aegisClass) {
+		aegisService = (AegisService) Utils.newInstance(aegisClass);
 	}
 	
 	private void setCache(SessionService cache) {
-		aegis.setCache(cache);
+		aegisService.setSessionService(cache);
 	}
 
 	@Override
@@ -52,13 +51,13 @@ public class AegisFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest request = (HttpServletRequest) req;
-		HttpServletResponse response = (HttpServletResponse) res;
-		
+
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
+
 		/* Deny the request if necessary */
-		Params params = new Params(request);
-		if (aegis.protectFrom(params)) {
-			response.sendError(403);
+		if (aegisService.denyRequest(request)) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 		

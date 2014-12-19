@@ -21,6 +21,8 @@ import org.apache.log4j.Logger;
 
 public abstract class JsonRestService extends HttpServlet  {
 
+    protected ResultsFactory resultsFactory = new ResultsFactory();
+
     private static Logger log = Logger.getLogger(JsonRestService.class);
 
     /**
@@ -232,6 +234,67 @@ public abstract class JsonRestService extends HttpServlet  {
      */
     protected JsonObject getRequestBodyAsJson(HttpServletRequest request) throws IOException {
         return new JsonParser().parse(getRequestBodyAsString(request)).getAsJsonObject();
+    }
+
+    /**
+     * Factory used to generate Results objects that'lld be turned into JSON
+     */
+    protected class ResultsFactory {
+
+        public Results getSuccess() {
+            return new Success(null);
+        }
+
+        public Results getFailure() {
+            return new Failure(null);
+        }
+
+        public Results getSuccessWithMessage(String message) {
+            return new Success(message);
+        }
+
+        public Results getFailureWithMessage(String message) {
+            return new Failure(message);
+        }
+
+        private class Success extends Results {
+            public Success(String message) {
+                super(true, message);
+            }
+        }
+
+        private class Failure extends Results {
+            public Failure(String message) {
+                super(false, message);
+            }
+        }
+    }
+
+    protected class Results {
+
+        private boolean success;
+        private String message;
+
+        private Results(boolean success, String message) {
+            this.success = success;
+            this.message = message;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public void setSuccess(boolean success) {
+            this.success = success;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
     }
 
 }

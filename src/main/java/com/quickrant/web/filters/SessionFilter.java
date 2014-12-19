@@ -18,22 +18,21 @@ import org.apache.log4j.Logger;
 import com.quickrant.api.Params;
 import com.quickrant.api.models.Visitor;
 
-public class RequestFilter implements Filter {
+public class SessionFilter implements Filter {
 
-	private static Logger log = Logger.getLogger(RequestFilter.class);
+	private static Logger log = Logger.getLogger(SessionFilter.class);
 	
-	private SessionService cache;
+	private SessionService sessionService;
 
 	@Override
 	public void init(FilterConfig config) {
-		log.info("Initializing filter");
-		/* Get a copy of the cache */
-		cache = (SessionService) SessionService.getInstance();
+		log.info("Initializing SessionFilter");
+		sessionService = SessionService.getInstance();
 	}
 
 	@Override
 	public void destroy() {
-		log.info("Destroying filter");
+		log.info("Destroying SessionFilter");
 	}
 
 	@Override
@@ -43,33 +42,14 @@ public class RequestFilter implements Filter {
 
 		/* Set response headers to 'no-cache' */
 		setResponseHeaders(response);
-		
-		/* If necessary, create a new Visitor and attach a cookie to the response */
-		Params params = new Params(request);
-		String value = params.getCookieValue(cache.getId());
-		if (!cache.containsValue(value)) {
-			Cookie cookie = cache.createNewSession();
-			response.addCookie(cookie);
-			Visitor visitor = new Visitor();
-			visitor.setCookie(cookie.getValue());
-			visitor.setIpAddress(params.getIpAddress());
-			visitor.setUserAgent(params.getUserAgent());
-			visitor.setFingerprint(getFingerprint(params));
-			visitor.setComplete(false);
-			visitor.saveIt();
-			value = visitor.getCookie();
-		}
-		request.setAttribute("cookieValue", value);
-		chain.doFilter(request, response);
-	}
 
-	/**
-	 * Generate a fingerprint
-	 * @param params
-	 * @return
-	 */
-	private String getFingerprint(Params params) {
-		return params.getIpAddress() + ":" + params.getUserAgent();
+		if (!sessionService.hasActiveSession(request)) {
+            Cookie session = sessionService.createNewSession();
+            response.addCookie(session);
+            // TODO: create and save a new visitor (cookie, ip, user-agent, fingerprint, completed status)
+        }
+
+		chain.doFilter(request, response);
 	}
 
 	/**

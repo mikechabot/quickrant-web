@@ -19,7 +19,7 @@ import com.quickrant.api.models.Rant;
 import com.quickrant.api.models.Visitor;
 import com.quickrant.api.utils.TimeUtils;
 import com.quickrant.web.Controller;
-import com.quickrant.web.security.Aegis;
+import com.quickrant.web.security.AegisService;
 
 @SuppressWarnings("serial")
 public class RantController extends Controller {
@@ -27,7 +27,7 @@ public class RantController extends Controller {
 	public static final String RANT_SQL = "select id, created_at, emotion_id, question_id, rant, visitor_name, location from rants order by id desc limit 20";
 	private static Logger log = Logger.getLogger(RantController.class);
 	
-	private Aegis aegis;
+	private AegisService aegisService;
     private SessionService cache = SessionService.getInstance();
 	
 	@Override
@@ -37,7 +37,7 @@ public class RantController extends Controller {
 	protected void initActions(ServletConfig config) {
 		log.info("Initializing controller");		
 		/* Initialize Aegis */
-		aegis = new Aegis(SessionService.getInstance());
+		aegisService = new AegisService(SessionService.getInstance());
 		/* Add servlet actions */
 		addAction(null, new DelegateAction());
 	}	
@@ -105,7 +105,7 @@ public class RantController extends Controller {
 
 			/* Reject the POST if the visitor isn't complete */
 			Visitor visitor = getExistingVisitorFromCookie(cookie);
-			if (aegis.protectFromIncompleteVisitor(visitor, params)) {
+			if (aegisService.protectFromIncompleteVisitor(visitor, params)) {
 				response.sendError(403);
 				return null;
 			}

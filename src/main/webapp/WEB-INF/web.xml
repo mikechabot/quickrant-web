@@ -1,9 +1,7 @@
-<web-app 
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    version="3.0">
-  
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+
   <display-name>quickrant</display-name>
   
   <!-- Bootstrap class runs during servlet container creation -->
@@ -41,7 +39,7 @@
     <filter-class>com.quickrant.web.filters.AegisFilter</filter-class>
     <init-param>
       <param-name>aegis</param-name>
-      <param-value>com.quickrant.web.security.Aegis</param-value>
+      <param-value>com.quickrant.web.security.AegisService</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -52,7 +50,7 @@
   <!-- Process incoming requests -->
   <filter>
     <filter-name>RequestFilter</filter-name>
-    <filter-class>com.quickrant.web.filters.RequestFilter</filter-class>
+    <filter-class>com.quickrant.web.filters.SessionFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>RequestFilter</filter-name>

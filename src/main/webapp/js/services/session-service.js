@@ -12,7 +12,7 @@ app.service('SessionService', function($cookies, $http) {
 
     /* Server appends '*' to sessionId
     *  This can be spoofed, but it won't do any good
-    * */
+    */
     var isAuthenticated = function(cookie) {
       return cookie.match('\\*$');
     };

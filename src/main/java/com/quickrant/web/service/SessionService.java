@@ -1,8 +1,11 @@
 package com.quickrant.web.service;
 
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -24,7 +27,7 @@ public class SessionService extends Cache {
 	}
 
 	/**
-	 * Create and store a new session in the cache, return a Cookie
+	 * Create a new session cookie, and store the value in the cache
 	 *   (e.g. b0461f4e-e0e6-4c42-8f81-d77d287fad56)
 	 * @return Cookie
 	 */
@@ -48,14 +51,47 @@ public class SessionService extends Cache {
 	
 	/**
 	 * See if the cache contains a cookie
-	 * @param cookies
+	 * @param cookie
 	 * @return
 	 */
-	public boolean sessionExists(Cookie cookie) {
+	public boolean cookieExists(Cookie cookie) {
+        if (cookie == null) throw new IllegalArgumentException("Cookie cannot be null");
 		return containsValue(cookie.getValue());
 	}
 
-	/**
+    /**
+     * Determine whether an active session was attached to the request
+     * @param request
+     * @return
+     */
+    public boolean hasActiveSession(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) {
+            return false;
+        } else {
+            Cookie session = null;
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(id)) {
+                    session = cookie;
+                }
+            }
+            if (session == null) {
+                return false;
+            }
+            return cookieExists(session);
+        }
+    }
+
+    /**
+     * Update an existing session with a new session id
+     * @param oldSessionId
+     * @param newSessionId
+     */
+    public void updateSession(String oldSessionId, String newSessionId) {
+        updateByValue(oldSessionId, newSessionId);
+    }
+
+    /**
 	 * Utility class for random string generation
 	 */
 	private static class Util {

@@ -18,7 +18,7 @@ public class AjaxController extends Controller {
 
 	private static Logger log = Logger.getLogger(AjaxController.class);
 	
-	private SessionService cache;
+	private SessionService sessionService;
 	
 	@Override
 	protected String basePath() { return ""; }
@@ -28,7 +28,7 @@ public class AjaxController extends Controller {
 		log.info("Initializing controller");
 		
 		/* Get a copy of the cache */
-		cache = SessionService.getInstance();
+		sessionService = SessionService.getInstance();
 
 		/* Add servlet actions */
 		addAction(null, new OffsetAction());
@@ -55,9 +55,9 @@ public class AjaxController extends Controller {
 			}			
 
 			/* Get the cookie, modify it, and update the cache */
-			String oldCookie = params.getCookie(cache.getId()).getValue();
-			Cookie newCookie = cache.generateCookie(oldCookie + "*");
-			cache.updateByValue(oldCookie, newCookie.getValue());
+			String oldCookie = params.getCookie(sessionService.getId()).getValue();
+			Cookie newCookie = sessionService.generateCookie(oldCookie + "*");
+			sessionService.updateSession(oldCookie, newCookie.getValue());
 
 			/* Retrieve the existing visitor record, and update it */
 			Visitor existing = Visitor.findFirst("cookie = ?", oldCookie);
@@ -81,8 +81,8 @@ public class AjaxController extends Controller {
 		/**
 		* Complete the visitor by adding additional client-side information
 		* @param existing
-		* @param params
-		* @param cookie
+		* @param incoming
+		* @param cookieValue
 		*/
 		public void completeVisitor(Visitor existing, Visitor incoming, String cookieValue) {
 			/* Update the existing record with request data */
@@ -100,8 +100,8 @@ public class AjaxController extends Controller {
 		* "0:0:0:0:0:0:0:1:Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36
 		* (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36"
 		*
-		* @param Visitor
 		* @param existing
+		* @param incoming
 		* @return String
 		*/
 		private String getFingerprint(Visitor existing, Visitor incoming) {
