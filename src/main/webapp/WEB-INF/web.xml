@@ -9,16 +9,6 @@
     <listener-class>com.quickrant.web.Bootstrap</listener-class>
   </listener>
 
-  <!--&lt;!&ndash; Open a connection for each request &ndash;&gt;-->
-  <!--<filter>-->
-    <!--<filter-name>ActiveJdbcFilter</filter-name>-->
-    <!--<filter-class>com.quickrant.api.filters.ActiveJdbcFilter</filter-class>-->
-  <!--</filter>-->
-  <!--<filter-mapping>-->
-    <!--<filter-name>ActiveJdbcFilter</filter-name>-->
-    <!--<url-pattern>/*</url-pattern>-->
-  <!--</filter-mapping>-->
-  
   <!-- Don't waste cycles on certain requests -->
   <filter>
     <filter-name>ExclusionFilter</filter-name>
@@ -49,34 +39,13 @@
   
   <!-- Process incoming requests -->
   <filter>
-    <filter-name>RequestFilter</filter-name>
+    <filter-name>SessionFilter</filter-name>
     <filter-class>com.quickrant.web.filters.SessionFilter</filter-class>
   </filter>
   <filter-mapping>
-    <filter-name>RequestFilter</filter-name>
+    <filter-name>SessionFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-
-  <!-- Send /rant requests to RantController -->
-  <!--<servlet>-->
-    <!--<servlet-name>RantController</servlet-name>-->
-    <!--<servlet-class>com.quickrant.web.controller.RantController</servlet-class>-->
-  <!--</servlet>-->
-  <!--<servlet-mapping>-->
-    <!--<servlet-name>RantController</servlet-name>-->
-    <!--<url-pattern>/rant/*</url-pattern>-->
-  <!--</servlet-mapping>-->
-  
-  <!-- Send /ajax requests to AjaxController -->
-  <servlet>
-    <servlet-name>AjaxController</servlet-name>
-    <servlet-class>com.quickrant.web.controller.AjaxController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AjaxController</servlet-name>
-    <url-pattern>/ajax/*</url-pattern>
-  </servlet-mapping>
-
 
   <!-- Send /session requests to SessionController -->
   <servlet>
