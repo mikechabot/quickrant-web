@@ -4,13 +4,13 @@ app.controller('MainCtrl', ['$scope', '$timeout', 'SessionService', function($sc
 
   $scope.model = {};
   $scope.user = {};
-  $scope.user.session = SessionService.getSession();
+  $scope.user.session = SessionService.getSessionCookie();
 
   var init = function() {
     SessionService.authenticate()
       .then(function (data) {
         $timeout(function () {
-          $scope.user.session = data.data.success ? SessionService.getSession() : $scope.user.session + '-X';
+          $scope.user.session = data.data.success ? SessionService.getSessionCookie() : $scope.user.session + '-X';
         }, 100);
       })
       .finally(function () {

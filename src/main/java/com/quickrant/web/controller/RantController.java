@@ -54,10 +54,10 @@ public class RantController extends Controller {
 	public class DelegateAction implements Action {
 		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 			String method = request.getMethod().toUpperCase();
-			
+
 			if (method.equals("GET")) return new GetAction().execute(request, response);
 			if (method.equals("POST")) return new PostAction().execute(request, response);
-			
+
 			/* We really should get here, but if we do, just redirect back home */
 			response.sendRedirect(request.getContextPath() + "/" + basePath());
 			return null;
@@ -78,8 +78,8 @@ public class RantController extends Controller {
 				request.setAttribute("rants", rants);
 			} else if (action.matches("\\/([0-9]+)$")) {
 				Model rant = Rant.findById(getId(action));
-				if (rant == null) { 
-					response.sendError(404); 
+				if (rant == null) {
+					response.sendError(404);
 					return null;
 				}
 				request.setAttribute("rant", rant);
@@ -89,26 +89,26 @@ public class RantController extends Controller {
 			request.setAttribute("emotions", Emotion.findAll());
 			return basePath() + "/index.html";
 		}
-		
+
 		private int getId(String action) {
 			return Integer.valueOf(action.replaceAll("/", ""));
-		}		
+		}
 	}
 
 	/**
 	 * Handle POST requests to /rant
 	 */
 	public class PostAction implements Action {
-		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {			
-			Params params = new Params(request);			
+		public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+			Params params = new Params(request);
 			String cookie = params.getCookieValue(cache.getId());
 
-			/* Reject the POST if the visitor isn't complete */
-			Visitor visitor = getExistingVisitorFromCookie(cookie);
-			if (aegisService.protectFromIncompleteVisitor(visitor, params)) {
-				response.sendError(403);
-				return null;
-			}
+//			/* Reject the POST if the visitor isn't complete */
+//			Visitor visitor = getExistingVisitorFromCookie(cookie);
+//			if (aegisService.protectFromIncompleteVisitor(visitor, params)) {
+//				response.sendError(403);
+//				return null;
+//			}
 
 			/* Save the rant */
 			if (saveRant(params.getMap(), cookie)) {
@@ -116,53 +116,53 @@ public class RantController extends Controller {
 			} else {
 				request.getSession().setAttribute("success", false);
 			}
-			
+
 			response.sendRedirect(request.getContextPath() + "/" + basePath());
 			return null;
 		}
-		
+
 		public Visitor getExistingVisitorFromCookie(String cookie) {
 			if (cookie == null || cookie.isEmpty()) return null;
 			return (Visitor) Visitor.findFirst("cookie = ?", cookie);
 		}
-		
+
 		public boolean saveRant(Map<String, String> map, String cookie) {
 			Rant rant = new Rant();
 			Visitor visitor = new Visitor();
 			Emotion emotion = new Emotion();
 			Question question = new Question();
-			
+
 			/* Parse objects from parameter map */
 			rant.fromMap(map);
 			visitor.fromMap(map);
 			emotion.fromMap(map);
 			question.fromMap(map);
-			
+
 			/* Scrub the text of any bullshit */
 			scrubRant(rant);
-			
+
 			/* Set some defaults if necessary */
 			setDefaults(rant);
-			
+
 			/* Fetch question and emotion */
 			visitor = Visitor.findFirst("cookie = ?", cookie);
 			emotion = Emotion.findFirst("emotion = ?", emotion.getEmotion());
 			question = Question.findFirst("question = ?", question.getQuestion());
-	
+
 			/* Set last rant time */
 			visitor.setLastRant(TimeUtils.getNowTimestamp());
-	
+
 			/* Set foreign keys */
 			rant.setVisitorId((int) visitor.getId());
 			rant.setEmotionId((int) emotion.getId());
 			rant.setQuestionId((int) question.getId());
-	
+
 			/* Check if rant is valid, then save */
 			if (!rant.isValid()) return false;
 			if (!visitor.isValid()) return false;
 			rant.saveIt();
 			visitor.saveIt();
-			
+
 			return true;
 		}
 

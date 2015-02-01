@@ -19,6 +19,10 @@ public class SessionService extends Cache {
 
 	private SessionService() { }
 
+    /**
+     * Singleton cache
+     * @return
+     */
 	public static SessionService getInstance() {
 	    if (cache == null) {
 	    	cache = new SessionService();
@@ -31,10 +35,10 @@ public class SessionService extends Cache {
 	 *   (e.g. b0461f4e-e0e6-4c42-8f81-d77d287fad56)
 	 * @return Cookie
 	 */
-	public Cookie createNewSession() {
-		String value = Util.getRandomUUID();
+	public Cookie newSession() {
+		String value = generateSessionId();
 		put(newEntry(value));
-		return generateCookie(value);
+		return newCookie(value, null);
 	}
 
 	/**
@@ -42,7 +46,8 @@ public class SessionService extends Cache {
 	 * @param value
 	 * @return
 	 */
-	public Cookie generateCookie(String value) {
+	public Cookie newCookie(String value, String suffix) {
+        if (suffix != null)  value += suffix;
 		Cookie cookie = new Cookie(id, value);
 		cookie.setMaxAge((int) expiry * 60);
 		cookie.setPath("/");
@@ -54,7 +59,7 @@ public class SessionService extends Cache {
 	 * @param cookie
 	 * @return
 	 */
-	public boolean cookieExists(Cookie cookie) {
+	public boolean exists(Cookie cookie) {
         if (cookie == null) throw new IllegalArgumentException("Cookie cannot be null");
 		return containsValue(cookie.getValue());
 	}
@@ -69,16 +74,12 @@ public class SessionService extends Cache {
         if (cookies == null || cookies.length == 0) {
             return false;
         } else {
-            Cookie session = null;
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(id)) {
-                    session = cookie;
+                    return exists(cookie);
                 }
             }
-            if (session == null) {
-                return false;
-            }
-            return cookieExists(session);
+            return false;
         }
     }
 
@@ -89,6 +90,37 @@ public class SessionService extends Cache {
      */
     public void updateSession(String oldSessionId, String newSessionId) {
         updateByValue(oldSessionId, newSessionId);
+    }
+
+    public Cookie getSession(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) {
+            return null;
+        } else {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals(id)) {
+                    return cookie;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Determine if the cookie ends with "*"
+     * This can be spoofed, but it won't do any good
+     *
+     * @param cookie
+     * @return
+     */
+    public boolean isAuthenticated(Cookie cookie) {
+        Pattern pattern = Pattern.compile("\\*$");
+        Matcher matcher = pattern.matcher(cookie.getValue());
+        return matcher.find();
+    }
+
+    public String generateSessionId() {
+        return Util.getRandomUUID();
     }
 
     /**

@@ -30,7 +30,6 @@ public class AegisFilter implements Filter {
 	@Override
 	public void init(FilterConfig config) {
 		log.info("Initializing filter");
-		
 		/* Load dependencies */
 		setAegisService(config.getInitParameter("aegis"));
 		setCache(SessionService.getInstance());
@@ -51,16 +50,13 @@ public class AegisFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-
 		/* Deny the request if necessary */
 		if (aegisService.denyRequest(request)) {
 			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
-		
 		chain.doFilter(request, response);
 	}
 

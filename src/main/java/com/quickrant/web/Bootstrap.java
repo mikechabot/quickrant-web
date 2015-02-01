@@ -30,10 +30,10 @@ public class Bootstrap implements ServletContextListener {
 			conf.initialize(path);
 			log.info("Loaded rant.properties");
 
-			/* Database stuff */
-			Database database = new Database();
-			database.startStatisticsJob();
-			log.info("Database reached: " + database.getVersion());
+//			/* Database stuff */
+//			Database database = new Database();
+//			database.startStatisticsJob();
+//			log.info("Database reached: " + database.getVersion());
 
 			/* Initialize the cookie cache */
 			SessionService sessionCache = SessionService.getInstance();

@@ -15,9 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.quickrant.web.service.SessionService;
 import org.apache.log4j.Logger;
 
-import com.quickrant.api.Params;
-import com.quickrant.api.models.Visitor;
-
 public class SessionFilter implements Filter {
 
 	private static Logger log = Logger.getLogger(SessionFilter.class);
@@ -44,7 +41,7 @@ public class SessionFilter implements Filter {
 		setResponseHeaders(response);
 
 		if (!sessionService.hasActiveSession(request)) {
-            Cookie session = sessionService.createNewSession();
+            Cookie session = sessionService.newSession();
             response.addCookie(session);
             // TODO: create and save a new visitor (cookie, ip, user-agent, fingerprint, completed status)
         }

@@ -4,23 +4,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.quickrant.web.service.SessionService;
 
-import org.apache.log4j.Logger;
-
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SessionController extends JsonRestService {
-
-    private static Logger log = Logger.getLogger(SessionController.class);
 
     private SessionService sessionService = SessionService.getInstance();
 
@@ -32,7 +23,7 @@ public class SessionController extends JsonRestService {
     @Override
     public void registerMappings() {
         /* Register POST urls */
-        registerPostMapping("/auth", new PostAuthenticateAction(HttpMethod.POST));
+        registerPostMapping("/auth", new PostActionAuthentication(HttpMethod.POST));
     }
 
     public class PostAction extends Action {
@@ -49,67 +40,40 @@ public class SessionController extends JsonRestService {
         }
     }
 
-    public class PostAuthenticateAction extends Action {
-        public PostAuthenticateAction(HttpMethod methodType) { super(methodType); }
+    public class PostActionAuthentication extends Action {
+        public PostActionAuthentication(HttpMethod methodType) { super(methodType); }
         @Override
         public JsonElement execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-            Results results = null;
-
-            /* Get the session cookie */
-            Cookie cookie = getSessionCookie(request);
-
-            /* Deny access if there's no session cookie */
-            if (cookie == null) {
-                String message = request.getRemoteAddr() + " is attempting to authenticate without session cookie";
-                results = resultsFactory.getSuccessWithMessage(message);
-                log.warn(results.getMessage());
+            /* Aegis cleans up any bad requests, we can trust these are valid sessions */
+            Cookie cookie = sessionService.getSession(request);
+            if (!sessionService.isAuthenticated(cookie)) {
+                Cookie authenticated = sessionService.newCookie(sessionService.generateSessionId(), "*");
+                sessionService.updateSession(cookie.getValue(), authenticated.getValue());
+                response.addCookie(authenticated);
+                return AjaxResponseFactory.getSuccess(SessionStates.AUTHENTICATING.getState(), cookieSwap(cookie, authenticated)).getResponse();
             } else {
-                /* Can't authenticate if the session doesn't exist */
-                if (!sessionService.cookieExists(cookie)) {
-                    results = resultsFactory.getFailureWithMessage(request.getRemoteAddr() + " is attempting to authenticate without a valid session cookie");
-                    log.warn(results.getMessage());
-                } else if (!isAuthenticated(cookie)) {
-                    Cookie authCookie = sessionService.generateCookie(cookie.getValue() + "*");
-                    sessionService.updateSession(cookie.getValue(), authCookie.getValue());
-                    response.addCookie(authCookie);
-                    results = resultsFactory.getSuccess();
-                }
+              return AjaxResponseFactory.getSuccess(SessionStates.EXISTING_SESSION.getState(), null).getResponse();
             }
-            JsonObject object = new JsonParser().parse(new Gson().toJson(results)).getAsJsonObject();
-            return object;
         }
 
-        /**
-         * Determine if the cookie ends with "*"
-         * This can be spoofed, but it won't do any good
-         *
-         * @param cookie
-         * @return
-         */
-        public boolean isAuthenticated(Cookie cookie) {
-            Pattern pattern = Pattern.compile("\\*$");
-            Matcher matcher = pattern.matcher(cookie.getValue());
-            return matcher.find();
+        private JsonObject cookieSwap(Cookie previous, Cookie updated) {
+            JsonObject data = new JsonObject();
+            data.addProperty("previous", previous.getValue());
+            data.addProperty("updated", updated.getValue());
+            return data;
         }
+    }
 
-        /**
-         * Return a Cookie corresponding to the SessionService id (e.g. 'some-session-id')
-         * @param request
-         * @return
-         */
-        public Cookie getSessionCookie(HttpServletRequest request) {
-            Cookie[] cookies = request.getCookies();
-            if (cookies == null || cookies.length == 0) {
-                return null;
-            } else {
-                for (Cookie cookie : request.getCookies()) {
-                    if (cookie.getName().equals(sessionService.getId())) {
-                        return cookie;
-                    }
-                }
-                return null;
-            }
+    private enum SessionStates {
+        AUTHENTICATING("Authenticating"),
+        EXISTING_SESSION("Existing session");
+
+        private final String state;
+        SessionStates(String state) {
+            this.state = state;
+        }
+        public String getState() {
+            return state;
         }
     }
 

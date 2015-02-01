@@ -6,7 +6,7 @@ app.service('SessionService', function($cookies, $http) {
      * Get the current session
      * @returns {*}
      */
-    var getSession = function() {
+    var getSessionCookie = function() {
       return $cookies[sessionId];
     };
 
@@ -18,15 +18,19 @@ app.service('SessionService', function($cookies, $http) {
     };
 
     var authenticate = function() {
+
+      var data = JSON.stringify({
+        screen_height: window.screen.availHeight,
+        screen_width: window.screen.availWidth,
+        screen_color: window.screen.colorDepth
+      });
+
       var request = {
         method: 'POST',
         url: '/session/auth',
-        data: {
-          screen_height: window.screen.availHeight,
-          screen_width: window.screen.availWidth,
-          screen_color: window.screen.colorDepth
-        }
-      }
+        data: data
+      };
+
       return $http(request).
         success(function (data, status) {
           return { data: data, status: status };
@@ -39,7 +43,7 @@ app.service('SessionService', function($cookies, $http) {
 
     /* Return API */
     return ({
-              getSession: getSession,
+        getSessionCookie: getSessionCookie,
          isAuthenticated: isAuthenticated,
             authenticate: authenticate
     });

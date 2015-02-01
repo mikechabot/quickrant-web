@@ -48,7 +48,6 @@ public class AegisService {
                 }
                 break;
         }
-
 		return false;
 	}
 
@@ -59,20 +58,6 @@ public class AegisService {
 	 */
 	private boolean isBanned(HttpServletRequest request) {
 	    // check for ban status
-		return false;
-	}
-	
-	/**
-	 * Deny access if the visitor object isn't complete
-	 * @param params
-	 * @return boolean
-	 */
-	public boolean protectFromIncompleteVisitor(Visitor visitor, Params params) {
-		if (visitor == null) return true;
-		if (!visitor.isComplete()) {
-			log.warn("IP address (" + params.getIpAddress()	+ ") attempted a POST without completing the roundtrip");
-			return true;
-		}
 		return false;
 	}
 

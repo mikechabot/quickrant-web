@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,7 +22,8 @@ import org.apache.log4j.Logger;
 
 public abstract class JsonRestService extends HttpServlet  {
 
-    protected ResultsFactory resultsFactory = new ResultsFactory();
+    protected JsonParser parser = new JsonParser();
+    protected Gson gson = new Gson();
 
     private static Logger log = Logger.getLogger(JsonRestService.class);
 
@@ -233,51 +235,55 @@ public abstract class JsonRestService extends HttpServlet  {
      * @throws IOException
      */
     protected JsonObject getRequestBodyAsJson(HttpServletRequest request) throws IOException {
-        return new JsonParser().parse(getRequestBodyAsString(request)).getAsJsonObject();
+        return parser.parse(getRequestBodyAsString(request)).getAsJsonObject();
     }
 
     /**
-     * Factory used to generate Results objects that'lld be turned into JSON
+     * Factory for generating AjaxResponses
      */
-    protected class ResultsFactory {
+    protected static class AjaxResponseFactory {
 
-        public Results getSuccess() {
-            return new Success(null);
+        public static AjaxResponse getSuccess(String message, JsonElement data) {
+            return new AjaxResponse(true, message, data);
         }
 
-        public Results getFailure() {
-            return new Failure(null);
-        }
-
-        public Results getSuccessWithMessage(String message) {
-            return new Success(message);
-        }
-
-        public Results getFailureWithMessage(String message) {
-            return new Failure(message);
-        }
-
-        private class Success extends Results {
-            public Success(String message) {
-                super(true, message);
-            }
-        }
-
-        private class Failure extends Results {
-            public Failure(String message) {
-                super(false, message);
-            }
+        public static AjaxResponse getFailure(String message, JsonElement data) {
+            return new AjaxResponse(false, message, data);
         }
     }
 
-    protected class Results {
+    /**
+     * Represents a typical AJAX response
+     */
+    protected static class AjaxResponse {
 
         private boolean success;
         private String message;
+        private JsonElement response;
 
-        private Results(boolean success, String message) {
+        public AjaxResponse(boolean success, String message, JsonElement data) {
             this.success = success;
             this.message = message;
+            this.response = getJson(success, message, data);
+        }
+
+        private JsonElement getJson(boolean success, String message, JsonElement data) {
+            JsonObject json = success ? getSuccess() : getFailure();
+            json.addProperty("message", message);
+            json.add("data", data);
+            return json;
+        }
+
+        private JsonObject getSuccess() {
+            JsonObject results = new JsonObject();
+            results.addProperty("success", true);
+            return results;
+        }
+
+        private JsonObject getFailure() {
+            JsonObject results = new JsonObject();
+            results.addProperty("success", false);
+            return results;
         }
 
         public boolean isSuccess() {
@@ -295,6 +301,15 @@ public abstract class JsonRestService extends HttpServlet  {
         public void setMessage(String message) {
             this.message = message;
         }
+
+        public JsonElement getResponse() {
+            return response;
+        }
+
+        public void setResponse(JsonElement response) {
+            this.response = response;
+        }
+
     }
 
 }

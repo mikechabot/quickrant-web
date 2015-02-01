@@ -56,7 +56,7 @@ public class AjaxController extends Controller {
 
 			/* Get the cookie, modify it, and update the cache */
 			String oldCookie = params.getCookie(sessionService.getId()).getValue();
-			Cookie newCookie = sessionService.generateCookie(oldCookie + "*");
+			Cookie newCookie = sessionService.newCookie(oldCookie, "*");
 			sessionService.updateSession(oldCookie, newCookie.getValue());
 
 			/* Retrieve the existing visitor record, and update it */
