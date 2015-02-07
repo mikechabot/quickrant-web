@@ -107,7 +107,9 @@ public class SessionService extends Cache {
     }
 
     /**
-     * Determine if the cookie ends with "*"
+     * Determine if the cookie ends with "*", in which
+     * case the user's browser completed the round-trip
+     *
      * This can be spoofed, but it won't do any good
      *
      * @param cookie

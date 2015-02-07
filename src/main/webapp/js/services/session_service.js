@@ -1,16 +1,21 @@
-app.service('SessionService', ['$cookies','DataAccessService', function($cookies, DataAccessService) {
-
-    var sessionId = 'quickrant-uuid';
+app.service('SessionService', ['DataAccessService', function (DataAccessService) {
 
     return ({
-        getSessionCookie: function() {
-          return $cookies[sessionId];
-        },
         authenticate: function() {
+          console.log(window);
+          console.log(navigator);
           var data = {
-            screen_height: window.screen.availHeight,
-            screen_width: window.screen.availWidth,
-            screen_color: window.screen.colorDepth
+              window: {
+                height: window.screen.availHeight,
+                width: window.screen.availWidth,
+                color: window.screen.colorDepth,
+              },
+              browser: {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                cookieEnabled: navigator.cookieEnabled
+              }
           };
           return DataAccessService.post('/session/auth', data);
         }

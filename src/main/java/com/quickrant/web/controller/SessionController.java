@@ -4,6 +4,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import com.google.gson.JsonObject;
@@ -40,33 +41,36 @@ public class SessionController extends JsonRestService {
         }
     }
 
+    /**
+     * Aegis cleans up any bad POST requests, we can trust these are valid sessions
+     */
     public class PostActionAuthentication extends Action {
         public PostActionAuthentication(HttpMethod methodType) { super(methodType); }
         @Override
         public JsonElement execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
-            /* Aegis cleans up any bad requests, we can trust these are valid sessions */
+            JsonObject data = new JsonObject();
             Cookie cookie = sessionService.getSession(request);
             if (!sessionService.isAuthenticated(cookie)) {
-                Cookie authenticated = sessionService.newCookie(sessionService.generateSessionId(), "*");
+                Cookie authenticated = getNewCookie("*");
                 sessionService.updateSession(cookie.getValue(), authenticated.getValue());
+                data.addProperty("session", authenticated.getValue());
                 response.addCookie(authenticated);
-                return AjaxResponseFactory.getSuccess(SessionStates.AUTHENTICATING.getState(), cookieSwap(cookie, authenticated)).getResponse();
+                return AjaxResponseFactory.getSuccess(SessionStates.NEW.getState(), data).getResponse();
             } else {
-              return AjaxResponseFactory.getSuccess(SessionStates.EXISTING_SESSION.getState(), null).getResponse();
+                data.addProperty("session", cookie.getValue());
+              return AjaxResponseFactory.getSuccess(SessionStates.EXISTING.getState(), data).getResponse();
             }
         }
 
-        private JsonObject cookieSwap(Cookie previous, Cookie updated) {
-            JsonObject data = new JsonObject();
-            data.addProperty("previous", previous.getValue());
-            data.addProperty("updated", updated.getValue());
-            return data;
+        private Cookie getNewCookie(String suffix) {
+            return sessionService.newCookie(sessionService.generateSessionId(), suffix);
         }
+
     }
 
     private enum SessionStates {
-        AUTHENTICATING("Authenticating"),
-        EXISTING_SESSION("Existing session");
+        NEW("New session"),
+        EXISTING("Existing session");
 
         private final String state;
         SessionStates(String state) {
