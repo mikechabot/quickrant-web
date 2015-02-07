@@ -10,13 +10,10 @@ app.controller('MainCtrl', ['$scope', '$timeout', 'DATA', 'SessionService', func
   var quickrant = $scope.quickrant = {
     data: DATA,
     restrictions: restrictions,
-    user: {
-      defaultName: 'Anonymous',
-      defaultLocation: 'Earth'
-    },
     templates: {
       navigation: 'navigation.html'
-    }
+    },
+    user: {}
   };
 
   SessionService.authenticate()
@@ -24,11 +21,14 @@ app.controller('MainCtrl', ['$scope', '$timeout', 'DATA', 'SessionService', func
       quickrant.session = response.data.session;
     })
     .fail(function(response) {
+      console.error(response);
       quickrant.session = 'no-session';
     });
 
   $scope.quickrant.submit = function(form) {
     console.log(form);
+    console.log($scope.quickrant.rant)
+    $scope.quickrant.rant;
   };
 
   $scope.charsLeft = function(rant) {
@@ -142,9 +142,9 @@ app.directive('visitor', function() {
     restrict: 'A',
     require: 'ngModel',
     link: function(scope, elem, attr, ctrl) {
-      scope.quickrant.user.name = scope.quickrant.user.defaultName;
+      scope.quickrant.user.name = defaultName = 'Anonymous';
       ctrl.$viewChangeListeners.push(function() {
-        scope.quickrant.user.name =  ctrl.$viewValue.length > 0 ? ctrl.$viewValue : scope.quickrant.user.defaultName;
+        scope.quickrant.user.name =  ctrl.$viewValue.length > 0 ? ctrl.$viewValue : defaultName;
       });
     }
   }
@@ -155,9 +155,9 @@ app.directive('location', function() {
     restrict: 'A',
     require: 'ngModel',
     link: function(scope, elem, attr, ctrl) {
-      scope.quickrant.user.location = scope.quickrant.user.defaultLocation;
+      scope.quickrant.user.location = defaultLocation = 'Earth';
       ctrl.$viewChangeListeners.push(function() {
-        scope.quickrant.user.location =  ctrl.$viewValue.length > 0 ? ctrl.$viewValue : scope.quickrant.user.defaultLocation;
+        scope.quickrant.user.location =  ctrl.$viewValue.length > 0 ? ctrl.$viewValue : defaultLocation;
       });
     }
   }

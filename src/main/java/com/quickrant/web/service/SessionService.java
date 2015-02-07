@@ -53,16 +53,22 @@ public class SessionService extends Cache {
 		cookie.setPath("/");
 		return cookie;
 	}
-	
-	/**
-	 * See if the cache contains a cookie
-	 * @param cookie
-	 * @return
-	 */
-	public boolean exists(Cookie cookie) {
-        if (cookie == null) throw new IllegalArgumentException("Cookie cannot be null");
-		return containsValue(cookie.getValue());
-	}
+
+    /**
+     * Get the quickrant cookie from a session
+     * @param request
+     * @return
+     */
+    public Cookie getSession(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) return null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(id)) {
+                return cookie;
+            }
+        }
+        return null;
+    }
 
     /**
      * Determine whether an active session was attached to the request
@@ -70,17 +76,9 @@ public class SessionService extends Cache {
      * @return
      */
     public boolean hasActiveSession(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null || cookies.length == 0) {
-            return false;
-        } else {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(id)) {
-                    return exists(cookie);
-                }
-            }
-            return false;
-        }
+        Cookie cookie = getSession(request);
+        if (cookie == null) return false;
+        return exists(cookie);
     }
 
     /**
@@ -92,18 +90,14 @@ public class SessionService extends Cache {
         updateByValue(oldSessionId, newSessionId);
     }
 
-    public Cookie getSession(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null || cookies.length == 0) {
-            return null;
-        } else {
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals(id)) {
-                    return cookie;
-                }
-            }
-            return null;
-        }
+    /**
+     * Determine if the cache contains a cookie
+     * @param cookie
+     * @return
+     */
+    public boolean exists(Cookie cookie) {
+        if (cookie == null) throw new IllegalArgumentException("Cookie cannot be null");
+        return containsValue(cookie.getValue());
     }
 
     /**
@@ -130,7 +124,7 @@ public class SessionService extends Cache {
 	 */
 	private static class Util {
 		/**
-		 * Generate a sufficiently random number
+		 * Generate a sufficiently random String
 		 * @return a random UUID (e.g. 067e6162-3b6f-4ae2-a171-2470b63dff0)
 		 */
 		public static String getRandomUUID() {

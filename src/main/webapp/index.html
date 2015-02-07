@@ -67,15 +67,15 @@
               <form name="form" class="form-inline" role="form" ng-submit="quickrant.submit(form)">
                 <div class="row">
                   <div class="col-lg-offset-1 col-lg-5 col-sm-offset-1 col-sm-5">
-                    <input visitor ng-model="visitor" class="form-control" type="text" name="visitor" placeholder="Name (optional)">
+                    <input visitor ng-model="form.visitor" class="form-control" type="text" placeholder="Name (optional)">
                   </div>
                   <div class="col-lg-5 col-sm-5">
-                    <input location ng-model="location" class="form-control" type="text" name="location" placeholder="Location (optional)">
+                    <input location ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
                   </div>
                 </div>
                 <div class="row">
                   <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
-                    <textarea rant-text ng-model="quickrant.rant" ng-minlength="2" ng-maxlength="500" class="form-control" id="form-container-textarea" rows="5" placeholder="Say something..."></textarea>
+                    <textarea rant-text ng-model="form.rant" ng-minlength="2" ng-maxlength="500" class="form-control" id="form-container-textarea" rows="5" placeholder="Say something..."></textarea>
                   </div>
                 </div>
                 <span class="help-block text-center">

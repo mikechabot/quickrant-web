@@ -19,11 +19,11 @@ public class AegisService {
 	private SessionService sessionService;
 
 	public AegisService() { }
-	
+
 	public AegisService(SessionService sessionService) {
 		this.sessionService = sessionService;
 	}
-	
+
 	public void setSessionService(SessionService cookieCache) {
 		sessionService = cookieCache;
 	}

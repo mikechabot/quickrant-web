@@ -32,15 +32,11 @@ public class AegisFilter implements Filter {
 		log.info("Initializing filter");
 		/* Load dependencies */
 		setAegisService(config.getInitParameter("aegis"));
-		setCache(SessionService.getInstance());
 	}
 
 	private void setAegisService(String aegisClass) {
 		aegisService = (AegisService) Utils.newInstance(aegisClass);
-	}
-	
-	private void setCache(SessionService cache) {
-		aegisService.setSessionService(cache);
+        aegisService.setSessionService(SessionService.getInstance());
 	}
 
 	@Override
