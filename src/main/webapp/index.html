@@ -83,10 +83,10 @@
                   <span ng-if="charsToGo(quickrant.rant) > 0"><em>({{charsToGo(quickrant.rant)}} more to go)</em></span>
                 </span>
                 <div class="text-center">
-                  <button popover="Post Rant" popover-trigger="mouseenter" popover-placement="left" ng-class="{disabled: charsToGo(quickrant.rant) > 0 || form.$error.maxlength}" type="submit" id="submit" class="btn btn-default">
+                  <button popover="Post Rant" popover-trigger="mouseenter" popover-popup-delay="750" popover-placement="left" ng-class="{disabled: charsToGo(quickrant.rant) > 0 || form.$error.maxlength}" type="submit" id="submit" class="btn btn-default">
                     <span class="glyphicon glyphicon-send"></span>
                   </button>
-                  <button popover="{{quickrant.previewPopover}}" popover-trigger="mouseenter" popover-placement="right" type="button" class="btn btn-default" ng-click="quickrant.showPreview = !quickrant.showPreview">
+                  <button popover="{{quickrant.showPreview ? 'Hide Preview' : 'Show Preview'}}" popover-trigger="mouseenter" popover-popup-delay="750" popover-placement="right" type="button" class="btn btn-default" ng-click="quickrant.showPreview = !quickrant.showPreview">
                     <span class="glyphicon" ng-class="{'glyphicon-eye-open': !quickrant.showPreview, 'glyphicon-eye-close': quickrant.showPreview}"></span>
                   </button>
                 </div>
