@@ -16,11 +16,14 @@
     <script src="/js/third-party/angular/angular-fire.js"></script>
     <script src="/js/third-party/angular/angular-cookies.min.js"></script>
     <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
-    <script src="/js/angular-quickrant.js"></script>
-    <script src="/js/services/rant-service.js"></script>
-    <script src="/js/services/session-service.js"></script>
+    <script src="js/third-party/underscore/underscore-min.js"></script>
+    <script src="/js/third-party/jquery/jquery-2.1.3.min.js"></script>
+    <script src="/js/angular_qr.js"></script>
+    <script src="/js/common/services.js"></script>
+    <script src="/js/services/rant_service.js"></script>
+    <script src="/js/services/session_service.js"></script>
     <script src="/js/directives.js"></script>
-    <script src="/js/data.js"></script>
+    <script src="/js/data/data.js"></script>
     
     <!-- fonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
@@ -40,19 +43,28 @@
     
   </head>
   <body ng-controller="MainCtrl">
-    <div ng-include="navigation"></div>
-    <div user-controls class="container">
-      <faces class="text-center"></faces>
-	    <questions class="text-center" ng-if="ui.showQuestions"></questions>
-
-      <div ng-if="ui.showForm" class="row">
+    <div ng-include="quickrant.templates.navigation"></div>
+    <div class="container">
+      <div faces data="quickrant.data" selection="quickrant.selection" class="row margin-bottom-lg text-center">
+        <div ng-repeat="face in quickrant.data" class="col-lg-4 col-sm-4 col-xs-4">
+          <a href face ng-model="face"><img class="img-circle" ng-src="/img/{{::face.emotion}}.gif"></a>
+        </div>
+      </div>
+      <div questions ng-repeat="face in quickrant.data" selection="quickrant.selection" class="text-center">
+        <div ng-show="face === quickrant.selection.face" class="row margin-bottom-lg">
+          <div class="col-lg-offset-1 col-lg-10">
+              <question ng-repeat="question in face.questions" question="question" custom-style="face.styles.button"></question>
+          </div>
+        </div>
+      </div>
+      <div ng-if="quickrant.selection.question" class="row">
         <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9 form-container">
-          <div class="panel {{::ui.panelStyle}} margin-bottom-lg">
+          <div class="panel panel-{{quickrant.selection.face.styles.panel}} margin-bottom-lg">
             <div class="panel-heading">
-              <h3 class="panel-title text-center" id="legend">{{ui.question}}</h3>
+              <h3 class="panel-title text-center" id="legend">{{quickrant.selection.question}}</h3>
             </div>
             <div class="panel-body">
-                <div ng-include="form"></div>
+                <div ng-include="quickrant.templates.form"></div>
             </div>
           </div>
 
