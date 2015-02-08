@@ -30,7 +30,6 @@ public class StringUtil {
 		return each.replace("\\","");
 	}
 
-
     /**
      * Return true of the string is empty
      * @param value

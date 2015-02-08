@@ -24,10 +24,10 @@ public class SessionController extends JsonRestService {
     @Override
     public void registerMappings() {
         /* Register POST urls */
-        registerPostMapping("/auth", new PostActionAuthentication(HttpMethod.POST));
+        registerPostMapping("/auth", new PostActionAuthentication());
     }
 
-    public class PostAction extends Action {
+    protected class PostAction extends Action {
         public PostAction(HttpMethod methodType) { super(methodType); }
         @Override
         public JsonElement execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,8 +44,8 @@ public class SessionController extends JsonRestService {
     /**
      * Aegis cleans up any bad POST requests, we can trust these are valid sessions
      */
-    public class PostActionAuthentication extends Action {
-        public PostActionAuthentication(HttpMethod methodType) { super(methodType); }
+    protected class PostActionAuthentication extends Action {
+        public PostActionAuthentication() { super(HttpMethod.POST); }
         @Override
         public JsonElement execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
             JsonObject data = new JsonObject();
@@ -65,7 +65,6 @@ public class SessionController extends JsonRestService {
         private Cookie getNewCookie(String suffix) {
             return sessionService.newCookie(sessionService.generateSessionId(), suffix);
         }
-
     }
 
     private enum SessionStates {

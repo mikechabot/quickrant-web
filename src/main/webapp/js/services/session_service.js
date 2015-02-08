@@ -2,13 +2,11 @@ app.service('SessionService', ['DataAccessService', function (DataAccessService)
 
     return ({
         authenticate: function() {
-          console.log(window);
-          console.log(navigator);
           var data = {
               window: {
                 height: window.screen.availHeight,
                 width: window.screen.availWidth,
-                color: window.screen.colorDepth,
+                color: window.screen.colorDepth
               },
               browser: {
                 userAgent: navigator.userAgent,

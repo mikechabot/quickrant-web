@@ -56,6 +56,16 @@
     <servlet-name>SessionController</servlet-name>
     <url-pattern>/session/*</url-pattern>
   </servlet-mapping>
+
+    <!-- Send /session requests to SessionController -->
+  <servlet>
+    <servlet-name>RantController</servlet-name>
+    <servlet-class>com.quickrant.web.controller.RantController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RantController</servlet-name>
+    <url-pattern>/rant/*</url-pattern>
+  </servlet-mapping>
   
   <!-- Error pages -->
   <error-page>

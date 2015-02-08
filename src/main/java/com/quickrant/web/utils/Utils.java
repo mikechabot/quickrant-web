@@ -5,10 +5,10 @@ import org.apache.log4j.Logger;
 public class Utils {
 
 	private static Logger log = Logger.getLogger(Utils.class);
-	
+
 	/**
 	 * Return a Class given a String 
-	 * @param className
+	 * @param fullyQualifiedClassName
 	 * @return Class object or null
 	 */
 	private static Class<?> getClass(String fullyQualifiedClassName) {

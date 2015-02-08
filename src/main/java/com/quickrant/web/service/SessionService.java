@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
-import com.quickrant.api.Cache;
+import com.quickrant.web.cache.Cache;
 
 public class SessionService extends Cache {
 	

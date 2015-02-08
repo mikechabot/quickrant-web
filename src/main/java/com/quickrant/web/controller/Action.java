@@ -1,9 +1,9 @@
 package com.quickrant.web.controller;
 
+import com.google.gson.JsonElement;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.gson.JsonElement;
 
 import java.io.IOException;
 

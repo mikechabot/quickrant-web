@@ -23,6 +23,7 @@
     <script src="/js/services/rant_service.js"></script>
     <script src="/js/services/session_service.js"></script>
     <script src="/js/directives.js"></script>
+    <script src="/js/common/util.js"></script>
     <script src="/js/common/data.js"></script>
     
     <!-- fonts -->
@@ -42,7 +43,7 @@
     <link rel="apple-touch-icon-precomposed" href="/ico/apple-touch-icon-57-precomposed.png">
     
   </head>
-  <body ng-controller="MainCtrl">
+  <body ng-controller="MainController">
     <div ng-include="quickrant.templates.navigation"></div>
     <div class="container">
       <div faces data="quickrant.data" selection="quickrant.selection" class="row margin-bottom-lg text-center">
@@ -121,6 +122,6 @@
       </div>
 	    <hr>
   	</div>
-  	<rants></rants>
+    <div ng-include="quickrant.templates.rants"></div>
   </body>
 </html>

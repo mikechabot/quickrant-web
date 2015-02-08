@@ -1,9 +1,6 @@
 package com.quickrant.web.controller;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,13 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.quickrant.web.utils.StringUtil;
+
 import org.apache.log4j.Logger;
 
 public abstract class JsonRestService extends HttpServlet  {
 
-    protected JsonParser parser = new JsonParser();
     protected Gson gson = new Gson();
 
     private static Logger log = Logger.getLogger(JsonRestService.class);
@@ -72,7 +67,7 @@ public abstract class JsonRestService extends HttpServlet  {
      * Put an action in the map
      * @param action
      */
-    public void registerRequestAction(Action action) {
+    protected void registerRequestAction(Action action) {
         requestActions.put(action.getMethodType(), action);
     }
 
@@ -86,19 +81,19 @@ public abstract class JsonRestService extends HttpServlet  {
      * @param mapping
      * @param action
      */
-    public void registerGetMapping(String mapping, Action action) {
+    protected void registerGetMapping(String mapping, Action action) {
         getMappings.put(mapping, action);
     }
 
-    public void registerPostMapping(String mapping, Action action) {
+    protected void registerPostMapping(String mapping, Action action) {
         postMappings.put(mapping, action);
     }
 
-    public void registerPutMapping(String mapping, Action action) {
+    protected void registerPutMapping(String mapping, Action action) {
         putMappings.put(mapping, action);
     }
 
-    public void registerDeleteMapping(String mapping, Action action) {
+    protected void registerDeleteMapping(String mapping, Action action) {
         deleteMappings.put(mapping, action);
     }
 
@@ -190,52 +185,6 @@ public abstract class JsonRestService extends HttpServlet  {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Parse String from request body
-     * @param request
-     * @return
-     * @throws IOException
-     */
-    protected String getRequestBodyAsString(HttpServletRequest request) throws IllegalArgumentException, IOException {
-        StringBuilder sb = new StringBuilder();
-        BufferedReader reader = null;
-        InputStream inputStream = null;
-        try {
-            inputStream = request.getInputStream();
-            if (inputStream != null) {
-                reader =  new BufferedReader(new InputStreamReader(inputStream));
-                char[] charBuffer = new char[128];
-                int bytesRead;
-                while ((bytesRead = reader.read(charBuffer)) > 0) {
-                    sb.append(charBuffer, 0, bytesRead);
-                }
-            } else {
-                sb.append("");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        }
-        if (StringUtil.isEmpty(sb.toString())) throw new IllegalArgumentException("Request body cannot be empty");
-        return sb.toString();
-    }
-
-    /**
-     * Parse JsonObject from request body
-     * @param request
-     * @return
-     * @throws IOException
-     */
-    protected JsonObject getRequestBodyAsJson(HttpServletRequest request) throws IOException {
-        return parser.parse(getRequestBodyAsString(request)).getAsJsonObject();
     }
 
     /**

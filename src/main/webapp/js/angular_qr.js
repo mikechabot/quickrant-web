@@ -1,6 +1,6 @@
 var app = angular.module('quickrant', ['ngCookies', 'firebase', 'ui.bootstrap']);
 
-app.controller('MainCtrl', ['$scope', '$timeout', 'DATA', 'SessionService', function($scope, $timeout, DATA, SessionService) {
+app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService', 'RantService', function($scope, $timeout, DATA, SessionService, RantService) {
 
   var restrictions = {
     maxChars: 500,
@@ -11,25 +11,63 @@ app.controller('MainCtrl', ['$scope', '$timeout', 'DATA', 'SessionService', func
     data: DATA,
     restrictions: restrictions,
     templates: {
-      navigation: 'navigation.html'
+      navigation: 'navigation.html',
+      rants: 'rants.html'
     },
-    user: {}
+    user: {
+      defaultName: 'Anonymous',
+      defaultLocation: 'Earth'
+    }
   };
 
-  SessionService.authenticate()
-    .done(function(response) {
-      quickrant.session = response.data.session;
-    })
-    .fail(function(response) {
-      console.error(response);
-      quickrant.session = 'no-session';
-    });
+  function loadRants() {
+    RantService.getRants()
+      .done(function(response) {
+        $timeout(function() {
+          setRants(response.data);
+        });
+      });
+  }
+
+  function setRants(newRants) {
+    $scope.quickrant.rants = newRants;
+  }
+
+  function authenticate() {
+    SessionService.authenticate()
+      .done(function(response) {
+        quickrant.session = response.session;
+      })
+      .fail(function(response) {
+        console.error(response);
+      });
+  }
 
   $scope.quickrant.submit = function(form) {
-    console.log(form);
-    console.log($scope.quickrant.rant)
-    $scope.quickrant.rant;
+    if (form.$valid) {
+      postRant({
+        selection: {
+          emotion: quickrant.selection.face.emotion,
+          question: quickrant.selection.question
+        },
+        name: getDefaultString(form.visitor, quickrant.user.defaultName),
+        location: getDefaultString(form.location, quickrant.user.defaultName),
+        rant: form.rant
+      });
+    }
   };
+
+  function postRant(data) {
+    if (!data) return;
+    RantService.postRant(data)
+      .done(function(response) {
+        quickrant.selection = {};
+        loadRants();
+      })
+      .fail(function(response) {
+        console.error(response);
+      });
+  }
 
   $scope.charsLeft = function(rant) {
     if (!rant) return restrictions.maxChars;
@@ -41,10 +79,9 @@ app.controller('MainCtrl', ['$scope', '$timeout', 'DATA', 'SessionService', func
     return subtract(restrictions.minChars, rant.length);
   };
 
-  function subtract(val1, val2) {
-    if (!angular.isNumber(val1) || !angular.isNumber(val2)) return;
-    return val1 - val2;
-  }
+  authenticate();
+  loadRants();
+
 
 }]);
 
@@ -142,9 +179,9 @@ app.directive('visitor', function() {
     restrict: 'A',
     require: 'ngModel',
     link: function(scope, elem, attr, ctrl) {
-      scope.quickrant.user.name = defaultName = 'Anonymous';
+      scope.quickrant.user.name = scope.quickrant.user.defaultName;
       ctrl.$viewChangeListeners.push(function() {
-        scope.quickrant.user.name =  ctrl.$viewValue.length > 0 ? ctrl.$viewValue : defaultName;
+        scope.quickrant.user.name =  ctrl.$viewValue.length > 0 ? ctrl.$viewValue : scope.quickrant.user.defaultName;
       });
     }
   }
@@ -155,9 +192,9 @@ app.directive('location', function() {
     restrict: 'A',
     require: 'ngModel',
     link: function(scope, elem, attr, ctrl) {
-      scope.quickrant.user.location = defaultLocation = 'Earth';
+      scope.quickrant.user.location = scope.quickrant.user.defaultLocation;
       ctrl.$viewChangeListeners.push(function() {
-        scope.quickrant.user.location =  ctrl.$viewValue.length > 0 ? ctrl.$viewValue : defaultLocation;
+        scope.quickrant.user.location =  ctrl.$viewValue.length > 0 ? ctrl.$viewValue : scope.quickrant.user.defaultLocation;
       });
     }
   }
