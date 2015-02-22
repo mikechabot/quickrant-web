@@ -17,7 +17,8 @@ app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService'
     user: {
       defaultName: 'Anonymous',
       defaultLocation: 'Earth'
-    }
+    },
+    currentPage: 1
   };
 
   $scope.quickrant.submit = function(form) {
@@ -39,41 +40,39 @@ app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService'
   function postRant(data) {
     if (!data) return;
     RantService.postRant(data)
-      .done(function(response) {
-        quickrant.selection = {};
-        loadRants();
-      })
       .fail(function(response) {
         console.error(response);
+      })
+      .always(function() {
+        quickrant.selection = {};
+        loadRants(1);
       });
   }
 
   function loadRants(page) {
+    $scope.loading= true;
     RantService.getRants(page)
       .done(function(response) {
+        if ($scope.quickrant.rants) {
+          var rants = $scope.quickrant.rants.content;
+          rants = rants.concat(response.content);
+          response.content = rants;
+        }
         $timeout(function() {
-          console.log(response);
           $scope.quickrant.rants = response;
-          //$scope.currentPage = response.number;
+        });
+      })
+      .always(function() {
+        $timeout(function() {
+          $scope.loading= false;
         });
       });
   }
 
-  //function authenticate() {
-  //  SessionService.authenticate()
-  //    .done(function(response) {
-  //      quickrant.session = response.session;
-  //    })
-  //    .fail(function(response) {
-  //      console.error(response);
-  //    });
-  //}
-
-  $scope.pageChanged = function(page) {
-    console.log('page changed - ' + page);
-    //$scope.currentPage = page;
-    loadRants(page);
-  };
+  $scope.$watch('quickrant.currentPage', function(newPage, oldPage) {
+    if (newPage === oldPage) return;
+    loadRants(newPage);
+  });
 
   $scope.charsLeft = function(rant) {
     if (!rant) return restrictions.maxChars;
@@ -86,7 +85,7 @@ app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService'
   };
 
   //authenticate();
-  loadRants(1);
+  loadRants(quickrant.currentPage);
 
 }]);
 

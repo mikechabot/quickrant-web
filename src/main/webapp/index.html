@@ -29,7 +29,8 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
     
     <!-- styles -->
-    <link href="/css/third-party/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/third-party/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/third-party/font-awesome/font-awesome.min.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
     
     <!-- favicon -->
@@ -75,7 +76,7 @@
                 </div>
                 <div class="row">
                   <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
-                    <textarea rant-text ng-model="form.rant" ng-minlength="2" ng-maxlength="500" class="form-control" id="form-container-textarea" rows="5" placeholder="Say something..."></textarea>
+                    <textarea rant-text ng-model="form.rant" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
                   </div>
                 </div>
                 <span class="help-block text-center">
@@ -105,7 +106,7 @@
                       <h2 class="panel-title">{{quickrant.selection.question}}</h2>
                     </div>
                     <div class="col-lg-3 col-sm-1 col-xs-2 text-right">
-                      <span class="permalink glyphicon glyphicon-leaf"></span>
+                      <i class="permalink fa fa-leaf fa-1-5x"></i>
                     </div>
                   </div>
                 </div>

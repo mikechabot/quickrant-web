@@ -81,23 +81,6 @@ textarea {
   margin: 4px;
 }
 
-/* FORM CONTENT
--------------------------------------------------- */
-
-#form-container {
-  display: none;
-  margin-bottom: 0px;
-}
-
-#form-container .form-control {
-  margin: 5px;
-  width: 100%;
-}
-
-#form-container-textarea {
-  width: 100%;
-}
-
 /* RANT CONTENT
 -------------------------------------------------- */
 
@@ -139,4 +122,45 @@ textarea {
 
 .rant-container .timeago {
     font-size: 12px;
+}
+
+.fa-1-5x {
+  font-size: 1.5em;
+}
+
+/* Pagination */
+.pagination > li > a,
+.pagination > li > span {
+  color: #428bca;
+  background-color: #ffffff;
+  border: 1px solid #B0B0B0;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+  color: #999999;
+  background-color: #eeeeee;
+  border-color: #B0B0B0;
+}
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  color: #ffffff;
+  background-color: #cccccc;
+  border-color: #B0B0B0;
+}
+.pagination > .disabled > span,
+.pagination > .disabled > span:hover,
+.pagination > .disabled > span:focus,
+.pagination > .disabled > a,
+.pagination > .disabled > a:hover,
+.pagination > .disabled > a:focus {
+  color: #777777;
+  background-color: #ffffff;
+  border-color: #B0B0B0;
 }

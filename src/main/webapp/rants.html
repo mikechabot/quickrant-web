@@ -11,7 +11,7 @@
               <h2 class="panel-title">{{::rant.selection.question}}</h2>
             </div>
             <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-              <a href="/rant/{{::rant.id}}" class="permalink glyphicon glyphicon-leaf"></a>
+              <a href="/rant/{{::rant.id}}" class="fa fa-leaf fa-1-5x" popover="permalink" popover-trigger="mouseenter" popover-placement="top"></a>
             </div>
           </div>
         </div>
@@ -25,6 +25,14 @@
       <hr>
     </div>
   </div>
-  <h2>Current: {{currentPage}}</h2>
-  <pagination total-items="quickrant.rants.totalElements" ng-model="currentPage" ng-change="pageChanged(currentPage)"></pagination>
+  <div class="row text-center">
+    <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
+      <button ng-show="quickrant.rants.content.length < quickrant.rants.totalElements && !loading" class="btn btn-default btn-lg" ng-click="quickrant.currentPage = quickrant.currentPage+1">Show more</button>
+      <div ng-show="loading">
+        <progressbar class="progress-striped active" value="100"></progressbar>
+      </div>
+      <div ng-show="quickrant.rants.content.length == quickrant.rants.totalElements" class="help-block"><i class="fa fa-child fa-2x"></i><em> Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i></div>
+    </div>
+  </div>
 </div>
+<br>
