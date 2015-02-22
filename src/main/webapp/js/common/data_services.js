@@ -20,7 +20,7 @@ app.service('DataAccessService', ['AjaxService', function(AjaxService) {
   var request = function(type, url, data) {
     var options = {
       type: type,
-      url: url
+      url: '/spring' + url
     };
     if (data) {
       options.data = JSON.stringify(data);

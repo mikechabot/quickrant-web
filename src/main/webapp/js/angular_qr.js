@@ -20,29 +20,6 @@ app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService'
     }
   };
 
-  function loadRants() {
-    RantService.getRants()
-      .done(function(response) {
-        $timeout(function() {
-          setRants(response.data);
-        });
-      });
-  }
-
-  function setRants(newRants) {
-    $scope.quickrant.rants = newRants;
-  }
-
-  function authenticate() {
-    SessionService.authenticate()
-      .done(function(response) {
-        quickrant.session = response.session;
-      })
-      .fail(function(response) {
-        console.error(response);
-      });
-  }
-
   $scope.quickrant.submit = function(form) {
     if (form.$valid) {
       postRant({
@@ -50,8 +27,10 @@ app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService'
           emotion: quickrant.selection.face.emotion,
           question: quickrant.selection.question
         },
-        name: getDefaultString(form.visitor, quickrant.user.defaultName),
-        location: getDefaultString(form.location, quickrant.user.defaultName),
+        ranter: {
+          name: getDefaultString(form.visitor, quickrant.user.defaultName),
+          location: getDefaultString(form.location, quickrant.user.defaultName)
+        },
         rant: form.rant
       });
     }
@@ -69,6 +48,33 @@ app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService'
       });
   }
 
+  function loadRants(page) {
+    RantService.getRants(page)
+      .done(function(response) {
+        $timeout(function() {
+          console.log(response);
+          $scope.quickrant.rants = response;
+          //$scope.currentPage = response.number;
+        });
+      });
+  }
+
+  //function authenticate() {
+  //  SessionService.authenticate()
+  //    .done(function(response) {
+  //      quickrant.session = response.session;
+  //    })
+  //    .fail(function(response) {
+  //      console.error(response);
+  //    });
+  //}
+
+  $scope.pageChanged = function(page) {
+    console.log('page changed - ' + page);
+    //$scope.currentPage = page;
+    loadRants(page);
+  };
+
   $scope.charsLeft = function(rant) {
     if (!rant) return restrictions.maxChars;
     return subtract(restrictions.maxChars, rant.length);
@@ -79,9 +85,8 @@ app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService'
     return subtract(restrictions.minChars, rant.length);
   };
 
-  authenticate();
-  loadRants();
-
+  //authenticate();
+  loadRants(1);
 
 }]);
 

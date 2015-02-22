@@ -1,5 +1,5 @@
 <div class="container rant-container">
-  <div ng-repeat="rant in quickrant.rants" class="row">
+  <div ng-repeat="rant in quickrant.rants.content" class="row">
     <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
       <div class="panel panel-rant">
         <div class="panel-heading">
@@ -18,11 +18,13 @@
         <div class="panel-body">
           <blockquote>
             <p>{{::rant.rant}}</p>
-            <small><span class="mild-bold">{{::rant.name}}</span> // {{::rant.location}} // <span class="rant-created timeago" title="{{::rant.created}}"></span></small>
+            <small><span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // <span class="rant-created timeago" title="{{::rant.created}}"></span></small>
           </blockquote>
         </div>
       </div>
       <hr>
     </div>
   </div>
+  <h2>Current: {{currentPage}}</h2>
+  <pagination total-items="quickrant.rants.totalElements" ng-model="currentPage" ng-change="pageChanged(currentPage)"></pagination>
 </div>
