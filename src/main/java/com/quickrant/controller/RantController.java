@@ -42,14 +42,4 @@ public class RantController extends AbstractRestController {
         return response.badRequest("Failed to save rant");
     }
 
-    /**
-     * Generate an offset page request sorted by descending id
-     * @param pageNumber
-     * @return
-     */
-    private PageRequest getPageRequest(int pageNumber) {
-        Sort sort = new Sort(Sort.Direction.DESC, "_id");
-        return new PageRequest(pageNumber, 15, sort);
-    }
-
 }

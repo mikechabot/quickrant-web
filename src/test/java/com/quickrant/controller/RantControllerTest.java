@@ -8,20 +8,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.AssertJUnit.assertNotNull;
@@ -45,9 +40,6 @@ public class RantControllerTest {
 
     @Mock
     private PageRequest pageRequest;
-
-    @Mock
-    private Sort sort;
 
     @Mock
     private List<Rant> rants;
@@ -93,12 +85,6 @@ public class RantControllerTest {
 
     @Test
     public void testSaveSuccess() throws Exception {
-
-        String name = "test-name";
-        String location = "test-location";
-
-        /* Object under test */
-        ResponseEntity response = rantController.getPage(1);
 
 
 
