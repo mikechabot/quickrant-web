@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
+
 @Component
 public class ResponseEntityFactory {
 
@@ -13,7 +15,7 @@ public class ResponseEntityFactory {
     JsonResponseFactory jsonResponseFactory;
 
     public ResponseEntity ok(String message, Object data) {
-        JsonResponse json = jsonResponseFactory.success(message, data);
+        JsonResponseFactory.JsonResponse json = jsonResponseFactory.success(message, data);
         return new ResponseEntity(json, null, HttpStatus.OK);
     }
 
@@ -21,22 +23,16 @@ public class ResponseEntityFactory {
         return ok(message, null);
     }
 
-    public ResponseEntity created(String message, Object data, HttpHeaders headers) {
-        JsonResponse json = jsonResponseFactory.success(message, data);
-        return new ResponseEntity(json, headers, HttpStatus.CREATED);
-    }
-
-    public ResponseEntity created(String message, HttpHeaders headers) {
-       return created(message, null, headers);
-    }
-
-    public ResponseEntity badRequest(String message, Object data) {
-        JsonResponse json = jsonResponseFactory.failure(message, data);
-        return new ResponseEntity(json, null, HttpStatus.BAD_REQUEST);
+    public ResponseEntity created(String message, Object data, URI location) {
+        JsonResponseFactory.JsonResponse json = jsonResponseFactory.success(message, data);
+        HttpHeaders header = new HttpHeaders();
+        header.setLocation(location);
+        return new ResponseEntity(json, header, HttpStatus.CREATED);
     }
 
     public ResponseEntity badRequest(String message) {
-        return badRequest(message, null);
+        JsonResponseFactory.JsonResponse json = jsonResponseFactory.failure(message, null);
+        return new ResponseEntity(json, null, HttpStatus.BAD_REQUEST);
     }
 
 }
