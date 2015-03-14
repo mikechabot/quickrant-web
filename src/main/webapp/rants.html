@@ -18,7 +18,7 @@
         <div class="panel-body">
           <blockquote>
             <p>{{::rant.rant}}</p>
-            <small><span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // <span class="rant-created timeago" title="{{::rant.created}}"></span></small>
+            <small><span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // <span class="rant-created" title="{{::rant.created}}"></span></small>
           </blockquote>
         </div>
       </div>
@@ -27,7 +27,7 @@
   </div>
   <div class="row text-center">
     <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-      <button ng-show="quickrant.rants.content.length < quickrant.rants.totalElements && !loading" class="btn btn-default btn-lg" ng-click="quickrant.currentPage = quickrant.currentPage+1">Show more</button>
+      <button ng-show="quickrant.rants.content.length < quickrant.rants.totalElements && !loading" class="btn btn-default btn-lg" ng-click="nextPage()">Show more</button>
       <div ng-show="loading">
         <progressbar class="progress-striped active" value="100"></progressbar>
       </div>

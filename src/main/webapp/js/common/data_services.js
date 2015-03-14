@@ -31,8 +31,8 @@ app.service('DataAccessService', ['AjaxService', function(AjaxService) {
     var wrapper = $.Deferred();
     AjaxService.request(options)
       .done(function(response) {
-        if (response.success === true) {
-          wrapper.resolve(response.data);
+        if (response.status === 'SUCCESS') {
+          wrapper.resolve( _getResponseData(response));
         } else {
           wrapper.reject(response.message);
         }
@@ -40,6 +40,27 @@ app.service('DataAccessService', ['AjaxService', function(AjaxService) {
       .fail(function(response) {
         wrapper.reject(response)
       });
+
+      function _getResponseData(response) {
+          var data = _getData(response);
+          var message = _getMessage(response);
+
+          if (hasValue(data) && hasValue(message)) {
+              data.message = message;
+          } else if (hasValue(message)) {
+              data = { message: message };
+          }
+
+          return data;
+      }
+
+      function _getData(response) {
+          return response.data;
+      }
+
+      function _getMessage(response) {
+          return response.message;
+      }
 
     return wrapper;
   };

@@ -7,3 +7,7 @@ function getDefaultString(object, def) {
   if (!angular.isString(object) || !angular.isDefined(object) || object.length == 0) return def;
   return object;
 }
+
+function hasValue(object) {
+    return object !== null && angular.isDefined(object);
+}
