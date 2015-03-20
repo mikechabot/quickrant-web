@@ -1,6 +1,6 @@
-app.value('DATA', {
+app.value('QR_DATA', {
   happy: {
-    emotion: "happy",
+    emotion: 'happy',
     styles: {
       panel: 'success',
       button: 'success'
@@ -17,7 +17,7 @@ app.value('DATA', {
     ]
   },
   angry: {
-    emotion: "angry",
+    emotion: 'angry',
     styles: {
       panel: 'danger',
       button: 'danger'
@@ -34,7 +34,7 @@ app.value('DATA', {
       ]
   },
   sad: {
-    emotion: "sad",
+    emotion: 'sad',
     styles: {
       panel: 'info',
       button: 'primary'

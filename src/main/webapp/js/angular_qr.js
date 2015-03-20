@@ -1,78 +1,51 @@
-var app = angular.module('quickrant', ['ngCookies', 'firebase', 'ui.bootstrap']);
+var app = angular.module('quickrant', ['ngCookies', 'ui.bootstrap', 'ngAnimate']);
 
-app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService', 'RantService', function ($scope, $timeout, DATA, SessionService, RantService) {
-
-    var restrictions = {
-        maxChars: 500,
-        minChars: 2
-    };
+app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', function ($scope, $timeout, QR_DATA, QR_CONST, SessionService, RantService) {
 
     var quickrant = $scope.quickrant = {
-        data: DATA,
-        restrictions: restrictions,
+        data: QR_DATA,
         templates: {
             navigation: 'navigation.html',
             rants: 'rants.html'
-        },
-        user: {
-            defaultName: 'Anonymous',
-            defaultLocation: 'Earth'
         }
     };
 
-    $scope.currentPage = 1;
+    $scope.default = {
+        name: QR_CONST.DEFAULT_VALUE.NAME,
+        location: QR_CONST.DEFAULT_VALUE.LOCATION
+    }
+
+    $scope.rant = {};
 
     $scope.quickrant.submit = function (form) {
         if (form.$valid) {
-            postRant({
-                selection: {
-                    emotion: quickrant.selection.face.emotion,
-                    question: quickrant.selection.question
-                },
-                ranter: {
-                    /* TODO: Don't do this like this */
-                    name: getDefaultString(form.visitor, quickrant.user.defaultName),
-                    location: getDefaultString(form.location, quickrant.user.defaultName)
-                },
-                rant: form.rant
-            });
+            RantService.postRant($scope.rant)
+                .done(function() {
+                    _reset();
+                })
+                .fail(function (error) {
+                    console.error(error.message);
+                })
+                .always(function () {
+                    $timeout(function() {
+                        loadRants(1)
+                    });
+                });
         }
     };
 
-    function postRant(data) {
-        if (!data) return;
-        RantService.postRant(data)
-            .fail(function (response) {
-                console.error(response);
-            })
-            .always(function () {
-                quickrant.selection = {};
-                loadRants(1);
-            });
-    }
-
-    function loadRants(page) {
+    function loadRants(pageNumber) {
         $scope.loading = true;
-        RantService.getRants(page)
+        RantService.getPaginatedRants($scope.rants, pageNumber)
             .done(function (response) {
-                console.log(response);
-                if ($scope.quickrant.rants) {
-                    var rants = $scope.quickrant.rants.content;
-                    rants = rants.concat(response.content);
-                    response.content = rants;
-                }
-                $timeout(function () {
-                    $scope.quickrant.rants = response;
+                $scope.$apply(function() {
+                    $scope.rants = response.rants;
+                    $scope.page = response.page;
                 });
             })
-            .fail(function() {
-                console.log('Unable to load rants');
+            .fail(function(error) {
+                console.error(error.message);
             })
-            .always(function () {
-                $timeout(function () {
-                    $scope.loading = false;
-                });
-            });
     }
 
     $scope.$watch('currentPage', function (newPage, oldPage) {
@@ -81,21 +54,24 @@ app.controller('MainController', ['$scope', '$timeout', 'DATA', 'SessionService'
     });
 
     $scope.charsLeft = function (rant) {
-        if (!rant) return restrictions.maxChars;
-        return subtract(restrictions.maxChars, rant.length);
+        return subtract(QR_CONST.RESTRICTIONS.MAX_CHAR, rant ? rant.length : 0);
     };
 
     $scope.charsToGo = function (rant) {
-        if (!rant) return restrictions.minChars;
-        return subtract(restrictions.minChars, rant.length);
+        return subtract(QR_CONST.RESTRICTIONS.MIN_CHAR,  rant ? rant.length : 0);
     };
 
     $scope.nextPage = function () {
         $scope.currentPage += 1;
     };
 
+    function _reset() {
+        delete quickrant.rants;
+        $scope.rant = {};
+    }
+
     //authenticate();
-    loadRants($scope.currentPage);
+    loadRants(1);
 
 }]);
 
@@ -104,20 +80,17 @@ app.directive('faces', ['$timeout', function ($timeout) {
         restrict: 'A',
         scope: {
             data: '=',
-            selection: '='
+            rant: '='
         },
         controller: function ($scope) {
-            if (!$scope.selection) {
-                $scope.selection = {};
-            }
             this.select = function (face) {
                 $timeout(function () {
-                    if (face === $scope.selection.face) {
-                        $scope.selection = {};
+                    if (face === $scope.rant.face) {
+                        $scope.rant = {};
                         return;
                     }
-                    $scope.selection.face = face;
-                    $scope.selection.question = undefined;
+                    $scope.rant.face = face;
+                    $scope.rant.question = undefined;
                 });
             };
         }
@@ -139,25 +112,25 @@ app.directive('face', function () {
     }
 });
 
-app.directive('questions', ['$timeout', function ($timeout) {
+app.directive('questions', function () {
     return {
         restrict: 'A',
         scope: {
-            selection: '='
+            rant: '='
         },
         controller: function ($scope) {
             this.select = function (question) {
                 $scope.$apply(function () {
-                    if (question === $scope.selection.question) {
-                        $scope.selection.question = undefined;
+                    if (question === $scope.rant.question) {
+                        $scope.rant.question = undefined;
                         return;
                     }
-                    $scope.selection.question = question;
+                    $scope.rant.question = question;
                 });
             };
         }
     };
-}]);
+});
 
 app.directive('question', function () {
     return {
@@ -188,42 +161,29 @@ app.directive('rantText', function () {
     }
 });
 
-app.directive('visitor', function () {
+/**
+ * Directive that allows for one a variable
+ * to be copied to another variable.
+ *
+ * destination: Copy ngModel to this variable
+ * default-value: If ngModel model is null or undefined,
+ *              then set the destination to this variable
+ */
+app.directive('copyable', function () {
     return {
         restrict: 'A',
         require: 'ngModel',
+        scope: {
+            destination: '=',
+            defaultValue: '='
+        },
         link: function (scope, elem, attr, ctrl) {
-            scope.quickrant.user.name = scope.quickrant.user.defaultName;
             ctrl.$viewChangeListeners.push(function () {
-                scope.quickrant.user.name = ctrl.$viewValue.length > 0 ? ctrl.$viewValue : scope.quickrant.user.defaultName;
+                scope.destination = hasValue(ctrl.$viewValue) ? ctrl.$viewValue : scope.defaultValue;
             });
+        },
+        controller: function($scope) {
+            $scope.destination = $scope.defaultValue;
         }
     }
 });
-
-app.directive('location', function () {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function (scope, elem, attr, ctrl) {
-            scope.quickrant.user.location = scope.quickrant.user.defaultLocation;
-            ctrl.$viewChangeListeners.push(function () {
-                scope.quickrant.user.location = ctrl.$viewValue.length > 0 ? ctrl.$viewValue : scope.quickrant.user.defaultLocation;
-            });
-        }
-    }
-
-});
-
-app.controller('MyMainCtrl', ['TemplateService', function(TemplateService) {
-    /* Specify files to be loaded */
-    var templates = [ '/navigation.html', '/bar.html' ];
-
-    /* Fetch and cache each file */
-    _.each(templates, function(template) {
-       TemplateService.loadTemplate(template)
-           .done(function() {
-                console.log('Loaded template: ' + template);
-           });
-    });
-}]);

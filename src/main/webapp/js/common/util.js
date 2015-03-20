@@ -3,11 +3,19 @@ function subtract(val1, val2) {
   return val1 - val2;
 }
 
-function getDefaultString(object, def) {
-  if (!angular.isString(object) || !angular.isDefined(object) || object.length == 0) return def;
-  return object;
-}
-
+/**
+ * Determine whether an object is null/undefined. In the
+ * event of a String, ensure the length > 0.
+ *
+ * @param object
+ * @returns {boolean}
+ */
 function hasValue(object) {
-    return object !== null && angular.isDefined(object);
+    if (object !== null && angular.isDefined(object)) {
+        if (angular.isString(object)) {
+            return !_.isEmpty(object);
+        }
+    } else {
+        return false;
+    }
 }

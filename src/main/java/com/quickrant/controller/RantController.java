@@ -48,6 +48,12 @@ public class RantController {
                 response.badRequest("Failed to save rant");
     }
 
+    @RequestMapping(value = "/drop")
+    public ResponseEntity dropRants() {
+        rantService.deleteAll();
+        return response.ok();
+    }
+
     public PageRequest getPageRequest(int pageNumber, int size, SortMethod sortMethod ) {
         return new PageRequest(pageNumber, size, MongoSort.SORT_BY.get(sortMethod));
     }

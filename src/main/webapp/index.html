@@ -11,8 +11,8 @@
     <title>quickrant | express yourself without yourself</title>
     
     <!-- scripts -->
-    <script src="/js/third-party/firebase/firebase.js"></script>
-    <script src="/js/third-party/angular/angular.js"></script>
+    <script src="/js/third-party/angular/angular.min.js"></script>
+    <script src="/js/third-party/angular/angular-animate.min.js"></script>
     <script src="/js/third-party/angular/angular-fire.js"></script>
     <script src="/js/third-party/angular/angular-cookies.min.js"></script>
     <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
@@ -23,14 +23,15 @@
     <script src="/js/services/rant_service.js"></script>
     <script src="/js/services/session_service.js"></script>
     <script src="/js/common/util.js"></script>
-    <script src="/js/common/data.js"></script>
+    <script src="/js/common/qr_data.js"></script>
+    <script src="/js/common/qr_const.js"></script>
     
     <!-- fonts -->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
     
     <!-- styles -->
-    <link href="/css/third-party/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/third-party/font-awesome/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/font-awesome/font-awesome.min.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
     
     <!-- favicon -->
@@ -46,45 +47,45 @@
   <body ng-controller="MainController">
     <div ng-include="quickrant.templates.navigation"></div>
     <div class="container">
-      <div faces data="quickrant.data" selection="quickrant.selection" class="row margin-bottom-lg text-center">
+      <div faces data="quickrant.data" rant="rant" class="row margin-bottom-lg text-center">
         <div ng-repeat="face in quickrant.data" class="col-lg-4 col-sm-4 col-xs-4">
           <a href face ng-model="face"><img class="img-circle" ng-src="/img/{{::face.emotion}}.gif"></a>
         </div>
       </div>
-      <div questions ng-repeat="face in quickrant.data" selection="quickrant.selection" class="text-center">
-        <div ng-show="face === quickrant.selection.face" class="row margin-bottom-lg">
+      <div questions ng-repeat="face in quickrant.data" rant="rant" class="text-center">
+        <div ng-show="face === rant.face" class="row margin-bottom-lg">
           <div class="col-lg-offset-1 col-lg-10">
               <question ng-repeat="question in face.questions" question="question" custom-style="face.styles.button"></question>
           </div>
         </div>
       </div>
-      <div ng-if="quickrant.selection.question" class="row">
+      <div ng-if="rant.question" class="row">
         <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9 form-container">
-          <div class="panel panel-{{quickrant.selection.face.styles.panel}} margin-bottom-lg">
+          <div class="panel panel-{{rant.face.styles.panel}} margin-bottom-lg">
             <div class="panel-heading">
-              <h3 class="panel-title text-center" id="legend">{{quickrant.selection.question}}</h3>
+              <h3 class="panel-title text-center" id="legend">{{rant.question}}</h3>
             </div>
             <div class="panel-body">
               <form name="form" class="form-inline" role="form" ng-submit="quickrant.submit(form)">
                 <div class="row">
                   <div class="col-lg-offset-1 col-lg-5 col-sm-offset-1 col-sm-5">
-                    <input visitor ng-model="form.visitor" class="form-control" type="text" placeholder="Name (optional)">
+                    <input copyable default-value="default.name" destination="rant.name" ng-model="form.name" class="form-control" type="text" placeholder="Name (optional)">
                   </div>
                   <div class="col-lg-5 col-sm-5">
-                    <input location ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
+                    <input copyable default-value="default.location" destination="rant.location" ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
                   </div>
                 </div>
                 <div class="row">
                   <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
-                    <textarea rant-text ng-model="form.rant" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
+                    <textarea rant-text ng-model="rant.rant" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
                   </div>
                 </div>
                 <span class="help-block text-center">
-                  <span ng-class="{'text-danger': form.$error.maxlength}">{{charsLeft(quickrant.rant)}} characters left</span>
-                  <span ng-if="charsToGo(quickrant.rant) > 0"><em>({{charsToGo(quickrant.rant)}} more to go)</em></span>
+                  <span ng-class="{'text-danger': form.$error.maxlength}">{{charsLeft(rant.rant)}} characters left</span>
+                  <span ng-if="charsToGo(rant.rant) > 0"><em>({{charsToGo(rant.rant)}} more to go)</em></span>
                 </span>
                 <div class="text-center">
-                  <button popover="Post Rant" popover-trigger="mouseenter" popover-popup-delay="750" popover-placement="left" ng-class="{disabled: charsToGo(quickrant.rant) > 0 || form.$error.maxlength}" type="submit" id="submit" class="btn btn-default">
+                  <button popover="Post Rant" popover-trigger="mouseenter" popover-popup-delay="750" popover-placement="left" ng-class="{disabled: charsToGo(rant.rant) > 0 || form.$error.maxlength}" type="submit" id="submit" class="btn btn-default">
                     <span class="glyphicon glyphicon-send"></span>
                   </button>
                   <button popover="{{quickrant.showPreview ? 'Hide Preview' : 'Show Preview'}}" popover-trigger="mouseenter" popover-popup-delay="750" popover-placement="right" type="button" class="btn btn-default" ng-click="quickrant.showPreview = !quickrant.showPreview">
@@ -103,7 +104,7 @@
                       <img ng-src="/img/{{quickrant.emotion}}-small.gif">
                     </div>
                     <div class="col-lg-8 col-sm-10 col-xs-8">
-                      <h2 class="panel-title">{{quickrant.selection.question}}</h2>
+                      <h2 class="panel-title">{{rant.question}}</h2>
                     </div>
                     <div class="col-lg-3 col-sm-1 col-xs-2 text-right">
                       <i class="permalink fa fa-leaf fa-1-5x"></i>
@@ -112,8 +113,8 @@
                 </div>
                 <div class="panel-body">
                   <blockquote>
-                    <p>{{quickrant.rant}}</p>
-                    <small><span class="mild-bold">{{quickrant.user.name}}</span> // {{quickrant.user.location}}</small>
+                    <p>{{rant.rant}}</p>
+                    <small><span class="mild-bold">{{rant.name}}</span> // {{rant.location}}</small>
                   </blockquote>
                 </div>
               </div>

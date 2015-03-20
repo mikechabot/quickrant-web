@@ -12,6 +12,10 @@ import java.net.URI;
 @Component
 public class ResponseEntityFactory {
 
+    public ResponseEntity ok() {
+        return generate(HttpStatus.OK, ResponseStatus.SUCCESS, null, null, null);
+    }
+
     public ResponseEntity ok(String message, Object data) {
         return generate(HttpStatus.OK, ResponseStatus.SUCCESS, null, message, data);
     }
