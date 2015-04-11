@@ -1,29 +1,40 @@
-app.service('RantService', ['DataAccessService', function (DataAccessService) {
+app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAccessService, QR_CONST) {
+
+    function _createRantObject(rant) {
+        var now = moment().toDate();
+        return {
+            rant: rant.rant,
+            selection: {
+                emotion: rant.face.emotion,
+                question: rant.question
+            },
+            ranter: {
+                name: rant.name || QR_CONST.DEFAULT_VALUE.NAME,
+                location: rant.location || QR_CONST.DEFAULT_VALUE.LOCATION
+            },
+            createdDate: now,
+            lastModifiedDate: now
+        }
+    }
+
     return ({
         postRant: function postRant(rant) {
             var deferred = $.Deferred();
-            console.log(rant);
             if (rant.rant) {
-
-                var rant = {
-                    selection: {
-                        emotion: rant.face.emotion,
-                        question: rant.question
-                    },
-                    ranter: {
-                        name: rant.name,
-                        location: hasValue(rant.location) ? rant.location : QR_CONST.DEFAULT_VALUE.LOCATION
-                    },
-                    rant: rant.rant
-                }
-
-                deferred.resolve(DataAccessService.post('/rants', rant));
+                var _rant = _createRantObject(rant);
+                DataAccessService.post('/rants', _rant)
+                    .done(function(response) {
+                        deferred.resolve(response.data);
+                    })
+                    .fail(function (response) {
+                        deferred.reject({message: response.message});
+                    });
             } else {
                 deferred.reject({message: 'Cannot post null rant'});
             }
-
             return deferred;
         },
+        //TODO: fix this; don't pass the rants in
         getPaginatedRants: function getRants(rants, pageNumber) {
 
             function getPage(data) {

@@ -19,10 +19,6 @@ body {
   font-weight: 300;
 }
 
-a {
-  color: inherit;
-}
-
 a:hover {
   text-decoration: none;
 }
@@ -57,6 +53,10 @@ textarea {
   min-height: 50px;
 }
 
+.black {
+  color: #000000;
+}
+
 .mild-bold {
   font-weight: 600;
 }
@@ -84,18 +84,6 @@ textarea {
 /* RANT CONTENT
 -------------------------------------------------- */
 
-.glyphicon {
-  color: #000000;  
-}
-
-.glyphicon-leaf {
-  font-size: 14px;
-}
-
-.glyphicon-link {
-  font-size: 16px;
-}
-
 .panel-rant {
   border: 0px;
   border-radius: 0;
@@ -115,52 +103,6 @@ textarea {
   padding: 5px 15px 0px;
 }
 
-.rant-container .panel-body p {
-  font-size: 22px;
-  margin-bottom: 15px;
-}
-
-.rant-container .timeago {
-    font-size: 12px;
-}
-
 .fa-1-5x {
   font-size: 1.5em;
-}
-
-/* Pagination */
-.pagination > li > a,
-.pagination > li > span {
-  color: #428bca;
-  background-color: #ffffff;
-  border: 1px solid #B0B0B0;
-}
-
-.pagination > li > a:hover,
-.pagination > li > span:hover,
-.pagination > li > a:focus,
-.pagination > li > span:focus {
-  color: #999999;
-  background-color: #eeeeee;
-  border-color: #B0B0B0;
-}
-.pagination > .active > a,
-.pagination > .active > span,
-.pagination > .active > a:hover,
-.pagination > .active > span:hover,
-.pagination > .active > a:focus,
-.pagination > .active > span:focus {
-  color: #ffffff;
-  background-color: #cccccc;
-  border-color: #B0B0B0;
-}
-.pagination > .disabled > span,
-.pagination > .disabled > span:hover,
-.pagination > .disabled > span:focus,
-.pagination > .disabled > a,
-.pagination > .disabled > a:hover,
-.pagination > .disabled > a:focus {
-  color: #777777;
-  background-color: #ffffff;
-  border-color: #B0B0B0;
 }

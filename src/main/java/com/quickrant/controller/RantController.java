@@ -1,5 +1,7 @@
 package com.quickrant.controller;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.quickrant.factory.ResponseEntityFactory;
 import com.quickrant.model.Rant;
 import com.quickrant.sort.MongoSort;
@@ -28,12 +30,13 @@ public class RantController {
     @Autowired
     protected ResponseEntityFactory response;
 
+    protected JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
+
     @RequestMapping(value = "/page/{pageNumber}", method = RequestMethod.GET)
     public ResponseEntity getPage(@PathVariable int pageNumber) {
         if (--pageNumber < 0) {
             return response.badRequest("Page number cannot be less than zero");
         }
-
         PageRequest pageRequest = getPageRequest(pageNumber, 15, SortMethod.ID_DESC);
         Page data = rantService.findAll(pageRequest);
 
@@ -42,10 +45,15 @@ public class RantController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity saveRant(@RequestBody Rant rant, HttpServletRequest request) {
+        if (rant == null) throw new IllegalArgumentException("Rant cannot be null");
         rantService.save(rant);
-        return rant.getId() != null ?
-                response.created("Rant saved", request.getServerName() + "/rants/" + rant.getId()) :
-                response.badRequest("Failed to save rant");
+        if (rant.getId() != null) {
+            ObjectNode data = nodeFactory.objectNode();
+            data.set("id", nodeFactory.textNode(rant.getId()));
+            return response.created("Rant saved", request.getServerName() + "/rants/" + rant.getId(), data);
+        } else {
+            return response.badRequest("Failed to save rant");
+        }
     }
 
     @RequestMapping(value = "/drop")

@@ -24,8 +24,8 @@ public class ResponseEntityFactory {
         return generate(HttpStatus.BAD_REQUEST, ResponseStatus.FAIL, null, message, null);
     }
 
-    public ResponseEntity created(String message, String location) {
-        return generate(HttpStatus.CREATED, ResponseStatus.SUCCESS, getLocationHeader(location), message, null);
+    public ResponseEntity created(String message, String location, Object data) {
+        return generate(HttpStatus.CREATED, ResponseStatus.SUCCESS, getLocationHeader(location), message, data);
     }
 
     public ResponseEntity generate(HttpStatus httpStatus, ResponseStatus responseStatus, HttpHeaders headers, String message, Object data) {

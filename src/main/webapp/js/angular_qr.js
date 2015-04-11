@@ -1,6 +1,6 @@
-var app = angular.module('quickrant', ['ngCookies', 'ui.bootstrap', 'ngAnimate']);
+var app = angular.module('quickrant', ['ngCookies', 'ui.bootstrap', 'ngAnimate', 'ngTimeago']);
 
-app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', function ($scope, $timeout, QR_DATA, QR_CONST, SessionService, RantService) {
+app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', 'ModalService', function ($scope, $timeout, QR_DATA, QR_CONST, SessionService, RantService, ModalService) {
 
     var quickrant = $scope.quickrant = {
         data: QR_DATA,
@@ -13,15 +13,23 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
     $scope.default = {
         name: QR_CONST.DEFAULT_VALUE.NAME,
         location: QR_CONST.DEFAULT_VALUE.LOCATION
-    }
+    };
 
     $scope.rant = {};
 
     $scope.quickrant.submit = function (form) {
         if (form.$valid) {
             RantService.postRant($scope.rant)
-                .done(function() {
-                    _reset();
+                .done(function(data) {
+                    ModalService.open({
+                        templateUrl: '/templates/modals/rant_posted.html',
+                        scope: $scope.$new(),
+                        data: {id: data.id}
+                    });
+                    $timeout(function() {
+                        delete quickrant.rants;
+                        $scope.rant = {};
+                    });
                 })
                 .fail(function (error) {
                     console.error(error.message);
@@ -46,6 +54,11 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
             .fail(function(error) {
                 console.error(error.message);
             })
+            .always(function() {
+                $timeout(function() {
+                    $scope.loading = false;
+                });
+            });
     }
 
     $scope.$watch('currentPage', function (newPage, oldPage) {
@@ -53,26 +66,31 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
         loadRants(newPage);
     });
 
+    //TODO: put this in a directive
     $scope.charsLeft = function (rant) {
         return subtract(QR_CONST.RESTRICTIONS.MAX_CHAR, rant ? rant.length : 0);
     };
 
+    //TODO: put this in a directive
     $scope.charsToGo = function (rant) {
         return subtract(QR_CONST.RESTRICTIONS.MIN_CHAR,  rant ? rant.length : 0);
     };
 
     $scope.nextPage = function () {
+        if ($scope.currentPage)
         $scope.currentPage += 1;
     };
 
-    function _reset() {
-        delete quickrant.rants;
-        $scope.rant = {};
-    }
-
     //authenticate();
-    loadRants(1);
+    $scope.currentPage = 1;
+    loadRants($scope.currentPage);
 
+}]);
+
+app.controller('PostRantController', ['$scope', function($scope) {
+    $scope.close = function () {
+        $scope.$dismiss();
+    }
 }]);
 
 app.directive('faces', ['$timeout', function ($timeout) {
@@ -162,12 +180,11 @@ app.directive('rantText', function () {
 });
 
 /**
- * Directive that allows for one a variable
- * to be copied to another variable.
+ * Directive that copies a scope variable to another
  *
- * destination: Copy ngModel to this variable
- * default-value: If ngModel model is null or undefined,
- *              then set the destination to this variable
+ *       ngModel: Value to be copied
+ *   destination: Copy ngModel to this scope variable
+ * default-value: If ngModel model is null or undefined, use this value
  */
 app.directive('copyable', function () {
     return {

@@ -11,14 +11,14 @@
               <h2 class="panel-title">{{::rant.question}}</h2>
             </div>
             <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-              <a href="/rant/{{::rant.id}}" class="fa fa-leaf fa-1-5x" popover="permalink" popover-trigger="mouseenter" popover-placement="top"></a>
+              <a href="/rant/{{::rant.id}}" class="fa fa-leaf fa-1-5x black" popover="permalink" popover-trigger="mouseenter" popover-placement="top"></a>
             </div>
           </div>
         </div>
         <div class="panel-body">
           <blockquote>
             <p>{{::rant.rant}}</p>
-            <small><span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // <span class="rant-created" title="{{::rant.created}}"></span></small>
+            <small><span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // <span class="rant-created">{{rant.createdDate | timeago}}</span></small>
           </blockquote>
         </div>
       </div>
@@ -27,7 +27,7 @@
   </div>
   <div class="row text-center">
     <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-      <button ng-show="rants.length < page.totalElements && !loading" class="btn btn-default btn-lg" ng-click="nextPage()">Show more</button>
+      <button ng-show="rants.length < page.totalElements && !loading" class="btn btn-default btn-lg" ng-click="nextPage()">More</button>
       <div ng-show="loading">
         <progressbar class="progress-striped active" value="100"></progressbar>
       </div>
