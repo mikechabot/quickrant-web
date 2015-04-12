@@ -81,6 +81,14 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
         $scope.currentPage += 1;
     };
 
+    $scope.showRant = function(rant) {
+        $scope.showSingleRant = true;
+    };
+
+    $scope.showRants = function() {
+        $scope.showSingleRant = false;
+    };
+
     //authenticate();
     $scope.currentPage = 1;
     loadRants($scope.currentPage);

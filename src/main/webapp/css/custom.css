@@ -70,6 +70,10 @@ textarea {
   color: #a94442;
 }
 
+.fa-1-5x {
+  font-size: 1.5em;
+}
+
 /* QUESTIONS CONTENT
 -------------------------------------------------- */
 
@@ -91,18 +95,14 @@ textarea {
   margin-bottom: 0px;
 }
 
-.rant-container .panel-title {
+.rants-container .panel-title {
   margin-left: -5px;
   padding-top: 5px;
   font-size: 16px;
   font-weight: 300;
 }
 
-.rant-container .panel-body {
+.rants-container .panel-body {
   overflow: hidden;
   padding: 5px 15px 0px;
-}
-
-.fa-1-5x {
-  font-size: 1.5em;
 }

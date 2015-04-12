@@ -1,4 +1,4 @@
-<div class="container rant-container">
+<div ng-show="!showSingleRant" class="container rants-container">
   <div ng-repeat="rant in rants" class="row">
     <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
       <div class="panel panel-rant">
@@ -7,11 +7,11 @@
             <div class="col-lg-1 col-sm-1 col-xs-2">
               <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
             </div>
-            <div class="col-lg-10 col-sm-10 col-xs-8">
+            <div class="col-lg-10 col-sm-10 col-xs-s8">
               <h2 class="panel-title">{{::rant.question}}</h2>
             </div>
             <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-              <a href="/rant/{{::rant.id}}" class="fa fa-leaf fa-1-5x black" popover="permalink" popover-trigger="mouseenter" popover-placement="top"></a>
+              <a href ng-click="showRant(rant.id)" class="fa fa-leaf fa-1-5x black" popover="permalink" popover-trigger="mouseenter" popover-placement="top"></a>
             </div>
           </div>
         </div>
@@ -35,4 +35,6 @@
     </div>
   </div>
 </div>
-<br>
+<div ng-show="showSingleRant" class="container">
+    <button class="btn btn-default btn-lg" ng-click="showRants()">Show all rants</button>
+</div>
