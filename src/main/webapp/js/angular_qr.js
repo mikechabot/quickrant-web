@@ -61,10 +61,6 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
             });
     }
 
-    $scope.findRant = function (id) {
-
-    };
-
     $scope.$watch('currentPage', function (newPage, oldPage) {
         if (newPage === oldPage) return;
         loadRants(newPage);
@@ -106,13 +102,29 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
         $scope.singleRant = undefined;
     };
 
+    $scope.showAbout = function() {
+        ModalService.open({
+            templateUrl: '/templates/modals/about.html',
+            size: 'lg',
+            scope: $scope.$new()
+        });
+    };
+
     //authenticate();
     $scope.currentPage = 1;
     loadRants($scope.currentPage);
 
 }]);
 
+//TODO: Make a yes/no dialog service
 app.controller('PostRantController', ['$scope', function($scope) {
+    $scope.close = function () {
+        $scope.$dismiss();
+    }
+}]);
+
+//TODO: Make a yes/no dialog service
+app.controller('AboutController', ['$scope', function($scope) {
     $scope.close = function () {
         $scope.$dismiss();
     }
