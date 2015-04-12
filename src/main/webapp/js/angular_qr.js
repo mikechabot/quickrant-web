@@ -82,11 +82,11 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
     };
 
     $scope.showRant = function(rant) {
-        $scope.showSingleRant = true;
+        $scope.singleRant = rant;
     };
 
     $scope.showRants = function() {
-        $scope.showSingleRant = false;
+        $scope.singleRant = undefined;
     };
 
     //authenticate();

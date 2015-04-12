@@ -106,3 +106,12 @@ textarea {
   overflow: hidden;
   padding: 5px 15px 0px;
 }
+
+.single-rant .panel-title {
+  font-size: 24px;
+}
+
+.single-rant .panel-body blockquote {
+  font-size: 24px;
+}
+
