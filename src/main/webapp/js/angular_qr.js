@@ -107,7 +107,6 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
             templateUrl: '/templates/modals/about.html',
             size: 'lg',
             scope: $scope.$new(),
-            windowClass: 'modal-about'
         });
     };
 
