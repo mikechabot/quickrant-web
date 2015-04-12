@@ -106,6 +106,14 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
         ModalService.open({
             templateUrl: '/templates/modals/about.html',
             size: 'lg',
+            scope: $scope.$new(),
+            windowClass: 'modal-about'
+        });
+    };
+
+    $scope.beta = function() {
+        ModalService.open({
+            templateUrl: '/templates/modals/beta.html',
             scope: $scope.$new()
         });
     };
@@ -116,15 +124,8 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
 
 }]);
 
-//TODO: Make a yes/no dialog service
-app.controller('PostRantController', ['$scope', function($scope) {
-    $scope.close = function () {
-        $scope.$dismiss();
-    }
-}]);
-
-//TODO: Make a yes/no dialog service
-app.controller('AboutController', ['$scope', function($scope) {
+//TODO: Make a yes/no dialog service or something
+app.controller('DialogController', ['$scope', function($scope) {
     $scope.close = function () {
         $scope.$dismiss();
     }

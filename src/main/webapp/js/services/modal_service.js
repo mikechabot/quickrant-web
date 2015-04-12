@@ -6,6 +6,7 @@ app.service('ModalService', ['$modal', function ($modal) {
             }
             var modalInstance = $modal.open({
                 templateUrl: options.templateUrl,
+                windowClass: options.windowClass,
                 scope: options.scope,
                 size: options.size
             });

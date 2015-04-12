@@ -1,9 +1,16 @@
-<div ng-controller="PostRantController">
+<div ng-controller="DialogController">
   <div class="modal-header">
-    <h3 class="modal-title">quickrant</h3>
+    <h3 class="modal-title">Rant posted</h3>
   </div>
   <div class="modal-body">
-    <h4>Thanks for speaking your mind</h4>
+    Thanks for speaking your mind.
+    <br><br>
+    If you'd ever like to check back on your rant, you can find it with this id: <strong>{{data.id}}</strong>. Search
+    bar is in the upper-right corner.
+    <br><br>
+    <div class="alert alert-info" role="alert"><strong>Note: </strong> This will become more important pending a future
+      update: when you post a rant you'll have the ability to mark it as unlocked, meaning people can reply to it to
+      start a conversation. <em>It will be locked by default.</em></div>
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" ng-click="close()">Got it</button>
