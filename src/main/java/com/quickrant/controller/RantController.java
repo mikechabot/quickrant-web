@@ -8,6 +8,7 @@ import com.quickrant.sort.MongoSort;
 import com.quickrant.sort.SortMethod;
 import com.quickrant.service.RantService;
 
+import com.sun.xml.internal.fastinfoset.stax.events.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +34,7 @@ public class RantController {
     protected JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
 
     @RequestMapping(value = "/page/{pageNumber}", method = RequestMethod.GET)
-    public ResponseEntity getPage(@PathVariable int pageNumber) {
+         public ResponseEntity getPage(@PathVariable int pageNumber) {
         if (--pageNumber < 0) {
             return response.badRequest("Page number cannot be less than zero");
         }
@@ -41,6 +42,18 @@ public class RantController {
         Page data = rantService.findAll(pageRequest);
 
         return response.ok(null, data);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    public ResponseEntity getRantById(@PathVariable String id) {
+        if (Util.isEmptyString(id)) {
+            return response.badRequest("Page number cannot be less than zero");
+        }
+        Rant rant = rantService.findById(id);
+        if (rant != null) {
+            return response.ok(null, rant);
+        }
+        return response.badRequest("Cannot locate rant with id " + id);
     }
 
     @RequestMapping(method = RequestMethod.POST)

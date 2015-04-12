@@ -61,6 +61,10 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
             });
     }
 
+    $scope.findRant = function (id) {
+
+    };
+
     $scope.$watch('currentPage', function (newPage, oldPage) {
         if (newPage === oldPage) return;
         loadRants(newPage);
@@ -82,7 +86,20 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
     };
 
     $scope.showRant = function(rant) {
-        $scope.singleRant = rant;
+        if (angular.isObject(rant)) {
+            $scope.singleRant = rant;
+        } else {
+            RantService.getRantById(rant)
+                .done(function(rant) {
+                    $timeout(function() {
+                        $scope.singleRant = rant;
+                        $scope.search = undefined;
+                    });
+                })
+                .fail(function(error) {
+                    console.error(error.message);
+                });
+        }
     };
 
     $scope.showRants = function() {

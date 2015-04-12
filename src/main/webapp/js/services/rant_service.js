@@ -34,6 +34,17 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
             }
             return deferred;
         },
+        getRantById: function getRantById(id) {
+            var deferred = $.Deferred();
+                DataAccessService.post('/rants/' + id)
+                    .done(function(data) {
+                        deferred.resolve(data.data);
+                    })
+                    .fail(function(error) {
+                        deferred.reject({message: error.message});
+                    });
+            return deferred;
+        },
         //TODO: fix this; don't pass the rants in
         getPaginatedRants: function getRants(rants, pageNumber) {
 
