@@ -2,13 +2,13 @@ package com.quickrant.controller;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import com.quickrant.factory.ResponseEntityFactory;
 import com.quickrant.model.Rant;
 import com.quickrant.sort.MongoSort;
 import com.quickrant.sort.SortMethod;
 import com.quickrant.service.RantService;
 
-import com.sun.xml.internal.fastinfoset.stax.events.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +46,7 @@ public class RantController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public ResponseEntity getRantById(@PathVariable String id) {
-        if (Util.isEmptyString(id)) {
+        if (id != null && !id.isEmpty()) {
             return response.badRequest("Page number cannot be less than zero");
         }
         Rant rant = rantService.findById(id);
