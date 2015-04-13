@@ -51,7 +51,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
                     $scope.deltaData = data;
                 }
             });
-    }, 2500);
+    }, 4000);
 
     $scope.showNewRants = function(rants) {
         _setPageAndRants(rants);
