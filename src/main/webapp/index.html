@@ -79,6 +79,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
             <li><a href ng-click="showAbout()">about</a></li>
+            <li><a href ng-click="beta()">feedback</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li>
@@ -166,7 +167,7 @@
                       <h2 class="panel-title">{{rant.question}}</h2>
                     </div>
                     <div class="col-lg-3 col-sm-1 col-xs-2 text-right">
-                      <i class="permalink fa fa-leaf fa-1-5x"></i>
+                      <i class="showRant fa fa-leaf fa-1-5x"></i>
                     </div>
                   </div>
                 </div>
@@ -181,6 +182,11 @@
         </div>
       </div>
 	    <hr>
+      <div class="text-center">
+        <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-primary btn-lg" ng-click="showNewRants(deltaData)">
+          <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
+        </button>
+      </div>
   	</div>
     <div ng-include="quickrant.templates.rants"></div>
   </body>

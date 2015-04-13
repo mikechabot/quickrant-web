@@ -136,10 +136,10 @@ textarea {
 }
 
 .ribbon {
-  width: 190px;
+  width: 160px;
   position: absolute;
   text-align: center;
-  font-size: 17px!important;
+  font-size: 12px!important;
   background: #d64b4b;
   background: -webkit-gradient(linear, left top, left bottom, from(#d64b4b), to(#ab2c2c));
   background: -webkit-linear-gradient(top, #d64b4b, #ab2c2c);
@@ -153,7 +153,7 @@ textarea {
   font-family: 'Open Sans',Helvetica, sans-serif;
 }
 .ribbon h1 {
-  font-size: 25px!important;
+  font-size: 20px!important;
   color: #801111;
   text-shadow: #d65c5c 0 1px 0;
   margin:0px;

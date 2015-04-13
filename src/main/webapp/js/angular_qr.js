@@ -1,6 +1,6 @@
 var app = angular.module('quickrant', ['ngCookies', 'ui.bootstrap', 'ngAnimate', 'ngTimeago']);
 
-app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', 'ModalService', function ($scope, $timeout, QR_DATA, QR_CONST, SessionService, RantService, ModalService) {
+app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', 'ModalService', function ($scope, $timeout, $interval, QR_DATA, QR_CONST, SessionService, RantService, ModalService) {
 
     var quickrant = $scope.quickrant = {
         data: QR_DATA,
@@ -42,14 +42,28 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
         }
     };
 
+    $interval(function() {
+        RantService.getPaginatedRants($scope.rants, 1)
+            .done(function(data) {
+                var diff = data.page.totalElements - $scope.page.totalElements;
+                if (diff > 0) {
+                    $scope.newRants = diff;
+                    $scope.deltaData = data;
+                }
+            });
+    }, 2500);
+
+    $scope.showNewRants = function(rants) {
+        _setPageAndRants(rants);
+        $scope.deltaData = undefined;
+        $scope.newRants = undefined;
+    };
+
     function loadRants(pageNumber) {
         $scope.loading = true;
         RantService.getPaginatedRants($scope.rants, pageNumber)
-            .done(function (response) {
-                $scope.$apply(function() {
-                    $scope.rants = response.rants;
-                    $scope.page = response.page;
-                });
+            .done(function (data) {
+                _setPageAndRants(data);
             })
             .fail(function(error) {
                 console.error(error.message);
@@ -59,6 +73,11 @@ app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', '
                     $scope.loading = false;
                 });
             });
+    }
+
+    function _setPageAndRants(data) {
+        $scope.rants = data.rants;
+        $scope.page = data.page;
     }
 
     $scope.$watch('currentPage', function (newPage, oldPage) {
