@@ -56,6 +56,7 @@
 
       ga('create', 'UA-61827308-1', 'auto');
       ga('send', 'pageview');
+      ga('set', 'anonymizeIp', true);
     </script>
     
   </head>
@@ -182,7 +183,7 @@
       </div>
 	    <hr>
       <div class="text-center">
-        <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-primary btn-lg" ng-click="showNewRants(deltaData)">
+        <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
           <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
         </button>
       </div>
