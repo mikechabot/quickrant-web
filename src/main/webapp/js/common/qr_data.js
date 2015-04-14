@@ -47,7 +47,8 @@ app.value('QR_DATA', {
       'You know what sucks?',
       'You know what I miss?',
       'You know what I regret?',
-      'You know what\'s the worst'
+      'You know what scares me the most?',
+      'You know what\'s the worst?'
     ]
   }
 });
