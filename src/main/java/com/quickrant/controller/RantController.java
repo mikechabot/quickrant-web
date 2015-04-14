@@ -46,14 +46,14 @@ public class RantController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public ResponseEntity getRantById(@PathVariable String id) {
-        if (id != null && !id.isEmpty()) {
-            return response.badRequest("Page number cannot be less than zero");
+        if (id == null && id.isEmpty()) {
+            return response.badRequest("Id cannot be null");
         }
         Rant rant = rantService.findById(id);
         if (rant != null) {
             return response.ok(null, rant);
         }
-        return response.badRequest("Cannot locate rant with id " + id);
+        return response.ok("Cannot locate rant with id " + id, null);
     }
 
     @RequestMapping(method = RequestMethod.POST)

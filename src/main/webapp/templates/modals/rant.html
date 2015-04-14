@@ -1,0 +1,42 @@
+<div ng-controller="DialogController">
+  <div class="modal-header">
+    <h4 class="modal-title"><em>{{data.id}}</em></h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-9">
+        <div class="panel panel-rant">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-1 col-sm-1 col-xs-2">
+                <img ng-src="/img/{{data.selection.emotion}}-small.gif">
+              </div>
+              <div class="col-lg-10 col-sm-10 col-xs-s8">
+                <h1 class="panel-title">{{data.selection.question}}</h1>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <blockquote>
+              <p>{{data.rant}}</p>
+              <small><span class="mild-bold">{{data.ranter.name}}</span> // {{data.ranter.location}} // <span
+                      class="rant-created">{{data.createdDate | timeago}}</span></small>
+            </blockquote>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="alert alert-info" role="alert"><strong>Note: </strong>At some point, you'll be able to have a
+          conversation here, if the ranter chooses to allow replies. <em></em>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" ng-click="close()">Done</button>
+    </div>
+  </div>
+</div>

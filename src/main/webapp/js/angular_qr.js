@@ -59,6 +59,16 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         $scope.newRants = undefined;
     };
 
+    $scope.findRantById = function(id) {
+        RantService.getRantById(id)
+            .done(function(rant) {
+                $scope.openRant(rant, id);
+            })
+            .fail(function(error) {
+                console.error(error.message);
+            });
+    };
+
     function loadRants(pageNumber) {
         $scope.loading = true;
         RantService.getPaginatedRants($scope.rants, pageNumber)
@@ -100,32 +110,11 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         $scope.currentPage += 1;
     };
 
-    $scope.showRant = function(rant) {
-        if (angular.isObject(rant)) {
-            $scope.singleRant = rant;
-        } else {
-            RantService.getRantById(rant)
-                .done(function(rant) {
-                    $timeout(function() {
-                        $scope.singleRant = rant;
-                        $scope.search = undefined;
-                    });
-                })
-                .fail(function(error) {
-                    console.error(error.message);
-                });
-        }
-    };
-
-    $scope.showRants = function() {
-        $scope.singleRant = undefined;
-    };
-
     $scope.showAbout = function() {
         ModalService.open({
             templateUrl: '/templates/modals/about.html',
             size: 'lg',
-            scope: $scope.$new(),
+            scope: $scope.$new()
         });
     };
 
@@ -134,6 +123,24 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
             templateUrl: '/templates/modals/beta.html',
             scope: $scope.$new()
         });
+    };
+
+    $scope.openRant = function(rant, id) {
+        var options = {};
+        if (rant) {
+            options = {
+                templateUrl: '/templates/modals/rant.html',
+                data: rant,
+                size: 'lg',
+                windowClass: 'rant-convo'
+            }
+        } else {
+            options = { templateUrl: '/templates/modals/rant-not-found.html',
+                data: id
+            }
+        }
+        options.scope = $scope.$new();
+        ModalService.open(options);
     };
 
     //authenticate();

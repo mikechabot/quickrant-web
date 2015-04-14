@@ -1,4 +1,4 @@
-<div ng-show="!singleRant" class="container rants-container">
+<div class="container rants-container">
   <div ng-repeat="rant in rants" class="row">
     <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
       <div class="panel panel-rant">
@@ -11,8 +11,7 @@
               <h2 class="panel-title">{{::rant.selection.question}}</h2>
             </div>
             <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-              <a href ng-click="showRant(rant)" class="fa fa-leaf fa-1-5x black" popover="show"
-                 popover-trigger="mouseenter" popover-placement="top"></a>
+              <a href ng-click="openRant(rant)" class="fa fa-plus fa-1-5x black" popover="Expand" popover-trigger="mouseenter" popover-placement="top"></a>
             </div>
           </div>
         </div>
@@ -35,34 +34,6 @@
       </div>
       <div ng-show="rants.length == page.totalElements" class="help-block"><i class="fa fa-child fa-2x"></i><em>
         Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i></div>
-    </div>
-  </div>
-</div>
-<div ng-show="singleRant" class="container rants-container single-rant">
-  <br>
-  <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-9">
-    <div class="panel panel-rant">
-      <div class="panel-heading">
-        <div class="row">
-          <div class="col-lg-1 col-sm-1 col-xs-2">
-            <img ng-src="/img/{{singleRant.selection.emotion}}-small.gif">
-          </div>
-          <div class="col-lg-10 col-sm-10 col-xs-s8">
-            <h1 class="panel-title">{{singleRant.selection.question}}</h1>
-          </div>
-        </div>
-      </div>
-      <div class="panel-body">
-        <blockquote>
-          <p>{{singleRant.rant}}</p>
-          <small><span class="mild-bold">{{singleRant.ranter.name}}</span> // {{singleRant.ranter.location}} // <span
-                  class="rant-created">{{singleRant.createdDate | timeago}}</span></small>
-        </blockquote>
-      </div>
-    </div>
-    <hr><br><br><br>
-    <div class="text-center">
-      <button class="btn btn-primary btn-lg" ng-click="showRants()">Show all rants</button>
     </div>
   </div>
 </div>
