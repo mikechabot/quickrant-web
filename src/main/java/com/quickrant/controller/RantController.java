@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.quickrant.factory.ResponseEntityFactory;
 import com.quickrant.model.Rant;
+import com.quickrant.model.Reply;
+import com.quickrant.service.ReplyService;
 import com.quickrant.sort.MongoSort;
 import com.quickrant.sort.SortMethod;
 import com.quickrant.service.RantService;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rants")
@@ -27,6 +30,9 @@ public class RantController {
 
     @Autowired
     private RantService rantService;
+
+    @Autowired
+    private ReplyService replyService;
 
     @Autowired
     protected ResponseEntityFactory response;
@@ -41,6 +47,11 @@ public class RantController {
         PageRequest pageRequest = getPageRequest(pageNumber, 15, SortMethod.ID_DESC);
         Page data = rantService.findAll(pageRequest);
 
+        List<Rant> rants = data.getContent();
+        for (Rant rant : rants) {
+            List<Reply> replies = replyService.findRepliesByRantId(rant.getId());
+            rant.setReplyCount(replies.size());
+        }
         return response.ok(null, data);
     }
 

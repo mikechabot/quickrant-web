@@ -28,7 +28,6 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                         deferred.resolve(response.data);
                     })
                     .fail(function (response) {
-                        console.log(response);
                         deferred.reject({message: response.message});
                     });
             } else {

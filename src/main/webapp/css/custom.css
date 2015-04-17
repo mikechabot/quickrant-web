@@ -86,7 +86,9 @@ textarea {
   color: green;
 }
 
-
+.replyLink {
+  font-size: 11px;
+}
 
 /* MODAL
 --------------------------------*/
