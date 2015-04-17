@@ -1,6 +1,10 @@
 app.controller('ReplyController', ['$scope', '$timeout', 'RantService', function($scope, $timeout, RantService) {
     $scope.close = function () {
-        $scope.$close();
+        $scope.$close($scope.data.replies.length);
+    };
+
+    $scope.$dismiss = function () {
+        $scope.$dismiss($scope.data.replies.length);
     };
 
     var rantId = $scope.data.id;

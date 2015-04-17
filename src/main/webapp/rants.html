@@ -20,7 +20,7 @@
             <p>{{::rant.rant}}</p>
             <small>
               <span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}
-              <span ng-if="rant.replyCount">
+              <span ng-show="rant.replyCount">
                 | <a href class="replyLink"  ng-click="openRant(rant)"><ng-pluralize count="rant.replyCount" when="{'0': 'No replies', 'one': '1 reply', 'other': '{} replies'}"></ng-pluralize></a>
               </span>
             </small>

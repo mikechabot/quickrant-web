@@ -134,7 +134,8 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
                 templateUrl: '/templates/modals/rant.html',
                 data: rant,
                 size: 'lg',
-                windowClass: 'rant-reply'
+                windowClass: 'rant-reply',
+                backdrop: 'static'
             }
         } else {
             options = { templateUrl: '/templates/modals/rant-not-found.html',
@@ -146,7 +147,10 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
             RantService.getRepliesByRantId(rant.id)
                 .done(function(replies) {
                     options.data.replies = replies;
-                    ModalService.open(options);
+                    ModalService.open(options).result
+                        .then(function(replyCount) {
+                            rant.replyCount= replyCount;
+                    });
                 })
                 .fail(function(error) {
                     console.error(error.message);

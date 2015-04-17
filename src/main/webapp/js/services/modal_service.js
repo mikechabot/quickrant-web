@@ -8,7 +8,8 @@ app.service('ModalService', ['$modal', function ($modal) {
                 templateUrl: options.templateUrl,
                 windowClass: options.windowClass,
                 scope: options.scope,
-                size: options.size
+                size: options.size,
+                backdrop: options.backdrop
             });
             return modalInstance;
         }
