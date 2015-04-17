@@ -26,6 +26,7 @@
     <script src="/js/services/session_service.js"></script>
     <script src="/js/services/modal_service.js"></script>
     <script src="/js/controller/reply_controller.js"></script>
+    <script src="/js/directives/directives.js"></script>
     <script src="/js/common/util.js"></script>
     <script src="/js/common/qr_data.js"></script>
     <script src="/js/common/qr_const.js"></script>
@@ -143,10 +144,10 @@
                 </div>
                 <span class="help-block text-center">
                   <span ng-class="{'text-danger': form.$error.maxlength}">{{charsLeft(rant.rant)}} characters left</span>
-                  <span ng-if="charsToGo(rant.rant) > 0"><em>({{charsToGo(rant.rant)}} more to go)</em></span>
+                  <span ng-if="charsToGo(rant.rant) > 0"><em>({{charsToGo(rant.rant)}} more to go)</em></span>s
                 </span>
                 <div class="row">
-                  <div style="margin-bottom: 5px;" class="col-lg-offset-4 col-lg-4 col-lg-offset-4 col-md-4 col-sm-offset-4 col-sm-4 col-xs-3 col-xs-6">
+                  <div style="margin-bottom: 5px;" class="col-lg-offset-4 col-lg-4 col-lg-offset-4 col-md-4 col-sm-offset-4 col-sm-4 col-xs-offset-3 col-xs-6">
                     <div class="text-center">
                       <input id="cmn-toggle-9" class="cmn-toggle cmn-toggle-yes-no" ng-model="rant.allowReplies" type="checkbox">
                       <label for="cmn-toggle-9" data-on="Replies allowed" data-off="No replies allowed"></label>
@@ -173,7 +174,7 @@
                       <img ng-src="/img/{{rant.face.emotion}}-small.gif">
                     </div>
                     <div class="col-lg-8 col-sm-10 col-xs-8">
-                      <h2 class="panel-title">{{rant.question}}</h2>
+                      <h2 class="panel-title preview-question">{{rant.question}}</h2>
                     </div>
                   </div>
                 </div>

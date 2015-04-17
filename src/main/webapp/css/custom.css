@@ -12,6 +12,10 @@
   margin: 4px;
 }
 
+.preview-question {
+  margin-top: 10px;
+}
+
 .form-container .form-control {
   margin: 5px;
   width: 100%;
