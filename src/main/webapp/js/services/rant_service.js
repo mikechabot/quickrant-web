@@ -45,9 +45,39 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                     });
             return deferred;
         },
+        getRepliesByRantId: function getRepliesByRantId(id) {
+            var deferred = $.Deferred();
+            DataAccessService.get('/replies/' + id)
+                .done(function(data) {
+                    deferred.resolve(data.data);
+                })
+                .fail(function(error) {
+                    deferred.reject({message: error.message});
+                });
+            return deferred;
+        },
+        saveReply: function saveReply(rantId, reply) {
+            var _reply = {
+                ranter: {
+                    name: reply.name || QR_CONST.DEFAULT_VALUE.NAME,
+                    location: reply.location || QR_CONST.DEFAULT_VALUE.LOCATION
+                },
+                createdDate: moment().toDate(),
+                rantId: rantId,
+                reply: reply.reply
+            };
+            var deferred = $.Deferred();
+            DataAccessService.post('/reply/', _reply)
+                .done(function(data) {
+                    deferred.resolve(data.data);
+                })
+                .fail(function(error) {
+                    deferred.reject({message: error.message});
+                });
+            return deferred;
+        },
         //TODO: fix this; don't pass the rants in
         getPaginatedRants: function getRants(rants, pageNumber) {
-
             function getPage(data) {
                 return {
                     size: data.size,

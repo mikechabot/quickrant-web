@@ -51,7 +51,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
                     $scope.deltaData = data;
                 }
             });
-    }, 4000);
+    }, QR_CONST.POLLING.RANTS);
 
     $scope.showNewRants = function(rants) {
         _setPageAndRants(rants);
@@ -59,10 +59,10 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         $scope.newRants = undefined;
     };
 
-    $scope.findRantById = function(id) {
-        RantService.getRantById(id)
+    $scope.findRantById = function(searchTerm) {
+        RantService.getRantById(searchTerm)
             .done(function(rant) {
-                $scope.openRant(rant, id);
+                $scope.openRant(rant, searchTerm)
             })
             .fail(function(error) {
                 console.error(error.message);
@@ -125,35 +125,42 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         });
     };
 
-    $scope.openRant = function(rant, id) {
+    $scope.openRant = function(rant, searchTerm) {
         var options = {};
         if (rant) {
             options = {
                 templateUrl: '/templates/modals/rant.html',
                 data: rant,
                 size: 'lg',
-                windowClass: 'rant-convo'
+                windowClass: 'rant-reply'
             }
         } else {
             options = { templateUrl: '/templates/modals/rant-not-found.html',
-                data: id
+                data: searchTerm
             }
         }
-        options.scope = $scope.$new();
-        ModalService.open(options);
+        if (rant) {
+            options.scope = $scope.$new();
+            RantService.getRepliesByRantId(rant.id)
+                .done(function(replies) {
+                    options.data.replies = replies;
+                    ModalService.open(options);
+                })
+                .fail(function(error) {
+                    console.error(error.message);
+                })
+                .always(function() {
+                    $timeout(function() {
+                        $scope.hideReply = false;
+                    });
+                });
+        }
     };
 
     //authenticate();
     $scope.currentPage = 1;
     loadRants($scope.currentPage);
 
-}]);
-
-//TODO: Make a yes/no dialog service or something
-app.controller('DialogController', ['$scope', function($scope) {
-    $scope.close = function () {
-        $scope.$dismiss();
-    }
 }]);
 
 app.directive('faces', ['$timeout', function ($timeout) {
@@ -238,6 +245,7 @@ app.directive('rantText', function () {
             ctrl.$viewChangeListeners.push(function () {
                 scope.quickrant.rant = ctrl.$viewValue;
             });
+            elem[0].focus();
         }
     }
 });

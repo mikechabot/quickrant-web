@@ -1,4 +1,4 @@
-<div ng-controller="DialogController">
+<div>
   <div class="modal-header">
     <h3 class="modal-title">Thanks for speaking your mind</h3>
   </div>
@@ -7,10 +7,9 @@
     bar is in the upper-right corner.
     <br><br>
     <div class="alert alert-info" role="alert"><strong>Note: </strong> This will become more important pending a future
-      update: when you post a rant you'll have the ability to mark it as unlocked, meaning people can reply to it to
-      start a conversation. <em>It will be locked by default.</em></div>
+      update; your rant can become a conversation if you choose to allow replies.</div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="close()">Got it</button>
+    <button class="btn btn-primary" ng-click="$close()">Got it</button>
   </div>
 </div>

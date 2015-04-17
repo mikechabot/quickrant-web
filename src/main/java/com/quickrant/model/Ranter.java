@@ -35,12 +35,4 @@ public class Ranter {
         this.userAgent = userAgent;
     }
 
-    @Override
-    public String toString() {
-        return "Ranter{" +
-                "name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                ", userAgent='" + userAgent + '\'' +
-                '}';
-    }
 }

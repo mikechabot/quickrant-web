@@ -11,5 +11,8 @@ app.constant('QR_CONST', {
         HAPPY: 'happy',
         SAD: 'sad',
         ANGRY: 'angry'
+    },
+    POLLING: {
+       RANTS: 10000
     }
 });

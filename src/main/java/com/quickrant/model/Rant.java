@@ -44,14 +44,4 @@ public class Rant extends MongoDocument {
         this.hashtags = hashtags;
     }
 
-    @Override
-    public String toString() {
-        return "Rant{" +
-                "ranter=" + ranter +
-                ", rant='" + rant + '\'' +
-                ", selection=" + selection +
-                ", hashtags=" + hashtags +
-                "} " + super.toString();
-    }
-
 }

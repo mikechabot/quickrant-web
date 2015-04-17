@@ -28,6 +28,10 @@ public class ResponseEntityFactory {
         return generate(HttpStatus.CREATED, ResponseStatus.SUCCESS, getLocationHeader(location), message, data);
     }
 
+    public ResponseEntity error(String message, Object data) {
+        return generate(HttpStatus.INTERNAL_SERVER_ERROR, ResponseStatus.ERROR, null, message, data);
+    }
+
     public ResponseEntity generate(HttpStatus httpStatus, ResponseStatus responseStatus, HttpHeaders headers, String message, Object data) {
         if (httpStatus == null) throw new IllegalArgumentException("HttpStatus cannot be null");
         if (responseStatus == null) throw new IllegalArgumentException("JsonResponseStatus cannot be null");
