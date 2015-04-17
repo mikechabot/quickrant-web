@@ -2,7 +2,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
 
     function _createRantObject(rant) {
         var now = moment().toDate();
-        return {
+        return{
             rant: rant.rant,
             selection: {
                 emotion: rant.face.emotion,
@@ -12,9 +12,10 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 name: rant.name || QR_CONST.DEFAULT_VALUE.NAME,
                 location: rant.location || QR_CONST.DEFAULT_VALUE.LOCATION
             },
+            allowReplies: rant.allowReplies,
             createdDate: now,
             lastModifiedDate: now
-        }
+        };
     }
 
     return ({
@@ -27,6 +28,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                         deferred.resolve(response.data);
                     })
                     .fail(function (response) {
+                        console.log(response);
                         deferred.reject({message: response.message});
                     });
             } else {

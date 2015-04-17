@@ -11,7 +11,7 @@
               <h2 class="panel-title">{{::rant.selection.question}}</h2>
             </div>
             <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-              <a href ng-click="openRant(rant)" class="fa fa-plus fa-1-5x black"></a>
+              <a ng-if="rant.allowReplies" href ng-click="openRant(rant)" class="fa fa-reply fa-1-5x black"></a>
             </div>
           </div>
         </div>

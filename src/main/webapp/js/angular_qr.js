@@ -17,6 +17,8 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
 
     $scope.rant = {};
 
+    $scope.allowReplies = false;
+
     $scope.quickrant.submit = function (form) {
         if (form.$valid) {
             RantService.postRant($scope.rant)

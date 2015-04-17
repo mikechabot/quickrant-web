@@ -11,6 +11,7 @@ public class Rant extends MongoDocument {
     private String rant;
     private Selection selection;
     private List<String> hashtags;
+    private Boolean allowReplies;
 
     public Ranter getRanter() {
         return ranter;
@@ -44,4 +45,11 @@ public class Rant extends MongoDocument {
         this.hashtags = hashtags;
     }
 
+    public Boolean getAllowReplies() {
+        return allowReplies;
+    }
+
+    public void setAllowReplies(Boolean allowReplies) {
+        this.allowReplies = allowReplies;
+    }
 }

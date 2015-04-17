@@ -78,6 +78,16 @@ textarea {
   font-size: 1.5em;
 }
 
+.fa-toggle-off {
+  color: red;
+}
+
+.fa-toggle-off {
+  color: green;
+}
+
+
+
 /* MODAL
 --------------------------------*/
 
