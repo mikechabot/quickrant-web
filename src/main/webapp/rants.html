@@ -33,6 +33,7 @@
   <div class="row text-center">
     <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
       <button style="margin-bottom: 10px" ng-show="rants.length < page.totalElements && !loading" class="btn btn-default btn-lg" ng-click="nextPage()">More</button>
+      <button style="margin-bottom: 10px" ng-show="rants.length < page.totalElements && !loading" class="btn btn-default btn-lg" scroll scroll-to="0">Back to top</button>
       <div ng-show="loading">
         <progressbar class="progress-striped active" value="100"></progressbar>
       </div>
