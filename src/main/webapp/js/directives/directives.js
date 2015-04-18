@@ -1,16 +1,24 @@
 /**
  * Directive to set scroll positioning
+ *
+ *  scroll-element: DOM element(s) to be scrolled upon (comma-separated)
+ *       scroll-to: Scroll to this number of pixels from the top of the scroll-element
+ *           speed: Speed at which to scroll
  */
 app.directive('scroll', function() {
     return {
         restrict: 'A',
         scope: {
-            scrollTo: '@',
+            scrollElement: '@',
+            scrollToPixel: '@',
             speed: '@'
         },
         link: function(scope, element) {
+            var context = scope.scrollElement || "body, html";
+            var pixels = scope.scrollToPixel || 0;
+            var speed = scope.speed || 'slow';
             element.on('click', function() {
-                $("body, html").animate({scrollTop: scope.scrollTo }, scope.speed || 'slow');
+                $(context).animate({scrollTop: pixels }, speed);
             });
         }
     }
@@ -41,6 +49,30 @@ app.directive('copyable', function () {
         }
     }
 });
+
+/**
+ * Directive to focus on an element
+ *
+ *  focus-trigger: Element is focused when the trigger is defined
+ *
+ */
+app.directive('focus', ['$timeout', function ($timeout) {
+    return {
+        restrict: 'A',
+        scope: {
+          focusTrigger: '='
+        },
+        link: function (scope, elem) {
+            scope.$watch('focusTrigger', function(value) {
+                if(value) {
+                    $timeout(function() {
+                        elem[0].focus();
+                    });
+                }
+            });
+        }
+    }
+}]);
 
 app.directive('faces', ['$timeout', function ($timeout) {
     return {

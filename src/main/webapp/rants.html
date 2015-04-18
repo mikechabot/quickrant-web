@@ -11,7 +11,7 @@
               <h2 class="panel-title">{{::rant.selection.question}}</h2>
             </div>
             <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-              <a ng-if="rant.allowReplies" href ng-click="openRant(rant)" class="fa fa-reply fa-1-5x black"></a>
+              <button ng-if="rant.allowReplies" ng-click="openRant(rant)" class="btn btn-default btn-sm fa fa-reply"></button>
             </div>
           </div>
         </div>
@@ -31,14 +31,17 @@
     </div>
   </div>
   <div class="row text-center">
-    <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-      <button style="margin-bottom: 10px" ng-show="rants.length < page.totalElements && !loading" class="btn btn-default btn-lg" ng-click="nextPage()">More</button>
-      <button style="margin-bottom: 10px" ng-show="rants.length < page.totalElements && !loading" class="btn btn-default btn-lg" scroll scroll-to="0">Back to top</button>
+    <div class="col-lg-offset-4 col-lg-1 col-sm-offset-2 col-sm-2 ">
+      <button ng-show="canFetchMoreRants() && !loading" class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="nextPage()"></button>
+    </div>
+    <div ng-show="!canFetchMoreRants() && !loading" class="help-block"><i class="fa fa-child fa-2x"></i><em>
+      Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i></div>
+    <div class="col-lg-1 col-sm-offset-2 col-sm-2 margin-bottom-lg">
+      <button ng-show="canFetchMoreRants() && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll></button>
       <div ng-show="loading">
         <progressbar class="progress-striped active" value="100"></progressbar>
       </div>
-      <div ng-show="rants.length == page.totalElements" class="help-block"><i class="fa fa-child fa-2x"></i><em>
-        Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i></div>
     </div>
+
   </div>
 </div>

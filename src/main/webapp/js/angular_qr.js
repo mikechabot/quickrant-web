@@ -71,6 +71,10 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
             });
     };
 
+    $scope.canFetchMoreRants = function() {
+        return $scope.rants.length < $scope.page.totalElements;
+    };
+
     function loadRants(pageNumber) {
         $scope.loading = true;
         RantService.getPaginatedRants($scope.rants, pageNumber)

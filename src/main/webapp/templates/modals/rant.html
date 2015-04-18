@@ -1,11 +1,11 @@
-<div ng-controller="ReplyController">
+<div id="modal" ng-controller="ReplyController">
   <div class="modal-header flex-container">
     <h4 class="modal-title flex-item"><em>{{data.id}}</em></h4>
-    <button class="btn btn-primary flex-item" ng-click="close()">Done</button>
+    <button class="btn btn-default btn-lg flex-item fa fa-close fa-2x" ng-click="close()"></button>
   </div>
   <div class="modal-body">
     <div class="row">
-      <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-9">
+      <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-9 rants-container">
         <div class="panel panel-rant">
           <div class="panel-heading">
             <div class="row">
@@ -27,6 +27,7 @@
       </div>
     </div>
     <hr>
+    <br>
     <div ng-show="!hideReply" class="row">
       <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-8 form-container">
         <div class="panel panel-default margin-bottom-lg">
@@ -42,7 +43,7 @@
               </div>
               <div class="row">
                 <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
-                  <textarea ng-model="form.reply" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
+                  <textarea focus focus-trigger="trigger" ng-model="form.reply" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
                 </div>
               </div>
                 <span class="help-block text-center">
@@ -73,9 +74,9 @@
         <hr>
       </div>
     </div>
-    <div ng-show="hideReply" class="modal-footer">
+    <div class="modal-footer">
       <div class="text-center">
-        <button class="btn btn-default" ng-click="hideReply = !hideReply">Reply again</button>
+        <button ng-show="hideReply" class="btn btn-default btn-lg fa fa-reply fa-2x" ng-click="hideReply = !hideReply"></button>
       </div>
     </div>
   </div>

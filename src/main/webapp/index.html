@@ -56,7 +56,6 @@
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
       ga('create', 'UA-61827308-1', 'auto');
       ga('send', 'pageview');
       ga('set', 'anonymizeIp', true);
@@ -64,7 +63,14 @@
     
   </head>
   <body ng-controller="MainController">
-
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -103,11 +109,17 @@
           <strong class="ribbon-content"><h1><a href style="color: inherit" ng-click="beta()">Beta</a></h1></strong>
           <div class="ribbon-stitches-bottom"></div>
         </div>
+      <div class="pull-right">
+        <div class="fb-share-button margin-bottom-xs" data-href="http://quickrant.com" data-layout="button_count"></div>
+        <div>
+          <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://quickrant.com" data-text="express yourself without yourself">Tweet</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </div>
+      </div>
     </div>
 
     <!--TODO: fix this-->
-    <br><br><br><br><br><br>
-
+    <br><br>
     <div class="container">
       <div faces data="quickrant.data" rant="rant" class="row margin-bottom-lg text-center">
         <div ng-repeat="face in quickrant.data" class="col-lg-4 col-sm-4 col-xs-4">
@@ -122,7 +134,7 @@
         </div>
       </div>
       <div ng-if="rant.question" class="row">
-        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9 form-container">
+        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-10 form-container">
           <div class="panel panel-{{rant.face.styles.panel}} margin-bottom-lg">
             <div class="panel-heading">
               <h3 class="panel-title text-center" id="legend">{{rant.question}}</h3>
@@ -144,7 +156,7 @@
                 </div>
                 <span class="help-block text-center">
                   <span ng-class="{'text-danger': form.$error.maxlength}">{{charsLeft(rant.rant)}} characters left</span>
-                  <span ng-if="charsToGo(rant.rant) > 0"><em>({{charsToGo(rant.rant)}} more to go)</em></span>s
+                  <span ng-if="charsToGo(rant.rant) > 0"><em>({{charsToGo(rant.rant)}} more to go)</em></span>
                 </span>
                 <div class="row">
                   <div style="margin-bottom: 5px;" class="col-lg-offset-4 col-lg-4 col-lg-offset-4 col-md-4 col-sm-offset-4 col-sm-4 col-xs-offset-3 col-xs-6">
@@ -190,7 +202,7 @@
       </div>
 	    <hr>
       <div class="text-center">
-        <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
+        <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)"></button>
           <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
         </button>
       </div>
