@@ -60,7 +60,7 @@ app.directive('focus', ['$timeout', function ($timeout) {
     return {
         restrict: 'A',
         scope: {
-          focusTrigger: '='
+          focusTrigger: '@'
         },
         link: function (scope, elem) {
             scope.$watch('focusTrigger', function(value) {
