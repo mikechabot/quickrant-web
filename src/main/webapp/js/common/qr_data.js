@@ -66,7 +66,8 @@ app.value('QR_DATA',
                 facebook: 'http://www.facebook.com/share.php?u=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required',
                 twitter: 'http://twitter.com/intent/tweet?status=Express yourself without yourself. Say anything to everyone. No login required + https://quickrant.com',
                 reddit: 'http://www.reddit.com/submit?url=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required',
-                google: 'https://plus.google.com/share?url=https://quickrant.co',
+                google: 'https://plus.google.com/share?url=https://quickrant.com',
+                tumblr: 'http://www.tumblr.com/share?v=3&u=https://quickrant.com&t=Express yourself without yourself. Say anything to everyone. No login required',
                 stumbleupon: 'http://www.stumbleupon.com/submit?url=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required'
             }
 
