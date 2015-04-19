@@ -93,6 +93,17 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 });
 
             return deferred;
+        },
+        getMostActiveRants: function getRants() {
+            var deferred = $.Deferred();
+            DataAccessService.get('/rants/mostactive')
+                .done(function (response) {
+                    deferred.resolve({rants: response.data});
+                })
+                .fail(function () {
+                    deferred.reject({message: 'Unable to get most active rants'});
+                });
+            return deferred;
         }
     });
 }]);

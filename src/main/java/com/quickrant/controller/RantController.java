@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rants")
@@ -53,7 +54,7 @@ public class RantController {
         if (id == null && id.isEmpty()) {
             return response.badRequest("Id cannot be null");
         }
-        Rant rant = rantService.findById(id);
+        Rant rant = rantService.findOne(id);
         if (rant != null) {
             return response.ok(null, rant);
         }
@@ -79,7 +80,7 @@ public class RantController {
             return response.badRequest("Reply cannot be null");
         }
         try {
-            Rant rant = rantService.findById(rantId);
+            Rant rant = rantService.findOne(rantId);
             rant.addReply(reply);
             rantService.save(rant);
             return response.ok(null, null);
@@ -87,6 +88,13 @@ public class RantController {
             log.error("Failed to save reply", ex);
             return response.error("Failed to save reply", ex);
         }
+    }
+
+    @RequestMapping(value = "/mostactive", method = RequestMethod.POST)
+    public ResponseEntity getMostActive() {
+
+        List<Rant> rants = rantService.findAll();
+        return response.ok();
     }
 
     public PageRequest getPageRequest(int pageNumber, int size, SortMethod sortMethod ) {

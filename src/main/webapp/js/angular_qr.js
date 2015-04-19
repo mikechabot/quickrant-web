@@ -76,6 +76,15 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         }
     };
 
+    $scope.getMostActiveRants = function() {
+        RantService.getMostActiveRants()
+            .done(function(mostActive) {
+                $scope.$apply(function() {
+                    $scope.mostActive = mostActive;
+                });
+            });
+    };
+
     function loadRants(pageNumber) {
         $scope.loading = true;
         RantService.getPaginatedRants($scope.rants, pageNumber)
