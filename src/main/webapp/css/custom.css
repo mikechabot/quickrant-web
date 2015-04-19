@@ -40,6 +40,11 @@ a:hover {
   text-decoration: none;
 }
 
+code {
+  background-color: #f1f1f1;
+  color: #777777;
+}
+
 hr {
   padding: 0px;
   margin: 20px 0px;
