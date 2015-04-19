@@ -5,8 +5,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     var quickrant = $scope.quickrant = {
         data: QR_DATA,
         templates: {
-            navigation: 'navigation.html',
-            rants: 'rants.html'
+            navigation: 'navigation.html'
         }
     };
 
@@ -24,7 +23,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
             RantService.postRant($scope.rant)
                 .done(function(data) {
                     ModalService.open({
-                        templateUrl: '/templates/modals/rant_posted.html',
+                        templateUrl: '/templates/modals/rant-posted.html',
                         scope: $scope.$new(),
                         data: {id: data.id}
                     });
@@ -72,7 +71,9 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     };
 
     $scope.canFetchMoreRants = function() {
-        return $scope.rants.length < $scope.page.totalElements;
+        if ($scope.rants && $scope.page) {
+            return $scope.rants.length < $scope.page.totalElements;
+        }
     };
 
     function loadRants(pageNumber) {
@@ -148,22 +149,13 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         }
         if (rant) {
             options.scope = $scope.$new();
-            RantService.getRepliesByRantId(rant.id)
-                .done(function(replies) {
-                    options.data.replies = replies;
-                    ModalService.open(options).result
-                        .then(function(replyCount) {
-                            rant.replyCount= replyCount;
-                    });
-                })
-                .fail(function(error) {
-                    console.error(error.message);
-                })
-                .always(function() {
-                    $timeout(function() {
-                        $scope.hideReply = false;
-                    });
-                });
+            ModalService.open(options).result
+                .then(function(replyCount) {
+                    rant.replyCount= replyCount;
+            });
+            //$timeout(function() {
+            //    $scope.hideReply = false;
+            //});
         }
     };
 

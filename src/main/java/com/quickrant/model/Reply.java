@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Reply extends MongoDocument{
 
     Ranter ranter;
-    String rantId;
     String reply;
 
     public Ranter getRanter() {
@@ -15,14 +14,6 @@ public class Reply extends MongoDocument{
 
     public void setRanter(Ranter ranter) {
         this.ranter = ranter;
-    }
-
-    public String getRantId() {
-        return rantId;
-    }
-
-    public void setRantId(String rantId) {
-        this.rantId = rantId;
     }
 
     public String getReply() {

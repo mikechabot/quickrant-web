@@ -1,27 +1,20 @@
 app.controller('ReplyController', ['$scope', '$timeout', 'RantService', function($scope, $timeout, RantService) {
     $scope.close = function () {
-        $scope.$close($scope.data.replies.length);
-    };
-
-    $scope.$dismiss = function () {
-        $scope.$dismiss($scope.data.replies.length);
+        $scope.$dismiss();
     };
 
     var rantId = $scope.data.id;
 
     $scope.saveReply = function(reply) {
-        RantService.saveReply(rantId, reply)
-            .done(function() {
-                RantService.getRepliesByRantId(rantId)
-                    .done(function(replies) {
-                        $scope.$apply(function () {
-                            $scope.data.replies = replies;
-                            _reset();
-                        });
-                    })
-                    .fail(function(error) {
-                        console.error(error.message);
-                    });
+        RantService.saveReply(reply, rantId)
+            .done(function(_reply) {
+                $scope.$apply(function () {
+                    if (!$scope.data.replies) {
+                        $scope.data.replies = [];
+                    }
+                    $scope.data.replies.push(_reply);
+                    _reset();
+                });
             })
             .fail(function(error) {
                 console.error(error.message);

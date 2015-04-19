@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Say anything to everyone. Express yourself without yourself. No login required.">
+    <meta name="description" content="Express yourself without yourself. Say anything to everyone. No login required.">
     <meta name="author" content="Mike Chabot">
     
     <title>quickrant | express yourself without yourself</title>
@@ -71,6 +71,15 @@
     js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));</script>
+
+  <script src="//platform.twitter.com/oct.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    twttr.conversion.trackPid('l5x5r', { tw_sale_amount: 0, tw_order_quantity: 0 });</script>
+  <noscript>
+    <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=l5x5r&p_id=Twitter&tw_sale_amount=0&tw_order_quantity=0" />
+    <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=l5x5r&p_id=Twitter&tw_sale_amount=0&tw_order_quantity=0" /></noscript>
+
+
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -202,11 +211,72 @@
       </div>
 	    <hr>
       <div class="text-center">
-        <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)"></button>
+        <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
           <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
         </button>
       </div>
   	</div>
-    <div ng-include="quickrant.templates.rants"></div>
+
+  <div class="container rants-container">
+    <div ng-repeat="rant in rants" class="row">
+      <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
+        <div class="panel panel-rant">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-1 col-sm-1 col-xs-2">
+                <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
+              </div>
+              <div class="col-lg-10 col-sm-10 col-xs-8">
+                <h2 class="panel-title">{{::rant.selection.question}}</h2>
+              </div>
+              <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
+                <button ng-if="rant.allowReplies" ng-click="openRant(rant)"
+                        class="btn btn-default btn-sm fa fa-reply"></button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <blockquote>
+              <p>{{::rant.rant}}</p>
+              <small>
+                <span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate
+                | timeago}}
+              <span ng-show="rant.replyCount">
+                | <a href class="replyLink" ng-click="openRant(rant)">
+                <ng-pluralize count="rant.replyCount"
+                              when="{'0': 'No replies', 'one': '1 reply', 'other': '{} replies'}"></ng-pluralize>
+              </a>
+              </span>
+              </small>
+            </blockquote>
+          </div>
+        </div>
+        <hr>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div ng-show="canFetchMoreRants() && !loading">
+        <div class="col-lg-offset-4 col-lg-1 col-md-offset-3 col-md-3 col-sm-offset-4 col-sm-1 col-xs-offset-2 col-xs-2">
+          <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="nextPage()"></button>
+        </div>
+        <div class="col-lg-1 col-sm-offset-2 col-sm-2 margin-bottom-lg">
+          <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll></button>
+        </div>
+      </div>
+      <div ng-show="!canFetchMoreRants() && !loading">
+        <div class="help-block col-lg-12">
+          <i class="fa fa-child fa-2x"></i><em>Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i>
+        </div>
+        <div class="col-lg-12 margin-bottom-lg">
+          <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll></button>
+        </div>
+      </div>
+      <div ng-show="loading" class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
+          <i class="fa fa-cog fa-spin fa-5x"></i>
+      </div>
+    </div>
+  </div>
+
+
   </body>
 </html>

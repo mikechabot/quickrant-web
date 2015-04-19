@@ -2,6 +2,7 @@ package com.quickrant.model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document
@@ -12,7 +13,7 @@ public class Rant extends MongoDocument {
     private Selection selection;
     private List<String> hashtags;
     private Boolean allowReplies;
-    private int replyCount;
+    private List<Reply> replies;
 
     public Ranter getRanter() {
         return ranter;
@@ -54,11 +55,18 @@ public class Rant extends MongoDocument {
         this.allowReplies = allowReplies;
     }
 
-    public int getReplyCount() {
-        return replyCount;
+    public List<Reply> getReplies() {
+        return replies;
     }
 
-    public void setReplyCount(int replyCount) {
-        this.replyCount = replyCount;
+    public void setReplies(List<Reply> replies) {
+        this.replies = replies;
+    }
+
+    public void addReply(Reply reply) {
+        if (replies == null) {
+            replies = new ArrayList<>();
+        }
+        replies.add(reply);
     }
 }

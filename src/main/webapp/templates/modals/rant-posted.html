@@ -3,7 +3,7 @@
     <h3 class="modal-title">Thanks for speaking your mind</h3>
   </div>
   <div class="modal-body">
-    If you'd ever like to check back on your rant, you can find it by searching with <code>{{data.id}}</code>
+    If you'd ever like to check back on your rant, you can find it by searching with <code ng-click="openRant(null, id)">{{data.id}}</code>
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" ng-click="$close()">Got it</button>
