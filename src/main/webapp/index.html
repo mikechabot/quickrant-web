@@ -37,7 +37,7 @@
     <script src="/js/common/qr_const.js"></script>
     
     <!-- fonts -->
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
     
     <!-- styles -->
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
@@ -70,25 +70,9 @@
     
   </head>
   <body ng-controller="MainController">
-  <div id="fb-root"></div>
-  <script>(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3&appId=1599318753659236";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));</script>
-  <script src="//platform.twitter.com/oct.js" type="text/javascript"></script>
-  <script type="text/javascript">
-    twttr.conversion.trackPid('l5x5r', { tw_sale_amount: 0, tw_order_quantity: 0 });</script>
-  <noscript>
-    <img height="1" width="1" style="display:none;" alt="" src="https://analytics.twitter.com/i/adsct?txn_id=l5x5r&p_id=Twitter&tw_sale_amount=0&tw_order_quantity=0" />
-    <img height="1" width="1" style="display:none;" alt="" src="//t.co/i/adsct?txn_id=l5x5r&p_id=Twitter&tw_sale_amount=0&tw_order_quantity=0" /></noscript>
 
-
-    <nav class="navbar navbar-default">
+  <nav class="navbar navbar-default">
       <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navvy">
             <span class="sr-only">Toggle navigation</span>
@@ -118,12 +102,8 @@
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
     </nav>
-  <div class="container">
-
-  </div>
 
     <div class="container">
-
       <!-- Beta -->
       <div class="center-absolute ribbon">
         <div class="ribbon-stitches-top"></div>
@@ -136,17 +116,14 @@
         <div class="flex-item">
           &nbsp;
         </div>
-        <div class="flex-item text-center">
-          <div class="fb-share-button margin-bottom-xs" data-href="http://quickrant.com" data-layout="button"></div><br>
-          <div class="fb-send margin-bottom-xs" data-href="http://quickrant.com" data-colorscheme="dark"></div><br>
-          <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://quickrant.com" data-text="Express yourself without yourself. Say anything to everyeone. No login required." data-via="quickrant_" data-count="none">Tweet</a>
-          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        <div class="flex-item link-bar">
+          <button ng-click="share()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button>
         </div>
       </div>
 
     </div>
     <!--TODO: fix this-->
-
+    <br><br>
     <div class="container">
       <div faces data="quickrant.data" rant="rant" class="row margin-bottom-lg text-center">
         <div ng-repeat="face in quickrant.data" class="col-lg-4 col-sm-4 col-xs-4">
@@ -295,5 +272,6 @@
       </div>
     </div>
   </div>
+
   </body>
 </html>

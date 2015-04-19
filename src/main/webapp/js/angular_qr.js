@@ -3,11 +3,13 @@ var app = angular.module('quickrant', ['ngCookies', 'ui.bootstrap', 'ngAnimate',
 app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', 'ModalService', function ($scope, $timeout, $interval, QR_DATA, QR_CONST, SessionService, RantService, ModalService) {
 
     var quickrant = $scope.quickrant = {
-        data: QR_DATA,
+        data: QR_DATA.emotions,
         templates: {
             navigation: 'navigation.html'
         }
     };
+
+    $scope.shareUrls = QR_DATA.shareUrls;
 
     $scope.default = {
         name: QR_CONST.DEFAULT_VALUE.NAME,
@@ -141,6 +143,15 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         });
     };
 
+    $scope.share = function() {
+        ModalService.open({
+            templateUrl: '/templates/modals/share.html',
+            data: $scope.shareUrls,
+            scope: $scope.$new(),
+            backdrop: true
+        });
+    };
+
     $scope.openRant = function(rant, searchTerm) {
         var options = {};
         if (rant) {
@@ -162,9 +173,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
                 .then(function(replyCount) {
                     rant.replyCount= replyCount;
             });
-            //$timeout(function() {
-            //    $scope.hideReply = false;
-            //});
         }
     };
 
