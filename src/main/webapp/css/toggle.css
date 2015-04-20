@@ -143,7 +143,7 @@ input.cmn-toggle-round-flat:checked + label:after {
 ============================================================ */
 input.cmn-toggle-yes-no + label {
   padding: 2px;
-  width: 180px;
+  width: 160px;
   height: 30px;
 }
 input.cmn-toggle-yes-no + label:before, input.cmn-toggle-yes-no + label:after {

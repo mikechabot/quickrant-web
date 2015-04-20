@@ -1,218 +1,250 @@
 <!DOCTYPE html>
 <html ng-app="quickrant" lang="en">
-  <head>    
-    <!-- meta standard -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Express yourself without yourself. Say anything to everyone. No login required.">
-    <!-- meta og -->
-    <meta property="og:type" name="og:type" content="website" />
-    <meta property="og:image" name="og:image" content="http://quickrant.com/img/thumbnail.gif"/>
-    <meta property="og:url" name="og:url" content="http://quickrant.com/"/>
-    <meta property="og:title" name="og:title" content="quickrant | express yourself without yourself"/>
-    <meta property="og:description" name="og:description" content="Express yourself without yourself. Say anything to everyone. No login required." />
-    
-    <title>quickrant | express yourself without yourself</title>
-    
-    <!-- scripts -->
-    <script src="/js/third-party/jquery/jquery-2.1.3.min.js"></script>
-    <script src="/js/third-party/angular/angular.min.js"></script>
-    <script src="/js/third-party/angular/angular-animate.min.js"></script>
-    <script src="/js/third-party/angular/angular-cookies.min.js"></script>
-    <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
-    <script src="/js/third-party/bootstrap/bootstrap.min.js"></script>
-    <script src="/js/third-party/underscore/underscore-min.js"></script>
-    <script src="/js/third-party/ng-timeago/ngtimeago.js"></script>
-    <script src="/js/third-party/moment/moment.js"></script>
-    <script src="/js/angular_qr.js"></script>
-    <script src="/js/common/data_services.js"></script>
-    <script src="/js/services/rant_service.js"></script>
-    <script src="/js/services/session_service.js"></script>
-    <script src="/js/services/modal_service.js"></script>
-    <script src="/js/controller/comment_controller.js"></script>
-    <script src="/js/directives/directives.js"></script>
-    <script src="/js/common/util.js"></script>
-    <script src="/js/common/qr_data.js"></script>
-    <script src="/js/common/qr_const.js"></script>
-    
-    <!-- fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
-    
-    <!-- styles -->
-    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/font-awesome/font-awesome.min.css" rel="stylesheet">
-    <link href="/css/custom.css" rel="stylesheet">
-    <link href="/css/toggle.css" rel="stylesheet">
+<head>
+  <!-- meta standard -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Express yourself without yourself. Say anything to everyone. No login required.">
+  <!-- meta og -->
+  <meta property="og:type" name="og:type" content="website"/>
+  <meta property="og:image" name="og:image" content="http://quickrant.com/img/thumbnail.gif"/>
+  <meta property="og:url" name="og:url" content="http://quickrant.com/"/>
+  <meta property="og:title" name="og:title" content="quickrant | express yourself without yourself"/>
+  <meta property="og:description" name="og:description"
+        content="Express yourself without yourself. Say anything to everyone. No login required."/>
 
-    <link rel="image_src" type="image/gif" href="http://quickrant.com/img/thumbnail.gif" />
-    
-    <!-- favicon -->
-    <link rel="shortcut icon" href="/ico/favicon.png">
-    
-    <!-- touch icons -->
-    <link href="/ico/apple-touch-icon.png" rel="apple-touch-icon" type="image/png">
-    <link href="/ico/Icon-76.png" rel="apple-touch-icon" sizes="76x76">
-    <link href="/ico/Icon-76@2x.png" rel="apple-touch-icon" sizes="152x152">
-    <link href="/ico/Icon-40@2x.png" rel="apple-touch-icon" sizes="80x80">
-    <link href="/ico/Icon-60@2x.png" rel="apple-touch-icon" sizes="120x120">
-    <link href="/ico/Icon-60@3x.png" rel="apple-touch-icon" sizes="180x180">
+  <title>quickrant | express yourself without yourself</title>
 
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-61827308-1', 'auto');
-      ga('send', 'pageview');
-      ga('set', 'anonymizeIp', true);
-    </script>
-    
-  </head>
-  <body ng-controller="MainController">
+  <!-- scripts -->
+  <script src="/js/third-party/jquery/jquery-2.1.3.min.js"></script>
+  <script src="/js/third-party/angular/angular.min.js"></script>
+  <script src="/js/third-party/angular/angular-animate.min.js"></script>
+  <script src="/js/third-party/angular/angular-cookies.min.js"></script>
+  <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
+  <script src="/js/third-party/bootstrap/bootstrap.min.js"></script>
+  <script src="/js/third-party/underscore/underscore-min.js"></script>
+  <script src="/js/third-party/ng-timeago/ngtimeago.js"></script>
+  <script src="/js/third-party/moment/moment.js"></script>
+  <script src="/js/angular_qr.js"></script>
+  <script src="/js/common/data_services.js"></script>
+  <script src="/js/services/rant_service.js"></script>
+  <script src="/js/services/session_service.js"></script>
+  <script src="/js/services/modal_service.js"></script>
+  <script src="/js/controller/comment_controller.js"></script>
+  <script src="/js/directives/directives.js"></script>
+  <script src="/js/common/util.js"></script>
+  <script src="/js/common/qr_data.js"></script>
+  <script src="/js/common/qr_const.js"></script>
 
-  <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navvy">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">quickrant</a>
-        </div>
+  <!-- fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-navvy">
-          <ul class="nav navbar-nav">
-            <li><a href ng-click="showAbout()">about</a></li>
-            <li><a href ng-click="beta()">feedback</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li>
-              <form class="navbar-form navbar-right">
-              <div class="form-group">
-                <input type="text" ng-model="search.id" placeholder="Find rant by id" class="form-control">
-              </div>
-              <button ng-click="findRantById(search.id)" class="btn btn-default btn-lg fa fa-search"></button>
-              </form>
-            </li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
-    </nav>
+  <!-- styles -->
+  <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/font-awesome/font-awesome.min.css" rel="stylesheet">
+  <link href="/css/custom.css" rel="stylesheet">
+  <link href="/css/toggle.css" rel="stylesheet">
 
-    <div class="container">
-      <!-- Beta -->
-      <div class="center-absolute ribbon">
-        <div class="ribbon-stitches-top"></div>
-        <strong class="ribbon-content"><h1><a href style="color: inherit" ng-click="beta()">Beta</a></h1></strong>
-        <div class="ribbon-stitches-bottom"></div>
-      </div>
+  <link rel="image_src" type="image/gif" href="http://quickrant.com/img/thumbnail.gif"/>
 
-      <!-- Social integration -->
-      <div class="flex-container">
-        <div class="flex-item">
-          &nbsp;
-        </div>
-        <div class="flex-item link-bar">
-          <button ng-click="share()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button>
-        </div>
-      </div>
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/ico/favicon.png">
 
+  <!-- touch icons -->
+  <link href="/ico/apple-touch-icon.png" rel="apple-touch-icon" type="image/png">
+  <link href="/ico/Icon-76.png" rel="apple-touch-icon" sizes="76x76">
+  <link href="/ico/Icon-76@2x.png" rel="apple-touch-icon" sizes="152x152">
+  <link href="/ico/Icon-40@2x.png" rel="apple-touch-icon" sizes="80x80">
+  <link href="/ico/Icon-60@2x.png" rel="apple-touch-icon" sizes="120x120">
+  <link href="/ico/Icon-60@3x.png" rel="apple-touch-icon" sizes="180x180">
+
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+              m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-61827308-1', 'auto');
+    ga('send', 'pageview');
+    ga('set', 'anonymizeIp', true);
+  </script>
+
+</head>
+<body ng-controller="MainController">
+<!-- Navbar (START) -->
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navigation">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">quickrant</a>
     </div>
-    <!--TODO: fix this-->
-    <br><br>
-    <div class="container">
-      <div faces data="quickrant.data" rant="rant" class="row margin-bottom-lg text-center">
-        <div ng-repeat="face in quickrant.data" class="col-lg-4 col-sm-4 col-xs-4">
-          <a href face ng-model="face"><img class="img-circle" ng-src="/img/{{::face.emotion}}.gif"></a>
-        </div>
-      </div>
-      <div questions ng-repeat="face in quickrant.data" rant="rant" class="text-center">
-        <div ng-show="face === rant.face" class="row margin-bottom-lg">
-          <div class="col-lg-offset-1 col-lg-10">
-              <question ng-repeat="question in face.questions" question="question" custom-style="face.styles.button"></question>
-          </div>
-        </div>
-      </div>
-      <div ng-if="rant.question" class="row">
-        <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-10 form-container">
-          <div class="panel panel-{{rant.face.styles.panel}} margin-bottom-lg">
-            <div class="panel-heading">
-              <h3 class="panel-title text-center" id="legend">{{rant.question}}</h3>
+    <div class="collapse navbar-collapse" id="bs-navigation">
+      <ul class="nav navbar-nav">
+        <li><a href ng-click="showAbout()">about</a></li>
+        <li><a href ng-click="beta()">feedback</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" ng-model="search.id" placeholder="Find rant by id" class="form-control">
             </div>
-            <div class="panel-body">
-              <form name="form" class="form-inline" role="form" ng-submit="quickrant.submit(form)">
-                <div class="row">
-                  <div class="col-lg-offset-1 col-lg-5 col-sm-offset-1 col-sm-5">
-                    <input copyable default-value="default.name" destination="rant.name" ng-model="form.name" class="form-control" type="text" placeholder="Name (optional)">
-                  </div>
-                  <div class="col-lg-5 col-sm-5">
-                    <input copyable default-value="default.location" destination="rant.location" ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
-                  </div>
-                </div>
-                <div class="row">
-                  <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
-                    <textarea rant-text ng-model="rant.rant" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
-                  </div>
-                </div>
-                <span class="help-block text-center">
-                  <span ng-class="{'text-danger': form.$error.maxlength}">{{charsLeft(rant.rant)}} characters left</span>
-                  <span ng-if="charsToGo(rant.rant) > 0"><em>({{charsToGo(rant.rant)}} more to go)</em></span>
-                </span>
-                <div class="row">
-                  <div style="margin-bottom: 5px;" class="col-lg-offset-4 col-lg-4 col-lg-offset-4 col-md-4 col-sm-offset-4 col-sm-4 col-xs-offset-3 col-xs-6">
-                    <div class="text-center">
-                      <input id="cmn-toggle-9" class="cmn-toggle cmn-toggle-yes-no" ng-model="rant.allowComments" type="checkbox">
-                      <label for="cmn-toggle-9" data-on="Comments allowed" data-off="No comments allowed"></label>
-                    </div>
-                  </div>
+            <button ng-click="findRantById(search.id)" class="btn btn-default btn-lg fa fa-search"></button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Navbar (END) -->
 
-                </div><!-- /row -->
-                <div class="text-center">
-                  <button popover="Post Rant" popover-trigger="mouseenter" popover-popup-delay="750" popover-placement="left" ng-class="{disabled: charsToGo(rant.rant) > 0 || form.$error.maxlength}" type="submit" id="submit" class="btn btn-default">
-                    <span class="glyphicon glyphicon-send"></span>
-                  </button>
-                  <button popover="{{quickrant.showPreview ? 'Hide Preview' : 'Show Preview'}}" popover-trigger="mouseenter" popover-popup-delay="750" popover-placement="right" type="button" class="btn btn-default" ng-click="quickrant.showPreview = !quickrant.showPreview">
-                    <span class="glyphicon" ng-class="{'glyphicon-eye-open': !quickrant.showPreview, 'glyphicon-eye-close': quickrant.showPreview}"></span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div collapse="!quickrant.showPreview" class="rant-container" class="row">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <div class="row">
-                    <div class="col-lg-1 col-sm-1 col-xs-2">
-                      <img ng-src="/img/{{rant.face.emotion}}-small.gif">
-                    </div>
-                    <div class="col-lg-8 col-sm-10 col-xs-8">
-                      <h2 class="panel-title preview-question">{{rant.question}}</h2>
-                    </div>
-                  </div>
-                </div>
-                <div class="panel-body">
-                  <blockquote>
-                    <p>{{rant.rant}}</p>
-                    <small><span class="mild-bold">{{rant.name}}</span> // {{rant.location}}</small>
-                  </blockquote>
-                </div>
+<!-- Beta and Share (START) -->
+<div class="container">
+
+  <!-- Beta -->
+  <div class="center-absolute ribbon">
+    <div class="ribbon-stitches-top"></div>
+    <strong class="ribbon-content"><h1><a href style="color: inherit" ng-click="beta()">Beta</a></h1></strong>
+    <div class="ribbon-stitches-bottom"></div>
+  </div>
+
+  <!-- Share -->
+  <div class="flex-container">
+    <div class="flex-item"></div>
+    <div class="flex-item link-bar">
+      <button ng-click="share()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button>
+    </div>
+  </div>
+</div>
+<!-- Beta and Share (END) -->
+
+<br><br>
+
+<div class="container">
+
+  <!-- Faces -->
+  <div faces data="quickrant.data" rant="rant" class="row margin-bottom-lg text-center">
+    <div ng-repeat="face in quickrant.data" class="col-lg-4 col-sm-4 col-xs-4">
+      <a href face ng-model="face"><img class="img-circle" ng-src="/img/{{::face.emotion}}.gif"></a>
+    </div>
+  </div>
+
+  <!-- Questions -->
+  <div questions ng-repeat="face in quickrant.data" rant="rant" class="text-center">
+    <div ng-show="face === rant.face" class="row margin-bottom-lg">
+      <div class="col-lg-offset-1 col-lg-10">
+        <question ng-repeat="question in face.questions" question="question" custom-style="face.styles.button"></question>
+      </div>
+    </div>
+  </div>
+
+  <!-- User interaction (START) -->
+  <div ng-if="rant.question" class="row">
+    <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-10 form-container">
+      <div class="panel panel-{{rant.face.styles.panel}} margin-bottom-lg">
+        <div class="panel-heading">
+          <h3 class="panel-title text-center" id="legend">{{rant.question}}</h3>
+        </div>
+        <div class="panel-body">
+          <form name="form" class="form-inline" role="form" ng-submit="quickrant.submit(form)">
+
+            <!-- Name and Location -->
+            <div class="row">
+              <div class="col-lg-offset-1 col-lg-5 col-sm-offset-1 col-sm-5">
+                <input copyable default-value="default.name" destination="rant.name" ng-model="form.name" class="form-control" type="text" placeholder="Name (optional)">
               </div>
+              <div class="col-lg-5 col-sm-5">
+                <input copyable default-value="default.location" destination="rant.location" ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
+              </div>
+            </div>
+
+            <!-- Rant -->
+            <div class="row">
+              <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
+                <textarea rant-text ng-model="rant.rant" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
+              </div>
+            </div>
+
+            <!-- Validation -->
+            <span class="help-block text-center">
+              <span ng-class="{'text-danger': form.$error.maxlength}">
+                <span ng-show="form.$error.maxlength">Too much.</span>
+                <span ng-show="!form.$error.maxlength">
+                  <ng-pluralize count="charsLeft(rant.rant)" when="{'0': 'No more characters', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
+                </span>
+              </span>
+            </span>
+
+            <!-- Allow comments -->
+            <div class="flex-center-container">
+              <div class="flex-center-item margin-bottom-sm">
+                <input id="cmn-toggle-9" class="cmn-toggle cmn-toggle-yes-no" ng-model="rant.allowComments" type="checkbox">
+                <label for="cmn-toggle-9" data-on="Allow comments" data-off="No comments"></label>
+              </div>
+            </div>
+
+            <!-- Submit and show preview -->
+            <div class="text-center">
+              <button ng-class="{disabled: charsToGo(rant.rant) > 0 || form.$error.maxlength}" type="submit" id="submit" class="btn btn-default">
+                <span class="glyphicon glyphicon-send"></span>
+              </button>
+              <button type="button" class="btn btn-default" ng-click="quickrant.showPreview = !quickrant.showPreview">
+                <span class="glyphicon" ng-class="{'glyphicon-eye-open': !quickrant.showPreview, 'glyphicon-eye-close': quickrant.showPreview}"></span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Preview (START) -->
+      <div collapse="!quickrant.showPreview" class="preview rants-container" class="row">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-1 col-sm-1 col-xs-2">
+                <img ng-src="/img/{{rant.face.emotion}}-small.gif">
+              </div>
+              <div class="col-lg-8 col-sm-10 col-xs-8">
+                <h2 class="panel-title margin-top-xs">{{rant.question}}</h2>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <blockquote>
+              <p>{{rant.rant}}</p>
+              <small><span class="mild-bold">{{rant.name}}</span> // {{rant.location}}</small>
+            </blockquote>
           </div>
         </div>
       </div>
-	    <hr>
-      <div class="text-center">
-        <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
-          <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
-        </button>
-      </div>
-  	</div>
+      <!-- Preview (END) -->
+    </div>
+  </div>
+  <!-- User interaction (END) -->
 
-  <div class="container rants-container">
+  <hr>
+
+  <!-- Show new rants -->
+  <div class="text-center">
+    <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
+      <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
+    </button>
+  </div>
+
+  <!-- Rants container (START) -->
+  <div class="rants-container">
     <div ng-repeat="rant in rants" class="row">
       <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
         <div class="panel panel-rant">
@@ -225,7 +257,10 @@
                 <h2 class="panel-title">{{::rant.selection.question}}</h2>
               </div>
               <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-                <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default"><i class="fa fa-comments-o fa-1-5x"></i><span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span></button>
+                <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default">
+                  <i class="fa fa-comments-o fa-1-5x"></i>
+                  <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -239,6 +274,8 @@
         <hr>
       </div>
     </div>
+
+    <!-- Footer buttons (START) -->
     <div class="row">
       <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
         <div class="row text-center margin-bottom-lg">
@@ -264,9 +301,13 @@
         </div>
       </div>
     </div>
-  </div>
+    <!-- Footer buttons (END) -->
 
-  <div ng-show="showMostActive" class="container rants-container">
+  </div>
+  <!-- Rants container (START) -->
+
+  <!-- Most active rants (START) -->
+  <div ng-show="showMostActive" class="rants-container">
     <div ng-repeat="rant in rants" class="row">
       <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
         <div class="panel panel-rant">
@@ -279,7 +320,10 @@
                 <h2 class="panel-title">{{::rant.selection.question}}</h2>
               </div>
               <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-                <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default"><i class="fa fa-comments-o fa-1-5x"></i><span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span></button>
+                <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default">
+                  <i class="fa fa-comments-o fa-1-5x"></i>
+                  <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
+                </button>
               </div>
             </div>
           </div>
@@ -295,7 +339,9 @@
         <hr>
       </div>
     </div>
+  </div>
+  <!-- Most active rants (END) -->
 
-
-  </body>
+</div>
+</body>
 </html>

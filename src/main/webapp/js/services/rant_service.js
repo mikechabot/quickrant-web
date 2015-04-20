@@ -53,11 +53,12 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
             };
             var deferred = $.Deferred();
             DataAccessService.post('/rants/comment/' + rantId, _comment)
-                .done(function() {
-                    deferred.resolve(_comment);
+                .done(function(response) {
+                    console.log(response.message);
+                    deferred.resolve(response.data);
                 })
-                .fail(function(error) {
-                    deferred.reject({message: error.message});
+                .fail(function(response) {
+                    deferred.reject({message: response.message});
                 });
             return deferred;
         },

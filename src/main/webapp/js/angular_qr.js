@@ -118,11 +118,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         return subtract(QR_CONST.RESTRICTIONS.MAX_CHAR, rant ? rant.length : 0);
     };
 
-    //TODO: put this in a directive
-    $scope.charsToGo = function (rant) {
-        return subtract(QR_CONST.RESTRICTIONS.MIN_CHAR,  rant ? rant.length : 0);
-    };
-
     $scope.nextPage = function () {
         if ($scope.currentPage)
         $scope.currentPage += 1;

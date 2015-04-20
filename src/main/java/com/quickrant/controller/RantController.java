@@ -107,7 +107,7 @@ public class RantController {
             comment.setCreatedDate(new Date());
             rant.addComment(comment);
             rantService.save(rant);
-            return response.ok("Comment added", null);
+            return response.ok("Comment added", comment);
         } catch(MongoClientException ex) {
             log.error("Failed to save comment", ex);
             return response.error("Failed to save comment", ex);
