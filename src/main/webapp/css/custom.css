@@ -75,6 +75,11 @@ textarea {
   min-height: 50px;
 }
 
+.sidebar {
+  width: 200px;
+  color: #777777;
+}
+
 .form-control, .alert, .btn, .panel {
   border-radius:0;
 }

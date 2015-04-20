@@ -10,6 +10,9 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     };
 
     $scope.shareUrls = QR_DATA.shareUrls;
+    var views = $scope.views = QR_DATA.views;
+
+    $scope.view = QR_DATA.views.rantStream;
 
     $scope.default = {
         name: QR_CONST.DEFAULT_VALUE.NAME,
@@ -78,14 +81,29 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         }
     };
 
-    $scope.getMostActiveRants = function() {
+    $scope.showView = function(view) {
+        $scope.view = view;
+        if (view === views.rantStream) {
+            $scope.mostActive = undefined;
+        } else if (view === views.mostActive) {
+            _getMostActiveRants();
+        }
+    };
+
+    function _getMostActiveRants() {
+        $scope.loading = true;
         RantService.getMostActiveRants()
             .done(function(mostActive) {
                 $scope.$apply(function() {
                     $scope.mostActive = mostActive;
                 });
+            })
+            .always(function() {
+                $timeout(function() {
+                    $scope.loading = false;
+                });
             });
-    };
+    }
 
     function loadRants(pageNumber) {
         $scope.loading = true;

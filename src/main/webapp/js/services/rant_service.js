@@ -1,5 +1,11 @@
 app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAccessService, QR_CONST) {
 
+    /**
+     * Generate Rant object from form input
+     * @param rant
+     * @returns {{rant: (*|.scope.rant|$scope.rant|.quickrant.rant), selection: {emotion: (*|.emotions.happy.emotion|.emotions.angry.emotion|.emotions.sad.emotion), question: (*|.scope.question|$scope.rant.question)}, ranter: {name: (*|.DEFAULT_VALUE.NAME|m.selectors.match.NAME|m.selectors.find.NAME), location: (*|$scope.default.location|number|DOMLocator|Location|String|$scope.form.location)}, allowReplies: (*|$scope.allowReplies)}}
+     * @private
+     */
     function _createRantObject(rant) {
         return{
             rant: rant.rant,
@@ -13,6 +19,22 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
             },
             allowReplies: rant.allowReplies
         };
+    }
+
+    /**
+     * Generate Comment object from form input
+     * @param comment
+     * @returns {{ranter: {name: (*|.DEFAULT_VALUE.NAME|m.selectors.match.NAME|m.selectors.find.NAME), location: (*|$scope.default.location|number|DOMLocator|Location|String|Location)}, comment: (*|$scope.form.comment)}}
+     * @private
+     */
+    function _createCommentObject(comment) {
+        return {
+            ranter: {
+                name: comment.name || QR_CONST.DEFAULT_VALUE.NAME,
+                location: comment.location || QR_CONST.DEFAULT_VALUE.LOCATION
+            },
+            comment: comment.comment
+        }
     }
 
     return ({
@@ -44,14 +66,8 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
             return deferred;
         },
         saveComment: function saveComment(comment, rantId) {
-            var _comment = {
-                ranter: {
-                    name: comment.name || QR_CONST.DEFAULT_VALUE.NAME,
-                    location: comment.location || QR_CONST.DEFAULT_VALUE.LOCATION
-                },
-                comment: comment.comment
-            };
             var deferred = $.Deferred();
+            var _comment = _createCommentObject(comment);
             DataAccessService.post('/rants/comment/' + rantId, _comment)
                 .done(function(response) {
                     console.log(response.message);

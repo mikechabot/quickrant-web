@@ -11,8 +11,7 @@
   <meta property="og:image" name="og:image" content="http://quickrant.com/img/thumbnail.gif"/>
   <meta property="og:url" name="og:url" content="http://quickrant.com/"/>
   <meta property="og:title" name="og:title" content="quickrant | express yourself without yourself"/>
-  <meta property="og:description" name="og:description"
-        content="Express yourself without yourself. Say anything to everyone. No login required."/>
+  <meta property="og:description" name="og:description" content="Express yourself without yourself. Say anything to everyone. No login required."/>
 
   <title>quickrant | express yourself without yourself</title>
 
@@ -123,8 +122,10 @@
   <!-- Share -->
   <div class="flex-container">
     <div class="flex-item"></div>
-    <div class="flex-item link-bar">
-      <button ng-click="share()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button>
+    <div class="flex-item">
+      <button ng-click="share()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button><br><br>
+      <button ng-if="view != views.rantStream" ng-click="showView(views.rantStream)" class="btn btn-default btn-lg fa fa-globe fa-2x"></button>
+      <button ng-if="view != views.mostActive" ng-click="showView(views.mostActive)" class="btn btn-default btn-lg fa fa-trophy fa-2x"></button>
     </div>
   </div>
 </div>
@@ -244,7 +245,11 @@
   </div>
 
   <!-- Rants container (START) -->
-  <div class="rants-container">
+  <div ng-show="!mostActive" class="rants-container">
+    <div class="sidebar">
+      <h3>Rant stream</h3>
+      <hr>
+    </div>
     <div ng-repeat="rant in rants" class="row">
       <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
         <div class="panel panel-rant">
@@ -253,14 +258,21 @@
               <div class="col-lg-1 col-sm-1 col-xs-2">
                 <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
               </div>
-              <div class="col-lg-10 col-sm-10 col-xs-8">
-                <h2 class="panel-title">{{::rant.selection.question}}</h2>
+              <div ng-if="!rant.allowComments">
+                <div class="col-lg-10 col-sm-10 col-xs-10">
+                  <h2 class="panel-title">{{::rant.selection.question}}</h2>
+                </div>
               </div>
-              <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-                <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default">
-                  <i class="fa fa-comments-o fa-1-5x"></i>
-                  <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
-                </button>
+              <div ng-if="rant.allowComments">
+                <div class="col-lg-9 col-sm-9 col-xs-7">
+                  <h2 class="panel-title">{{::rant.selection.question}}</h2>
+                </div>
+                <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
+                  <button ng-click="openRant(rant)" class="btn btn-default">
+                    <i class="fa fa-comments-o fa-1-5x"></i>
+                    <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -307,8 +319,12 @@
   <!-- Rants container (START) -->
 
   <!-- Most active rants (START) -->
-  <div ng-show="showMostActive" class="rants-container">
-    <div ng-repeat="rant in rants" class="row">
+  <div ng-show="mostActive" class="rants-container">
+    <div class="sidebar">
+      <h3>Most active</h3>
+      <hr>
+    </div>
+    <div ng-repeat="rant in mostActive.rants" class="row">
       <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
         <div class="panel panel-rant">
           <div class="panel-heading">
@@ -316,10 +332,10 @@
               <div class="col-lg-1 col-sm-1 col-xs-2">
                 <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
               </div>
-              <div class="col-lg-10 col-sm-10 col-xs-8">
+              <div class="col-lg-9 col-sm-9 col-xs-7">
                 <h2 class="panel-title">{{::rant.selection.question}}</h2>
               </div>
-              <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
+              <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
                 <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default">
                   <i class="fa fa-comments-o fa-1-5x"></i>
                   <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
