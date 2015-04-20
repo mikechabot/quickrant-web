@@ -18,23 +18,24 @@
   <!-- scripts -->
   <script src="/js/third-party/jquery/jquery-2.1.3.min.js"></script>
   <script src="/js/third-party/angular/angular.min.js"></script>
-  <script src="/js/third-party/angular/angular-animate.min.js"></script>
-  <script src="/js/third-party/angular/angular-cookies.min.js"></script>
+  <script src="/js/third-party/ng-animate/angular-animate.min.js"></script>
   <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
   <script src="/js/third-party/bootstrap/bootstrap.min.js"></script>
   <script src="/js/third-party/underscore/underscore-min.js"></script>
   <script src="/js/third-party/ng-timeago/ngtimeago.js"></script>
   <script src="/js/third-party/moment/moment.js"></script>
-  <script src="/js/angular_qr.js"></script>
-  <script src="/js/common/data_services.js"></script>
-  <script src="/js/services/rant_service.js"></script>
-  <script src="/js/services/session_service.js"></script>
-  <script src="/js/services/modal_service.js"></script>
-  <script src="/js/controller/comment_controller.js"></script>
-  <script src="/js/directives/directives.js"></script>
-  <script src="/js/common/util.js"></script>
-  <script src="/js/common/qr_data.js"></script>
-  <script src="/js/common/qr_const.js"></script>
+
+  <!-- scripts (versioned) -->
+  <script src="/js/angular_qr.js?20150420"></script>
+  <script src="/js/common/data_services.js?201504200601"></script>
+  <script src="/js/services/rant_service.js?201504200601"></script>
+  <script src="/js/services/session_service.js?201504200601"></script>
+  <script src="/js/services/modal_service.js?201504200601"></script>
+  <script src="/js/controllers/comment_controller.js?201504200601"></script>
+  <script src="/js/directives/directives.js?201504200601"></script>
+  <script src="/js/common/util.js?201504200601"></script>
+  <script src="/js/common/qr_data.js?201504200601"></script>
+  <script src="/js/common/qr_const.js?201504200601"></script>
 
   <!-- fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
@@ -125,7 +126,7 @@
     <div class="flex-item">
       <button ng-click="share()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button><br><br>
       <button ng-if="view != views.rantStream" ng-click="showView(views.rantStream)" class="btn btn-default btn-lg fa fa-globe fa-2x"></button>
-      <button ng-if="view != views.mostActive" ng-click="showView(views.mostActive)" class="btn btn-default btn-lg fa fa-trophy fa-2x"></button>
+      <button ng-if="view != views.mostActive" ng-click="showView(views.mostActive)" class="btn btn-default btn-lg fa fa-star fa-2x"></button>
     </div>
   </div>
 </div>
@@ -246,44 +247,48 @@
 
   <!-- Rants container (START) -->
   <div ng-show="!mostActive" class="rants-container">
-    <div class="sidebar">
-      <h3>Rant stream</h3>
-      <hr>
-    </div>
-    <div ng-repeat="rant in rants" class="row">
-      <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-        <div class="panel panel-rant">
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-lg-1 col-sm-1 col-xs-2">
-                <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
-              </div>
-              <div ng-if="!rant.allowComments">
-                <div class="col-lg-10 col-sm-10 col-xs-10">
-                  <h2 class="panel-title">{{::rant.selection.question}}</h2>
+    <div class="row">
+      <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
+        <span class="h3">Live stream</span>
+        <hr>
+      </div>
+      <div class="col-lg-10 col-md-9 col-sm-9">
+        <div ng-repeat="rant in rants" class="row">
+          <div class="col-lg-offset-1 col-lg-8 col-md-offset-1 col-md-9">
+            <div class="panel panel-rant">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-lg-1 col-sm-1 col-xs-2">
+                    <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
+                  </div>
+                  <div ng-if="!rant.allowComments">
+                    <div class="col-lg-10 col-sm-10 col-xs-10">
+                      <h2 class="panel-title">{{::rant.selection.question}}</h2>
+                    </div>
+                  </div>
+                  <div ng-if="rant.allowComments">
+                    <div class="col-lg-9 col-sm-9 col-xs-7">
+                      <h2 class="panel-title">{{::rant.selection.question}}</h2>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
+                      <button ng-click="openRant(rant)" class="btn btn-default">
+                        <i class="fa fa-comments-o fa-1-5x"></i>
+                        <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div ng-if="rant.allowComments">
-                <div class="col-lg-9 col-sm-9 col-xs-7">
-                  <h2 class="panel-title">{{::rant.selection.question}}</h2>
-                </div>
-                <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
-                  <button ng-click="openRant(rant)" class="btn btn-default">
-                    <i class="fa fa-comments-o fa-1-5x"></i>
-                    <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
-                  </button>
-                </div>
+              <div class="panel-body">
+                <blockquote>
+                  <p class="margin-bottom-md">{{::rant.rant}}</p>
+                  <small><span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}</small>
+                </blockquote>
               </div>
             </div>
-          </div>
-          <div class="panel-body">
-            <blockquote>
-              <p>{{::rant.rant}}</p>
-              <small><span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}</small>
-            </blockquote>
+            <hr>
           </div>
         </div>
-        <hr>
       </div>
     </div>
 
@@ -314,45 +319,46 @@
       </div>
     </div>
     <!-- Footer buttons (END) -->
-
   </div>
   <!-- Rants container (START) -->
 
   <!-- Most active rants (START) -->
-  <div ng-show="mostActive" class="rants-container">
-    <div class="sidebar">
-      <h3>Most active</h3>
+  <div ng-show="mostActive" class="row rants-container">
+    <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
+      <span class="h3">Popular</span>
       <hr>
     </div>
-    <div ng-repeat="rant in mostActive.rants" class="row">
-      <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-        <div class="panel panel-rant">
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-lg-1 col-sm-1 col-xs-2">
-                <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
-              </div>
-              <div class="col-lg-9 col-sm-9 col-xs-7">
-                <h2 class="panel-title">{{::rant.selection.question}}</h2>
-              </div>
-              <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
-                <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default">
-                  <i class="fa fa-comments-o fa-1-5x"></i>
-                  <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
-                </button>
+    <div class="col-lg-10 col-md-9 col-sm-9">
+      <div ng-repeat="rant in mostActive.rants" class="row">
+        <div class="col-lg-offset-1 col-lg-8 col-md-offset-1 col-md-9">
+          <div class="panel panel-rant">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-lg-1 col-sm-1 col-xs-2">
+                  <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
+                </div>
+                <div class="col-lg-9 col-sm-9 col-xs-7">
+                  <h2 class="panel-title">{{::rant.selection.question}}</h2>
+                </div>
+                <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
+                  <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default">
+                    <i class="fa fa-comments-o fa-1-5x"></i>
+                    <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
+                  </button>
+                </div>
               </div>
             </div>
+            <div class="panel-body">
+              <blockquote>
+                <p>{{::rant.rant}}</p>
+                <small>
+                  <span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}
+                </small>
+              </blockquote>
+            </div>
           </div>
-          <div class="panel-body">
-            <blockquote>
-              <p>{{::rant.rant}}</p>
-              <small>
-                <span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}
-              </small>
-            </blockquote>
-          </div>
+          <hr>
         </div>
-        <hr>
       </div>
     </div>
   </div>

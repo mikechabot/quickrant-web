@@ -1,4 +1,4 @@
-var app = angular.module('quickrant', ['ngCookies', 'ui.bootstrap', 'ngAnimate', 'ngTimeago']);
+var app = angular.module('quickrant', ['ui.bootstrap', 'ngAnimate', 'ngTimeago']);
 
 app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', 'ModalService', function ($scope, $timeout, $interval, QR_DATA, QR_CONST, SessionService, RantService, ModalService) {
 

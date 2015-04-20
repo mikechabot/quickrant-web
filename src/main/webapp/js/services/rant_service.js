@@ -17,7 +17,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 name: rant.name || QR_CONST.DEFAULT_VALUE.NAME,
                 location: rant.location || QR_CONST.DEFAULT_VALUE.LOCATION
             },
-            allowReplies: rant.allowReplies
+            allowComments: rant.allowComments
         };
     }
 
