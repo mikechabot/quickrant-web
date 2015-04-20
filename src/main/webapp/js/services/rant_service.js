@@ -93,7 +93,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
         },
         getMostActiveRants: function getRants() {
             var deferred = $.Deferred();
-            DataAccessService.get('/rants/mostactive')
+            DataAccessService.post('/rants/mostactive')
                 .done(function (response) {
                     deferred.resolve({rants: response.data});
                 })

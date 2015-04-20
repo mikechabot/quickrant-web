@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/rants")
@@ -84,6 +84,7 @@ public class RantController {
         try {
             Rant rant = rantService.findOne(rantId);
             rant.addReply(reply);
+            rant.setReplyCount(rant.getReplyCount()+1);
             rantService.save(rant);
             return response.ok(null, null);
         } catch(MongoClientException ex) {
@@ -92,15 +93,50 @@ public class RantController {
         }
     }
 
+    /**
+     * Get top 10 most active rants
+     * @return
+     */
     @RequestMapping(value = "/mostactive", method = RequestMethod.POST)
     public ResponseEntity getMostActive() {
 
-        List<Rant> rants = rantService.findAll();
-        return response.ok();
+        final int TOP_10 = 10;
+
+        /* Get rants with more than 1 comment */
+        List<Rant> rants = rantService.findByReplyCountGreaterThan(1);
+        Collections.sort(rants, new ReplyCountComparator());
+
+        int length = rants.size();
+        if (length > TOP_10) {
+            length = TOP_10;
+        }
+
+        Rant[] mostActive = new Rant[length];
+        for (int i = 0; i < length; i++) {
+            mostActive[i] = rants.get(i);
+        }
+
+        return response.ok(null, mostActive);
     }
 
     public PageRequest getPageRequest(int pageNumber, int size, SortMethod sortMethod ) {
         return new PageRequest(pageNumber, size, MongoSort.SORT_BY.get(sortMethod));
+    }
+
+    /**
+     * Sort Rants by replyCount descending
+     */
+    public class ReplyCountComparator implements Comparator<Rant> {
+        public int compare(Rant o1, Rant o2) {
+            long c1 = o1.getReplyCount();
+            long c2 = o2.getReplyCount();
+            if (c1 > c2) {
+                return -1;
+            } else if (c1 < c2) {
+                return 1;
+            }
+            return 0;
+        }
     }
 
 }

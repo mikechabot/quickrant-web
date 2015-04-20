@@ -3,6 +3,7 @@ package com.quickrant.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Document
@@ -14,6 +15,7 @@ public class Rant extends MongoDocument {
     private List<String> hashtags;
     private Boolean allowReplies;
     private List<Reply> replies;
+    private long replyCount;
 
     public Ranter getRanter() {
         return ranter;
@@ -69,4 +71,13 @@ public class Rant extends MongoDocument {
         }
         replies.add(reply);
     }
+
+    public long getReplyCount() {
+        return replyCount;
+    }
+
+    public void setReplyCount(long replyCount) {
+        this.replyCount = replyCount;
+    }
+
 }

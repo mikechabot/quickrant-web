@@ -169,10 +169,12 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         }
         if (rant) {
             options.scope = $scope.$new();
-            ModalService.open(options).result
-                .then(function(replyCount) {
-                    rant.replyCount= replyCount;
-            });
+            //ModalService.open(options).result
+            //    .then(function(replyCount) {
+            //        rant.replyCount= replyCount;
+            //    });
+
+            ModalService.open(options);
         }
     };
 

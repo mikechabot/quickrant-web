@@ -4,7 +4,6 @@ app.controller('ReplyController', ['$scope', '$timeout', 'RantService', function
     };
 
     var rantId = $scope.data.id;
-
     $scope.showReplyForm = true;
 
     $scope.saveReply = function(reply) {
@@ -15,6 +14,8 @@ app.controller('ReplyController', ['$scope', '$timeout', 'RantService', function
                         $scope.data.replies = [];
                     }
                     $scope.data.replies.push(_reply);
+                    $scope.data.replyCount = $scope.data.replies.length;
+                    //TODO: move this to a directive
                     $('.modal-body').animate({scrollTop: $('.modal-body')[0].scrollHeight }, 'slow');
                     _reset();
                 });

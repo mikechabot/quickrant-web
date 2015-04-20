@@ -225,21 +225,14 @@
                 <h2 class="panel-title">{{::rant.selection.question}}</h2>
               </div>
               <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-                <button ng-if="rant.allowReplies" ng-click="openRant(rant)" class="btn btn-default btn fa fa-reply fa-1-5x"></button>
+                <button ng-if="rant.allowReplies" ng-click="openRant(rant)" class="btn btn-default"><i class="fa fa-comments-o fa-1-5x"></i><span ng-show="{{rant.replyCount > 0}}"> | {{rant.replyCount}}</span></button>
               </div>
             </div>
           </div>
           <div class="panel-body">
             <blockquote>
               <p>{{::rant.rant}}</p>
-              <small>
-                <span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}
-              <span ng-show="rant.replies">
-                | <a href class="replyLink" ng-click="openRant(rant)">
-                <span class="mild-bold"><ng-pluralize count="rant.replies.length" when="{'0': 'No replies', 'one': '1 reply', 'other': '{} replies'}"></ng-pluralize></span>
-              </a>
-              </span>
-              </small>
+              <small><span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}</small>
             </blockquote>
           </div>
         </div>
@@ -272,6 +265,42 @@
       </div>
     </div>
   </div>
+
+  <div ng-show="showMostActive" class="container rants-container">
+    <div ng-repeat="rant in rants" class="row">
+      <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
+        <div class="panel panel-rant">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-lg-1 col-sm-1 col-xs-2">
+                <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
+              </div>
+              <div class="col-lg-10 col-sm-10 col-xs-8">
+                <h2 class="panel-title">{{::rant.selection.question}}</h2>
+              </div>
+              <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
+                <button ng-if="rant.allowReplies" ng-click="openRant(rant)" class="btn btn-default btn fa fa-comments-o fa-1-5x"></button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <blockquote>
+              <p>{{::rant.rant}}</p>
+              <small>
+                <span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}
+              <span ng-show="rant.replies">
+                | <a href class="replyLink" ng-click="openRant(rant)">
+                <span class="mild-bold"><ng-pluralize count="rant.replyCount" when="{'0': 'No replies', 'one': '1 reply', 'other': '{} replies'}"></ng-pluralize></span>
+              </a>
+              </span>
+              </small>
+            </blockquote>
+          </div>
+        </div>
+        <hr>
+      </div>
+    </div>
+
 
   </body>
 </html>
