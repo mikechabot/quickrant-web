@@ -28,6 +28,18 @@
   background-color: #fafafa;
 }
 
+.list-group-item.active {
+  color: #555555;
+  border-color: #C0C0C0;
+  background-color: #ededed;
+}
+
+a.list-group-item:hover, .list-group-item.active:hover, .list-group-item.active:focus {
+  color: #DDDDDD;
+  border-color: #C0C0C0;
+  background-color: #696969;
+}
+
 /****************/
 
 body {
