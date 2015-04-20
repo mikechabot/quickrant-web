@@ -236,15 +236,9 @@
 
   <hr>
 
-  <!-- Show new rants -->
-  <div class="text-center">
-    <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
-      <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
-    </button>
-  </div>
-
   <!-- Rants container (START) -->
   <div ng-show="!mostActive" class="rants-container">
+    <!-- Show new rants -->
     <div class="row">
       <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
         <div class="list-group">
@@ -252,6 +246,11 @@
           <a class="list-group-item" ng-class="{'active': (view == views.mostActive)}" href ng-click="showView(views.mostActive)"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
         </div>
         <hr>
+        <div class="text-center">
+          <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
+            <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
+          </button>
+        </div>
       </div>
       <div class="col-lg-10 col-md-9 col-sm-9">
         <div ng-repeat="rant in rants" class="row">
