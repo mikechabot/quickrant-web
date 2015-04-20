@@ -42,7 +42,9 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
                 })
                 .always(function () {
                     $timeout(function() {
-                        loadRants(1)
+                        loadRants(1);
+                        $scope.view = views.rantStream;
+                        $scope.mostActive = undefined
                     });
                 });
         }
