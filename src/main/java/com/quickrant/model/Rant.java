@@ -3,7 +3,6 @@ package com.quickrant.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Document
@@ -13,9 +12,9 @@ public class Rant extends MongoDocument {
     private String rant;
     private Selection selection;
     private List<String> hashtags;
-    private Boolean allowReplies;
-    private List<Reply> replies;
-    private long replyCount;
+    private boolean allowComments;
+    private List<Comment> comments;
+    private long commentCount;
 
     public Ranter getRanter() {
         return ranter;
@@ -49,35 +48,35 @@ public class Rant extends MongoDocument {
         this.hashtags = hashtags;
     }
 
-    public Boolean getAllowReplies() {
-        return allowReplies;
+    public boolean getAllowComments() {
+        return allowComments;
     }
 
-    public void setAllowReplies(Boolean allowReplies) {
-        this.allowReplies = allowReplies;
+    public void setAllowComments(boolean allowComments) {
+        this.allowComments = allowComments;
     }
 
-    public List<Reply> getReplies() {
-        return replies;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setReplies(List<Reply> replies) {
-        this.replies = replies;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
-    public void addReply(Reply reply) {
-        if (replies == null) {
-            replies = new ArrayList<>();
+    public void addComment(Comment comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
         }
-        replies.add(reply);
+        comments.add(comment);
+        commentCount++;
     }
 
-    public long getReplyCount() {
-        return replyCount;
+    public long getCommentCount() {
+        return commentCount;
     }
 
-    public void setReplyCount(long replyCount) {
-        this.replyCount = replyCount;
+    public void setCommentCount(long commentCount) {
+        this.commentCount = commentCount;
     }
-
 }

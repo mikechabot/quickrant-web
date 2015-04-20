@@ -43,19 +43,18 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                     });
             return deferred;
         },
-        saveReply: function saveReply(reply, rantId) {
-            var _reply = {
+        saveComment: function saveComment(comment, rantId) {
+            var _comment = {
                 ranter: {
-                    name: reply.name || QR_CONST.DEFAULT_VALUE.NAME,
-                    location: reply.location || QR_CONST.DEFAULT_VALUE.LOCATION
+                    name: comment.name || QR_CONST.DEFAULT_VALUE.NAME,
+                    location: comment.location || QR_CONST.DEFAULT_VALUE.LOCATION
                 },
-                createdDate: moment().toDate(),
-                reply: reply.reply
+                comment: comment.comment
             };
             var deferred = $.Deferred();
-            DataAccessService.post('/rants/reply/' + rantId, _reply)
-                .done(function(data) {
-                    deferred.resolve(_reply);
+            DataAccessService.post('/rants/comment/' + rantId, _comment)
+                .done(function() {
+                    deferred.resolve(_comment);
                 })
                 .fail(function(error) {
                     deferred.reject({message: error.message});

@@ -12,6 +12,6 @@ import java.util.List;
 @Service
 public interface RantService extends MongoRepository<Rant, String> {
 
-    List<Rant> findByReplyCountGreaterThan(int count);
+    List<Rant> findByCommentCountGreaterThan(long count);
 
 }

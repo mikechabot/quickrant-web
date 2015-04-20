@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Required;
 
 public class Ranter {
 
-    String name;
-    String location;
-    String userAgent;
+    private String name;
+    private String location;
+    private String userAgent;
 
     public String getName() {
         return name;

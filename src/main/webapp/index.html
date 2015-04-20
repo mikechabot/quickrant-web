@@ -30,7 +30,7 @@
     <script src="/js/services/rant_service.js"></script>
     <script src="/js/services/session_service.js"></script>
     <script src="/js/services/modal_service.js"></script>
-    <script src="/js/controller/reply_controller.js"></script>
+    <script src="/js/controller/comment_controller.js"></script>
     <script src="/js/directives/directives.js"></script>
     <script src="/js/common/util.js"></script>
     <script src="/js/common/qr_data.js"></script>
@@ -165,8 +165,8 @@
                 <div class="row">
                   <div style="margin-bottom: 5px;" class="col-lg-offset-4 col-lg-4 col-lg-offset-4 col-md-4 col-sm-offset-4 col-sm-4 col-xs-offset-3 col-xs-6">
                     <div class="text-center">
-                      <input id="cmn-toggle-9" class="cmn-toggle cmn-toggle-yes-no" ng-model="rant.allowReplies" type="checkbox">
-                      <label for="cmn-toggle-9" data-on="Replies allowed" data-off="No replies allowed"></label>
+                      <input id="cmn-toggle-9" class="cmn-toggle cmn-toggle-yes-no" ng-model="rant.allowComments" type="checkbox">
+                      <label for="cmn-toggle-9" data-on="Comments allowed" data-off="No comments allowed"></label>
                     </div>
                   </div>
 
@@ -225,7 +225,7 @@
                 <h2 class="panel-title">{{::rant.selection.question}}</h2>
               </div>
               <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-                <button ng-if="rant.allowReplies" ng-click="openRant(rant)" class="btn btn-default"><i class="fa fa-comments-o fa-1-5x"></i><span ng-show="{{rant.replyCount > 0}}"> | {{rant.replyCount}}</span></button>
+                <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default"><i class="fa fa-comments-o fa-1-5x"></i><span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span></button>
               </div>
             </div>
           </div>
@@ -279,7 +279,7 @@
                 <h2 class="panel-title">{{::rant.selection.question}}</h2>
               </div>
               <div class="col-lg-1 col-sm-1 col-xs-2 text-right">
-                <button ng-if="rant.allowReplies" ng-click="openRant(rant)" class="btn btn-default btn fa fa-comments-o fa-1-5x"></button>
+                <button ng-if="rant.allowComments" ng-click="openRant(rant)" class="btn btn-default"><i class="fa fa-comments-o fa-1-5x"></i><span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span></button>
               </div>
             </div>
           </div>
@@ -288,11 +288,6 @@
               <p>{{::rant.rant}}</p>
               <small>
                 <span class="mild-bold">{{::rant.ranter.name}}</span> // {{::rant.ranter.location}} // {{rant.createdDate | timeago}}
-              <span ng-show="rant.replies">
-                | <a href class="replyLink" ng-click="openRant(rant)">
-                <span class="mild-bold"><ng-pluralize count="rant.replyCount" when="{'0': 'No replies', 'one': '1 reply', 'other': '{} replies'}"></ng-pluralize></span>
-              </a>
-              </span>
               </small>
             </blockquote>
           </div>

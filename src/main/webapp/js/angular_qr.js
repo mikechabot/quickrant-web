@@ -159,7 +159,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
                 templateUrl: '/templates/modals/rant.html',
                 data: rant,
                 size: 'lg',
-                windowClass: 'rant-reply',
+                windowClass: 'rant-comment',
                 backdrop: 'static'
             }
         } else {
@@ -169,11 +169,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         }
         if (rant) {
             options.scope = $scope.$new();
-            //ModalService.open(options).result
-            //    .then(function(replyCount) {
-            //        rant.replyCount= replyCount;
-            //    });
-
             ModalService.open(options);
         }
     };
