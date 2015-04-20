@@ -1,24 +1,29 @@
 /**
  * Directive to set scroll positioning
  *
- *  scroll-element: DOM element(s) to be scrolled upon (comma-separated)
- *       scroll-to: Scroll to this number of pixels from the top of the scroll-element
- *           speed: Speed at which to scroll
+ *   scroll-element: DOM element(s) to be scrolled upon (comma-separated)
+ *  scroll-to-pixel: Scroll to this number of pixels from the top of the scroll-element
+ *     scroll-speed: Speed at which to scroll
+ *         focus-on: Focus on an element after scrolling
  */
-app.directive('scroll', function() {
+app.directive('scrollOnClick', function() {
     return {
         restrict: 'A',
         scope: {
             scrollElement: '@',
             scrollToPixel: '@',
-            speed: '@'
+            scrollSpeed: '@',
+            focusOn: '@'
         },
         link: function(scope, element) {
-            var context = scope.scrollElement || "body, html";
+            var context = scope.scrollElement || 'body, html';
             var pixels = scope.scrollToPixel || 0;
-            var speed = scope.speed || 'slow';
+            var speed = scope.scrollSpeed || 'slow';
             element.on('click', function() {
                 $(context).animate({scrollTop: pixels }, speed);
+                if (scope.focusOn) {
+                    $(scope.focusOn)[0].focus();
+                }
             });
         }
     }

@@ -254,7 +254,7 @@
               <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="nextPage()"></button>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll></button>
+              <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
             </div>
           </div>
           <div ng-show="!canFetchMoreRants() && !loading">
@@ -262,7 +262,7 @@
               <i class="fa fa-child fa-2x"></i><em>Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i>
             </div>
             <div class="col-lg-12 margin-bottom-lg">
-              <button ng-show="canFetchMoreRants() && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll></button>
+              <button ng-show="canFetchMoreRants() && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
             </div>
           </div>
           <div ng-show="loading" class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">

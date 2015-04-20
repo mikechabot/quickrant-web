@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -65,6 +66,7 @@ public class RantController {
     public ResponseEntity saveRant(@RequestBody Rant rant, HttpServletRequest request) {
         if (rant == null) throw new IllegalArgumentException("Rant cannot be null");
         try {
+            rant.setCreatedDate(new Date());
             rantService.save(rant);
             ObjectNode data = nodeFactory.objectNode();
             data.set("id", nodeFactory.textNode(rant.getId()));

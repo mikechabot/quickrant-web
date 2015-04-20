@@ -5,6 +5,8 @@ app.controller('ReplyController', ['$scope', '$timeout', 'RantService', function
 
     var rantId = $scope.data.id;
 
+    $scope.showReplyForm = true;
+
     $scope.saveReply = function(reply) {
         RantService.saveReply(reply, rantId)
             .done(function(_reply) {
@@ -13,6 +15,7 @@ app.controller('ReplyController', ['$scope', '$timeout', 'RantService', function
                         $scope.data.replies = [];
                     }
                     $scope.data.replies.push(_reply);
+                    $('.modal-body').animate({scrollTop: $('.modal-body')[0].scrollHeight }, 'slow');
                     _reset();
                 });
             })
@@ -21,7 +24,7 @@ app.controller('ReplyController', ['$scope', '$timeout', 'RantService', function
             })
             .always(function() {
                 $timeout(function() {
-                    $scope.hideReply = true;
+                    $scope.showReplyForm = false;
                 });
             });
     };
