@@ -135,14 +135,14 @@
 <div class="container">
 
   <!-- Faces -->
-  <div faces data="quickrant.data" rant="rant" class="row margin-bottom-lg text-center">
-    <div ng-repeat="face in quickrant.data" class="col-lg-4 col-sm-4 col-xs-4">
+  <div faces data="app.emotions" rant="rant" class="row margin-bottom-lg text-center">
+    <div ng-repeat="face in app.emotions" class="col-lg-4 col-sm-4 col-xs-4">
       <a href face ng-model="face"><img class="img-circle" ng-src="/img/{{::face.emotion}}.gif"></a>
     </div>
   </div>
 
   <!-- Questions -->
-  <div questions ng-repeat="face in quickrant.data" rant="rant" class="text-center">
+  <div questions ng-repeat="face in app.emotions" rant="rant" class="text-center">
     <div ng-show="face === rant.face" class="row margin-bottom-lg">
       <div class="col-lg-offset-1 col-lg-10">
         <question ng-repeat="question in face.questions" question="question" custom-style="face.styles.button"></question>
@@ -158,22 +158,21 @@
           <h3 class="panel-title text-center" id="legend">{{rant.question}}</h3>
         </div>
         <div class="panel-body">
-          <form name="form" class="form-inline" role="form" ng-submit="quickrant.submit(form)">
+          <form name="form" class="form-inline" role="form" ng-submit="postRant(rant)">
 
             <!-- Name and Location -->
             <div class="row">
               <div class="col-lg-offset-1 col-lg-5 col-sm-offset-1 col-sm-5">
-                <input copyable default-value="default.name" destination="rant.name" ng-model="form.name" class="form-control" type="text" placeholder="Name (optional)">
+                <input copyable default-value="app.defaults.name" destination="rant.name" ng-model="form.name" class="form-control" type="text" placeholder="Name (optional)">
               </div>
               <div class="col-lg-5 col-sm-5">
-                <input copyable default-value="default.location" destination="rant.location" ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
+                <input copyable default-value="app.defaults.location" destination="rant.location" ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
               </div>
             </div>
-
             <!-- Rant -->
             <div class="row">
               <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
-                <textarea rant-text ng-model="rant.rant" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
+                <textarea focus ng-model="rant.rant" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
               </div>
             </div>
 
@@ -200,8 +199,8 @@
               <button ng-class="{disabled: charsToGo(rant.rant) > 0 || form.$error.maxlength}" type="submit" id="submit" class="btn btn-default">
                 <span class="glyphicon glyphicon-send"></span>
               </button>
-              <button type="button" class="btn btn-default" ng-click="quickrant.showPreview = !quickrant.showPreview">
-                <span class="glyphicon" ng-class="{'glyphicon-eye-open': !quickrant.showPreview, 'glyphicon-eye-close': quickrant.showPreview}"></span>
+              <button type="button" class="btn btn-default" ng-click="app.showPreview = !quickrant.showPreview">
+                <span class="glyphicon" ng-class="{'glyphicon-eye-open': !app.showPreview, 'glyphicon-eye-close': app.showPreview}"></span>
               </button>
             </div>
           </form>
@@ -209,7 +208,7 @@
       </div>
 
       <!-- Preview (START) -->
-      <div collapse="!quickrant.showPreview" class="preview rants-container" class="row">
+      <div collapse="!app.showPreview" class="preview rants-container" class="row">
         <div class="panel panel-default">
           <div class="panel-heading">
             <div class="row">
@@ -236,21 +235,22 @@
 
   <hr>
 
+  <!-- Show new rants -->
+  <div class="text-center">
+    <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
+      <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
+    </button>
+  </div>
+
   <!-- Rants container (START) -->
-  <div ng-show="!mostActive" class="rants-container">
-    <!-- Show new rants -->
+  <div ng-show="app.view === app.views.LIVE_STREAM" class="rants-container">
     <div class="row">
       <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
         <div class="list-group">
-          <a class="list-group-item" ng-class="{'active': (view == views.rantStream)}" href ng-click="showView(views.rantStream)"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
-          <a class="list-group-item" ng-class="{'active': (view == views.mostActive)}" href ng-click="showView(views.mostActive)"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
+          <a class="list-group-item active" href><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
+          <a class="list-group-item" href ng-click="showView(app.views.POPULAR)"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
         </div>
         <hr>
-        <div class="text-center">
-          <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
-            <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
-          </button>
-        </div>
       </div>
       <div class="col-lg-10 col-md-9 col-sm-9">
         <div ng-repeat="rant in rants" class="row">
@@ -312,24 +312,27 @@
               <button ng-show="canFetchMoreRants() && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
             </div>
           </div>
-          <div ng-show="loading" class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-            <i class="fa fa-cog fa-spin fa-5x"></i>
-          </div>
+          <!--<div ng-show="loading" class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">-->
+            <!--<i class="fa fa-cog fa-spin fa-5x"></i>-->
+          <!--</div>-->
         </div>
       </div>
     </div>
     <!-- Footer buttons (END) -->
   </div>
-  <!-- Rants container (START) -->
+  <!-- Rants container (END) -->
 
   <!-- Most active rants (START) -->
-  <div ng-show="mostActive" class="row rants-container">
+  <div ng-show="app.view === app.views.POPULAR" class="row rants-container">
     <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
       <div class="list-group">
-        <a class="list-group-item" ng-class="{'active': (view == views.rantStream)}" href ng-click="showView(views.rantStream)"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
-        <a class="list-group-item" ng-class="{'active': (view == views.mostActive)}" href ng-click="showView(views.mostActive)"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
+        <a class="list-group-item" href ng-click="showView(app.views.LIVE_STREAM)"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
+        <a class="list-group-item active" href><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
       </div>
       <hr>
+      <div ng-if="loading" class="text-center">
+        <i class="fa fa-cog fa-spin fa-5x"></i>
+      </div>
     </div>
     <div class="col-lg-10 col-md-9 col-sm-9">
       <div ng-repeat="rant in mostActive.rants" class="row">
@@ -364,6 +367,7 @@
         </div>
       </div>
     </div>
+
   </div>
   <!-- Most active rants (END) -->
 

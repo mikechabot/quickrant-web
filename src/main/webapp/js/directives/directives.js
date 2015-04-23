@@ -65,15 +65,15 @@ app.directive('focus', ['$timeout', function ($timeout) {
     return {
         restrict: 'A',
         scope: {
-          focusTrigger: '@'
+          focusTrigger: '='
         },
         link: function (scope, elem) {
-            scope.$watch('focusTrigger', function(value) {
-                if(value) {
-                    $timeout(function() {
+            scope.$watch('focusTrigger', function(newValue) {
+                $timeout(function() {
+                    if (newValue === true) {
                         elem[0].focus();
-                    });
-                }
+                    }
+                });
             });
         }
     }
@@ -149,19 +149,6 @@ app.directive('question', function () {
             $element.bind('click', function () {
                 questionsCtrl.select($scope.question);
             });
-        }
-    }
-});
-
-app.directive('rantText', function () {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function (scope, elem, attr, ctrl) {
-            ctrl.$viewChangeListeners.push(function () {
-                scope.quickrant.rant = ctrl.$viewValue;
-            });
-            elem[0].focus();
         }
     }
 });

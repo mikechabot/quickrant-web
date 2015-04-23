@@ -2,52 +2,44 @@ var app = angular.module('quickrant', ['ui.bootstrap', 'ngAnimate', 'ngTimeago']
 
 app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', 'ModalService', function ($scope, $timeout, $interval, QR_DATA, QR_CONST, SessionService, RantService, ModalService) {
 
-    var quickrant = $scope.quickrant = {
-        data: QR_DATA.emotions,
-        templates: {
-            navigation: 'navigation.html'
+    var app = $scope.app = {
+        emotions: QR_DATA.emotions,
+        shareUrls: QR_DATA.shareUrls,
+        views: QR_CONST.VIEWS,
+        view: QR_CONST.VIEWS.LIVE_STREAM,
+        defaults: {
+            name: QR_CONST.DEFAULT_VALUE.NAME,
+            location: QR_CONST.DEFAULT_VALUE.LOCATION
         }
-    };
-
-    $scope.shareUrls = QR_DATA.shareUrls;
-    var views = $scope.views = QR_DATA.views;
-
-    $scope.view = QR_DATA.views.rantStream;
-
-    $scope.default = {
-        name: QR_CONST.DEFAULT_VALUE.NAME,
-        location: QR_CONST.DEFAULT_VALUE.LOCATION
     };
 
     $scope.rant = {};
-
     $scope.allowReplies = false;
 
-    $scope.quickrant.submit = function (form) {
-        if (form.$valid) {
-            RantService.postRant($scope.rant)
-                .done(function(data) {
-                    ModalService.open({
-                        templateUrl: '/templates/modals/rant-posted.html',
-                        scope: $scope.$new(),
-                        data: {id: data.id}
-                    });
-                    $timeout(function() {
-                        delete quickrant.rants;
-                        $scope.rant = {};
-                    });
-                })
-                .fail(function (error) {
-                    console.error(error.message);
-                })
-                .always(function () {
-                    $timeout(function() {
-                        loadRants(1);
-                        $scope.view = views.rantStream;
-                        $scope.mostActive = undefined
-                    });
+    var _postRant = function (rant) {
+        return RantService.postRant(rant)
+            .done(_unshiftRants)
+            .done(_openRantPosted)
+            .fail(_logError);
+    };
+
+    var _unshiftRants = function(data) {
+        $scope.rants.unshift(data.rant);
+    };
+
+    var _logError = function(error) {
+        console.error(error.message);
+    };
+
+    $scope.postRant = function (rant) {
+        _postRant(rant)
+            .always(function() {
+                $timeout(function() {
+                    app.view = app.views.LIVE_STREAM;
+                    $scope.mostActive = undefined;
+                    $scope.rant = {};
                 });
-        }
+            })
     };
 
     $interval(function() {
@@ -84,10 +76,8 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     };
 
     $scope.showView = function(view) {
-        $scope.view = view;
-        if (view === views.rantStream) {
-            $scope.mostActive = undefined;
-        } else if (view === views.mostActive) {
+        app.view = view;
+        if (view === app.views.POPULAR) {
             _getMostActiveRants();
         }
     };
@@ -98,10 +88,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
             .done(function(mostActive) {
                 $scope.$apply(function() {
                     $scope.mostActive = mostActive;
-                });
-            })
-            .always(function() {
-                $timeout(function() {
                     $scope.loading = false;
                 });
             });
@@ -136,6 +122,14 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     //TODO: put this in a directive
     $scope.charsLeft = function (rant) {
         return subtract(QR_CONST.RESTRICTIONS.MAX_CHAR, rant ? rant.length : 0);
+    };
+
+    var _openRantPosted = function(data) {
+        ModalService.open({
+            templateUrl: '/templates/modals/rant-posted.html',
+            scope: $scope.$new(),
+            data: {id: data.response.id}
+        });
     };
 
     $scope.nextPage = function () {

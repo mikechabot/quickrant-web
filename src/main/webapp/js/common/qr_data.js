@@ -4,8 +4,8 @@ app.value('QR_DATA',
             happy: {
                 emotion: 'happy',
                 styles: {
-                    panel: 'success',
-                    button: 'success'
+                    panel: 'happy',
+                    button: 'happy'
                 },
                 questions: [
                     'You know what I love?',
@@ -44,8 +44,8 @@ app.value('QR_DATA',
             sad: {
                 emotion: 'sad',
                 styles: {
-                    panel: 'info',
-                    button: 'primary'
+                    panel: 'sad',
+                    button: 'sad'
                 },
                 questions: [
                     'You know what makes me cry?',
@@ -69,10 +69,5 @@ app.value('QR_DATA',
                 google: 'https://plus.google.com/share?url=https://quickrant.com',
                 tumblr: 'http://www.tumblr.com/share?v=3&u=https://quickrant.com&t=Express yourself without yourself. Say anything to everyone. No login required',
                 stumbleupon: 'http://www.stumbleupon.com/submit?url=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required'
-            },
-        views: {
-            rantStream: 'rantStream',
-            mostActive: 'mostActive'
-        }
-
+            }
     });

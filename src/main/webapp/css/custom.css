@@ -6,12 +6,84 @@
     overflow-y: auto;
 }
 
+.btn-happy {
+  background-color: #3D9BCB;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-happy:hover {
+  color: #ffffff;
+  background-color: #286293;
+  border-color: #245580;
+}
+
+.btn-happy:focus {
+  color: #ffffff;
+}
+
+.panel-happy {
+  border-color: #9EBDD5;
+}
+
+.panel-happy > .panel-heading {
+  background-color: #D3E6F7;
+  border-color: #9EBDD5;
+  color: #1973BB;
+}
+
+/*.btn-angry {*/
+  /*background-color: #C03C38;*/
+  /*border-color: #ffffff;*/
+  /*color: #ffffff;*/
+/*}*/
+
+/*.btn-angry:hover {*/
+  /*background-color: #9D0500;*/
+  /*border-color: #ffffff;*/
+  /*color: #ffffff;*/
+/*}*/
+
+/*.btn-angry:focus {*/
+  /*color: #ffffff;*/
+/*}*/
+
+.btn-sad {
+  background-color: #555555;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-sad:hover {
+  background-color: #777777;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-sad:focus {
+  color: #ffffff;
+}
+
+.panel-sad {
+  border-color: #C0C0C0;
+}
+
+.panel-sad > .panel-heading {
+  background-color: #ededed;
+  border-color: #C0C0C0;
+  color: #555555;
+}
+
 .pointer {
   cursor: pointer;
 }
 
 .btn-qr {
  color: #777777;
+}
+
+.btn-qr-dark {
+  color: #555555;
 }
 
 /*** NEW ANGULAR ****/

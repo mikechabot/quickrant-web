@@ -3,7 +3,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
     /**
      * Generate Rant object from form input
      * @param rant
-     * @returns {{rant: (*|.scope.rant|$scope.rant|.quickrant.rant), selection: {emotion: (*|.emotions.happy.emotion|.emotions.angry.emotion|.emotions.sad.emotion), question: (*|.scope.question|$scope.rant.question)}, ranter: {name: (*|.DEFAULT_VALUE.NAME|m.selectors.match.NAME|m.selectors.find.NAME), location: (*|$scope.default.location|number|DOMLocator|Location|String|$scope.form.location)}, allowReplies: (*|$scope.allowReplies)}}
+     * @returns {{rant: (*|.scope.rant|$scope.rant|.quickrant.rant), selection: {emotion: (*|.emotions.happy.emotion|.emotions.angry.emotion|.emotions.sad.emotion), question: (*|.scope.question|$scope.rant.question)}, ranter: {name: (*|.DEFAULT_VALUE.NAME|m.selectors.match.NAME|m.selectors.find.NAME), location: (*|$scope.default.location|number|DOMLocator|Location|String|Location)}, allowComments: (*|$scope.allowComments)}}
      * @private
      */
     function _createRantObject(rant) {
@@ -17,7 +17,8 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 name: rant.name || QR_CONST.DEFAULT_VALUE.NAME,
                 location: rant.location || QR_CONST.DEFAULT_VALUE.LOCATION
             },
-            allowComments: rant.allowComments
+            allowComments: rant.allowComments,
+            createdDate: moment().toDate()
         };
     }
 
@@ -44,7 +45,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 var _rant = _createRantObject(rant);
                 DataAccessService.post('/rants', _rant)
                     .done(function(response) {
-                        deferred.resolve(response.data);
+                        deferred.resolve({response: response.data, rant: _rant});
                     })
                     .fail(function (response) {
                         deferred.reject({message: response.message});
@@ -110,6 +111,17 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
         getMostActiveRants: function getRants() {
             var deferred = $.Deferred();
             DataAccessService.post('/rants/mostactive')
+                .done(function (response) {
+                    deferred.resolve({rants: response.data});
+                })
+                .fail(function () {
+                    deferred.reject({message: 'Unable to get most active rants'});
+                });
+            return deferred;
+        },
+        getRantsByQuestion: function getRantsByQuestion(question) {
+            var deferred = $.Deferred();
+            DataAccessService.post('/rants/question', question)
                 .done(function (response) {
                     deferred.resolve({rants: response.data});
                 })

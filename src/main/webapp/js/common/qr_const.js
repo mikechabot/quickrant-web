@@ -14,5 +14,9 @@ app.constant('QR_CONST', {
     },
     POLLING: {
        RANTS: 10000
+    },
+    VIEWS: {
+        LIVE_STREAM: 'liveStream',
+        POPULAR: 'popular'
     }
 });
