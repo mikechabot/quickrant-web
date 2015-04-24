@@ -38,6 +38,25 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
         }
     }
 
+    /**
+     * Generate an abridged Page object
+     * @param data
+     * @returns {{rants: (string|CSSStyleDeclaration.content|*|jQuery.content|c.DEFAULTS.content|.scope.content), page: {size: (*|modalInstance.size|size|number|Number|string), number: (*|inputType.number|.link.g.number|ld.number), totalPages: (*|totalPages), totalElements: *, numberOfElements: *}}}
+     * @private
+     */
+    function _createPageObject(data) {
+        return {
+            rants: data.content,
+            page: {
+                size: data.size,
+                number: data.number+1,
+                totalPages: data.totalPages,
+                totalElements: data.totalElements,
+                numberOfElements: data.numberOfElements
+            }
+        };
+    }
+
     return ({
         postRant: function postRant(rant) {
             var deferred = $.Deferred();
@@ -45,7 +64,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 var _rant = _createRantObject(rant);
                 DataAccessService.post('/rants', _rant)
                     .done(function(response) {
-                        deferred.resolve({response: response.data, rant: _rant});
+                        deferred.resolve({response: response, rant: _rant});
                     })
                     .fail(function (response) {
                         deferred.reject({message: response.message});
@@ -53,82 +72,63 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
             } else {
                 deferred.reject({message: 'Cannot post null rant'});
             }
-            return deferred;
+            return deferred.promise();
         },
         getRantById: function getRantById(id) {
             var deferred = $.Deferred();
                 DataAccessService.post('/rants/' + id)
                     .done(function(data) {
-                        deferred.resolve(data.data);
+                        deferred.resolve(data);
                     })
                     .fail(function(error) {
                         deferred.reject({message: error.message});
                     });
-            return deferred;
+            return deferred.promise();
         },
         saveComment: function saveComment(comment, rantId) {
             var deferred = $.Deferred();
             var _comment = _createCommentObject(comment);
             DataAccessService.post('/rants/comment/' + rantId, _comment)
                 .done(function(response) {
-                    console.log(response.message);
                     deferred.resolve(response.data);
                 })
                 .fail(function(response) {
                     deferred.reject({message: response.message});
                 });
-            return deferred;
-        },
-        //TODO: fix this; don't pass the rants in
-        getPaginatedRants: function getRants(rants, pageNumber) {
-            function getPage(data) {
-                return {
-                    size: data.size,
-                    number: data.number,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    numberOfElements: data.numberOfElements
-                };
-            }
-
-            var deferred = $.Deferred();
-            DataAccessService.get('/rants/page/' + pageNumber)
-                .done(function (response) {
-
-                    var newRants = response.data.content;
-                    var page = getPage(response.data);
-
-                    rants = pageNumber > 1 ? rants.concat(newRants) : newRants;
-
-                    deferred.resolve({rants: rants, page: page});
-                })
-                .fail(function () {
-                    deferred.reject({message: 'Unable to load rants'});
-                });
-
-            return deferred;
+            return deferred.promise();
         },
         getMostActiveRants: function getRants() {
             var deferred = $.Deferred();
             DataAccessService.post('/rants/mostactive')
                 .done(function (response) {
-                    deferred.resolve({rants: response.data});
+                    deferred.resolve({rants: response});
                 })
                 .fail(function () {
                     deferred.reject({message: 'Unable to get most active rants'});
                 });
-            return deferred;
+            return deferred.promise();
         },
         getRantsByQuestion: function getRantsByQuestion(question) {
             var deferred = $.Deferred();
             DataAccessService.post('/rants/question', question)
                 .done(function (response) {
-                    deferred.resolve({rants: response.data});
+                    deferred.resolve({rants: response});
                 })
                 .fail(function () {
                     deferred.reject({message: 'Unable to get most active rants'});
                 });
-            return deferred;
+            return deferred.promise();
+        },
+        getPaginatedRants: function getRants(pageNumber) {
+            var deferred = $.Deferred();
+            DataAccessService.get('/rants/page/' + pageNumber)
+                .done(function(paginated) {
+                    deferred.resolve(_createPageObject(paginated));
+                })
+                .fail(function(error) {
+                    deferred.reject({message: error.message});
+                });
+            return deferred.promise();
         }
     });
 }]);

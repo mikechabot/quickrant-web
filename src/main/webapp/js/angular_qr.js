@@ -6,7 +6,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         emotions: QR_DATA.emotions,
         shareUrls: QR_DATA.shareUrls,
         views: QR_CONST.VIEWS,
-        view: QR_CONST.VIEWS.LIVE_STREAM,
         defaults: {
             name: QR_CONST.DEFAULT_VALUE.NAME,
             location: QR_CONST.DEFAULT_VALUE.LOCATION
@@ -16,14 +15,47 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     $scope.rant = {};
     $scope.allowReplies = false;
 
-    var _postRant = function (rant) {
-        return RantService.postRant(rant)
-            .done(_unshiftRants)
-            .done(_openRantPosted)
+    var _init = function() {
+        _getRants(1)
+            .done(function(data) {
+                $scope.$apply(function() {
+                    _setRants(data.rants);
+                    _setPage(data.page);
+                    _setView(app.views.LIVE_STREAM);
+                });
+            })
             .fail(_logError);
     };
 
-    var _unshiftRants = function(data) {
+    var _setPage = function(page) {
+        if (page) console.log(page);
+        $scope.page = page;
+    };
+
+    var _setRants = function(rants, concatenate) {
+        $scope.rants = concatenate ? $scope.rants.concat(rants) : rants;
+    };
+
+    var _setView = function(view) {
+        app.view = view;
+        if (view === app.views.POPULAR) {
+            //_getMostActiveRants();
+        }
+    };
+
+    var _postRant = function (rant) {
+        return RantService.postRant(rant);
+    };
+
+    var _getRants = function(pageNumber) {
+        return RantService.getPaginatedRants(pageNumber);
+    };
+
+    var _openModal = function(options) {
+        return ModalService.open(options);
+    };
+
+    var _addRant = function(data) {
         $scope.rants.unshift(data.rant);
     };
 
@@ -33,91 +65,106 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
 
     $scope.postRant = function (rant) {
         _postRant(rant)
-            .always(function() {
-                $timeout(function() {
-                    app.view = app.views.LIVE_STREAM;
-                    $scope.mostActive = undefined;
-                    $scope.rant = {};
-                });
-            })
-    };
-
-    $interval(function() {
-        RantService.getPaginatedRants($scope.rants, 1)
             .done(function(data) {
-                var diff = data.page.totalElements - $scope.page.totalElements;
-                if (diff > 0) {
-                    $scope.newRants = diff;
-                    $scope.deltaData = data;
-                }
-            });
-    }, QR_CONST.POLLING.RANTS);
-
-    $scope.showNewRants = function(rants) {
-        _setPageAndRants(rants);
-        $scope.deltaData = undefined;
-        $scope.newRants = undefined;
-    };
-
-    $scope.findRantById = function(searchTerm) {
-        RantService.getRantById(searchTerm)
-            .done(function(rant) {
-                $scope.openRant(rant, searchTerm)
+                $scope.rant = {};
+                _addRant(data);
+                _openRantPosted(data);
+                _setView(app.views.LIVE_STREAM);
             })
-            .fail(function(error) {
-                console.error(error.message);
-            });
-    };
-
-    $scope.canFetchMoreRants = function() {
-        if ($scope.rants && $scope.page) {
-            return $scope.rants.length < $scope.page.totalElements;
-        }
+            .fail(_logError);
     };
 
     $scope.showView = function(view) {
-        app.view = view;
-        if (view === app.views.POPULAR) {
-            _getMostActiveRants();
-        }
+        _setView(view);
     };
 
-    function _getMostActiveRants() {
-        $scope.loading = true;
-        RantService.getMostActiveRants()
-            .done(function(mostActive) {
+    $scope.hasNextPage = function(rants, page) {
+        if (!rants || !page) return false;
+        return rants.length < page.totalElements;
+    };
+
+    $scope.getNextPage = function(pageNumber) {
+        _getRants(pageNumber + 1)
+            .done(function(data) {
                 $scope.$apply(function() {
-                    $scope.mostActive = mostActive;
-                    $scope.loading = false;
+                    _setPage(data.page);
+                    _setRants(data.rants, true);
                 });
-            });
-    }
-
-    function loadRants(pageNumber) {
-        $scope.loading = true;
-        RantService.getPaginatedRants($scope.rants, pageNumber)
-            .done(function (data) {
-                _setPageAndRants(data);
             })
-            .fail(function(error) {
-                console.error(error.message);
-            })
-            .always(function() {
-                $timeout(function() {
-                    $scope.loading = false;
-                });
-            });
-    }
+            .fail(_logError);
+    };
 
-    function _setPageAndRants(data) {
-        $scope.rants = data.rants;
-        $scope.page = data.page;
-    }
+    //$interval(function() {
+    //    RantService.getPaginatedRants($scope.rants, 1)
+    //        .done(function(data) {
+    //            var diff = data.page.totalElements - $scope.page.totalElements;
+    //            if (diff > 0) {
+    //                $scope.newRants = diff;
+    //                $scope.deltaData = data;
+    //            }
+    //        });
+    //}, QR_CONST.POLLING.RANTS);
 
-    $scope.$watch('currentPage', function (newPage, oldPage) {
-        if (newPage === oldPage) return;
-        loadRants(newPage);
-    });
+    //$scope.showNewRants = function(rants) {
+    //    _setPageAndRants(rants);
+    //    $scope.deltaData = undefined;
+    //    $scope.newRants = undefined;
+    //};
+
+    //$scope.findRantById = function(searchTerm) {
+    //    RantService.getRantById(searchTerm)
+    //        .done(function(rant) {
+    //            $scope.openRant(rant, searchTerm)
+    //        })
+    //        .fail(function(error) {
+    //            console.error(error.message);
+    //        });
+    //};
+
+    //$scope.canFetchMoreRants = function() {
+    //    if ($scope.rants && $scope.page) {
+    //        return $scope.rants.length < $scope.page.totalElements;
+    //    }
+    //};
+
+
+
+    //function _getMostActiveRants() {
+    //    $scope.loading = true;
+    //    RantService.getMostActiveRants()
+    //        .done(function(mostActive) {
+    //            $scope.$apply(function() {
+    //                $scope.mostActive = mostActive;
+    //                $scope.loading = false;
+    //            });
+    //        });
+    //}
+
+    //function loadRants(pageNumber) {
+    //    $scope.loading = true;
+    //    RantService.getPaginatedRants($scope.rants, pageNumber)
+    //        .done(function (data) {
+    //            _setPageAndRants(data);
+    //        })
+    //        .fail(function(error) {
+    //            console.error(error.message);
+    //        })
+    //        .always(function() {
+    //            $timeout(function() {
+    //                $scope.loading = false;
+    //            });
+    //        });
+    //}
+
+    //function _setPageAndRants(data) {
+    //    $scope.rants = data.rants;
+    //    $scope.page = data.page;
+    //}
+
+    //$scope.$watch('currentPage', function (newPage, oldPage) {
+    //    if (newPage === oldPage) return;
+    //    loadRants(newPage);
+    //});
 
     //TODO: put this in a directive
     $scope.charsLeft = function (rant) {
@@ -125,7 +172,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     };
 
     var _openRantPosted = function(data) {
-        ModalService.open({
+        _openModal({
             templateUrl: '/templates/modals/rant-posted.html',
             scope: $scope.$new(),
             data: {id: data.response.id}
@@ -138,7 +185,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     };
 
     $scope.showAbout = function() {
-        ModalService.open({
+        _openModal({
             templateUrl: '/templates/modals/about.html',
             size: 'lg',
             scope: $scope.$new()
@@ -146,14 +193,14 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     };
 
     $scope.beta = function() {
-        ModalService.open({
+        _openModal({
             templateUrl: '/templates/modals/beta.html',
             scope: $scope.$new()
         });
     };
 
     $scope.share = function() {
-        ModalService.open({
+        _openModal({
             templateUrl: '/templates/modals/share.html',
             data: $scope.shareUrls,
             scope: $scope.$new(),
@@ -161,29 +208,31 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         });
     };
 
-    $scope.openRant = function(rant, searchTerm) {
-        var options = {};
-        if (rant) {
-            options = {
-                templateUrl: '/templates/modals/rant.html',
-                data: rant,
-                size: 'lg',
-                windowClass: 'rant-comment',
-                backdrop: 'static'
-            }
-        } else {
-            options = { templateUrl: '/templates/modals/rant-not-found.html',
-                data: searchTerm
-            }
-        }
-        if (rant) {
-            options.scope = $scope.$new();
-            ModalService.open(options);
-        }
-    };
+    //$scope.openRant = function(rant, searchTerm) {
+    //    var options = {};
+    //    if (rant) {
+    //        options = {
+    //            templateUrl: '/templates/modals/rant.html',
+    //            data: rant,
+    //            size: 'lg',
+    //            windowClass: 'rant-comment',
+    //            backdrop: 'static'
+    //        }
+    //    } else {
+    //        options = { templateUrl: '/templates/modals/rant-not-found.html',
+    //            data: searchTerm
+    //        }
+    //    }
+    //    if (rant) {
+    //        options.scope = $scope.$new();
+    //        ModalService.open(options);
+    //    }
+    //};
 
     //authenticate();
-    $scope.currentPage = 1;
-    loadRants($scope.currentPage);
+    //$scope.currentPage = 1;
+    //loadRants($scope.currentPage);
+
+    _init();
 
 }]);

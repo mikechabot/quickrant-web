@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Express yourself without yourself. Say anything to everyone. No login required.">
+
   <!-- meta og -->
   <meta property="og:type" name="og:type" content="website"/>
   <meta property="og:image" name="og:image" content="http://quickrant.com/img/thumbnail.gif"/>
@@ -78,6 +79,7 @@
 
 </head>
 <body ng-controller="MainController">
+
 <!-- Navbar (START) -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
@@ -296,20 +298,24 @@
     <div class="row">
       <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
         <div class="row text-center margin-bottom-lg">
-          <div ng-show="canFetchMoreRants() && !loading">
+
+          <!-- Up and down -->
+          <div ng-show="hasNextPage(rants, page) && !loading">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="nextPage()"></button>
+              <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="getNextPage(page.number)"></button>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
             </div>
           </div>
-          <div ng-show="!canFetchMoreRants() && !loading">
+
+          <!-- End of the interwebz -->
+          <div ng-show="!hasNextPage(rants, page) && !loading">
             <div class="help-block col-lg-12">
               <i class="fa fa-child fa-2x"></i><em>Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i>
             </div>
             <div class="col-lg-12 margin-bottom-lg">
-              <button ng-show="canFetchMoreRants() && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
+              <button ng-show="hasNextPage(rants, page) && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
             </div>
           </div>
           <!--<div ng-show="loading" class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">-->

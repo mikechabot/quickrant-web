@@ -34,21 +34,22 @@ app.service('DataAccessService', ['AjaxService', function (AjaxService) {
             options.contentType = 'application/json';
         }
 
-        /* Wrap the original promise */
-        var wrapper = $.Deferred();
+        var deferred = $.Deferred();
         AjaxService.request(options)
             .done(function (response) {
                 if (response.status === 'SUCCESS') {
-                    wrapper.resolve(response);
+                    if (response.message) {
+                        console.log(response.message);
+                    }
+                    deferred.resolve(response.data);
                 } else {
-                    wrapper.reject(response);
+                    deferred.reject(response);
                 }
             })
             .fail(function (response) {
-                wrapper.reject(response)
+                deferred.reject(response)
             });
-
-        return wrapper;
+        return deferred;
     };
 
     return {
