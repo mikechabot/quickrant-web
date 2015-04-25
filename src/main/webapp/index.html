@@ -25,6 +25,7 @@
   <script src="/js/third-party/underscore/underscore-min.js"></script>
   <script src="/js/third-party/ng-timeago/ngtimeago.js"></script>
   <script src="/js/third-party/moment/moment.js"></script>
+  <script src="/js/third-party/google/google-analytics.js"></script>
 
   <!-- scripts (versioned) -->
   <script src="/js/angular_qr.js?20150420"></script>
@@ -60,23 +61,6 @@
   <link href="/ico/Icon-60@2x.png" rel="apple-touch-icon" sizes="120x120">
   <link href="/ico/Icon-60@3x.png" rel="apple-touch-icon" sizes="180x180">
 
-  <script>
-    (function (i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r;
-      i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-      }, i[r].l = 1 * new Date();
-      a = s.createElement(o),
-              m = s.getElementsByTagName(o)[0];
-      a.async = 1;
-      a.src = g;
-      m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-    ga('create', 'UA-61827308-1', 'auto');
-    ga('send', 'pageview');
-    ga('set', 'anonymizeIp', true);
-  </script>
-
 </head>
 <body ng-controller="MainController">
 
@@ -95,7 +79,7 @@
     <div class="collapse navbar-collapse" id="bs-navigation">
       <ul class="nav navbar-nav">
         <li><a href ng-click="showAbout()">about</a></li>
-        <li><a href ng-click="beta()">feedback</a></li>
+        <li><a href ng-click="showBeta()">feedback</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -118,7 +102,7 @@
   <!-- Beta -->
   <div class="center-absolute ribbon">
     <div class="ribbon-stitches-top"></div>
-    <strong class="ribbon-content"><h1><a href style="color: inherit" ng-click="beta()">Beta</a></h1></strong>
+    <strong class="ribbon-content"><h1><a href style="color: inherit" ng-click="showBeta()">Beta</a></h1></strong>
     <div class="ribbon-stitches-bottom"></div>
   </div>
 
@@ -126,7 +110,7 @@
   <div class="flex-container">
     <div class="flex-item"></div>
     <div class="flex-item">
-      <button ng-click="share()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button>
+      <button ng-click="showShare()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button>
     </div>
   </div>
 </div>
@@ -174,17 +158,16 @@
             <!-- Rant -->
             <div class="row">
               <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
-                <textarea focus ng-model="rant.rant" ng-minlength="2" ng-maxlength="500" class="form-control" rows="5" placeholder="Say something..."></textarea>
+                <textarea focus ng-model="rant.rant" ng-minlength="3" ng-maxlength="500" ng-required="true" name="rant" class="form-control" rows="5" placeholder="Say something..."></textarea>
               </div>
             </div>
 
             <!-- Validation -->
             <span class="help-block text-center">
-              <span ng-class="{'text-danger': form.$error.maxlength}">
-                <span ng-show="form.$error.maxlength">Too much.</span>
-                <span ng-show="!form.$error.maxlength">
-                  <ng-pluralize count="charsLeft(rant.rant)" when="{'0': 'No more characters', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
-                </span>
+              <span class="text-danger" ng-show="form.$error.maxlength">Too much</span>
+              <span class="text-danger" ng-show="form.$error.minlength">Too few</span>
+              <span ng-show="form.$valid">
+                <ng-pluralize count="app.restrictions.MAX_CHAR - rant.rant.length" when="{'0': 'No more characters', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
               </span>
             </span>
 
@@ -198,10 +181,10 @@
 
             <!-- Submit and show preview -->
             <div class="text-center">
-              <button ng-class="{disabled: charsToGo(rant.rant) > 0 || form.$error.maxlength}" type="submit" id="submit" class="btn btn-default">
+              <button ng-class="{disabled: !form.$valid }" type="submit" id="submit" class="btn btn-default">
                 <span class="glyphicon glyphicon-send"></span>
               </button>
-              <button type="button" class="btn btn-default" ng-click="app.showPreview = !quickrant.showPreview">
+              <button type="button" class="btn btn-default" ng-click="app.showPreview = !app.showPreview">
                 <span class="glyphicon" ng-class="{'glyphicon-eye-open': !app.showPreview, 'glyphicon-eye-close': app.showPreview}"></span>
               </button>
             </div>
@@ -250,7 +233,7 @@
       <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
         <div class="list-group">
           <a class="list-group-item active" href><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
-          <a class="list-group-item" href ng-click="showView(app.views.POPULAR)"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
+          <a class="list-group-item" href ng-click="app.view = app.views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
         </div>
         <hr>
       </div>
@@ -328,11 +311,11 @@
   </div>
   <!-- Rants container (END) -->
 
-  <!-- Most active rants (START) -->
+  <!-- Popular rants (START) -->
   <div ng-show="app.view === app.views.POPULAR" class="row rants-container">
     <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
       <div class="list-group">
-        <a class="list-group-item" href ng-click="showView(app.views.LIVE_STREAM)"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
+        <a class="list-group-item" href ng-click="app.view = app.views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
         <a class="list-group-item active" href><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
       </div>
       <hr>
@@ -341,7 +324,7 @@
       </div>
     </div>
     <div class="col-lg-10 col-md-9 col-sm-9">
-      <div ng-repeat="rant in mostActive.rants" class="row">
+      <div ng-repeat="rant in popularRants" class="row">
         <div class="col-lg-offset-1 col-lg-8 col-md-offset-1 col-md-9">
           <div class="panel panel-rant">
             <div class="panel-heading">
@@ -375,7 +358,7 @@
     </div>
 
   </div>
-  <!-- Most active rants (END) -->
+  <!-- Popular rants (END) -->
 
 </div>
 </body>

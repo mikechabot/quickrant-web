@@ -58,6 +58,17 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
     }
 
     return ({
+        getPaginatedRants: function getRants(pageNumber) {
+            var deferred = $.Deferred();
+            DataAccessService.get('/rants/page/' + pageNumber)
+                .done(function(paginated) {
+                    deferred.resolve(_createPageObject(paginated));
+                })
+                .fail(function(error) {
+                    deferred.reject({message: error.message});
+                });
+            return deferred.promise();
+        },
         postRant: function postRant(rant) {
             var deferred = $.Deferred();
             if (rant.rant) {
@@ -90,21 +101,21 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
             var _comment = _createCommentObject(comment);
             DataAccessService.post('/rants/comment/' + rantId, _comment)
                 .done(function(response) {
-                    deferred.resolve(response.data);
+                    deferred.resolve(response);
                 })
                 .fail(function(response) {
                     deferred.reject({message: response.message});
                 });
             return deferred.promise();
         },
-        getMostActiveRants: function getRants() {
+        getPopularRants: function getPopularRants() {
             var deferred = $.Deferred();
-            DataAccessService.post('/rants/mostactive')
+            DataAccessService.post('/rants/popular')
                 .done(function (response) {
-                    deferred.resolve({rants: response});
+                    deferred.resolve(response);
                 })
                 .fail(function () {
-                    deferred.reject({message: 'Unable to get most active rants'});
+                    deferred.reject({message: 'Unable to get popular rants'});
                 });
             return deferred.promise();
         },
@@ -116,17 +127,6 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 })
                 .fail(function () {
                     deferred.reject({message: 'Unable to get most active rants'});
-                });
-            return deferred.promise();
-        },
-        getPaginatedRants: function getRants(pageNumber) {
-            var deferred = $.Deferred();
-            DataAccessService.get('/rants/page/' + pageNumber)
-                .done(function(paginated) {
-                    deferred.resolve(_createPageObject(paginated));
-                })
-                .fail(function(error) {
-                    deferred.reject({message: error.message});
                 });
             return deferred.promise();
         }

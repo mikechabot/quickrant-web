@@ -68,6 +68,7 @@ app.directive('focus', ['$timeout', function ($timeout) {
           focusTrigger: '='
         },
         link: function (scope, elem) {
+            elem[0].focus();
             scope.$watch('focusTrigger', function(newValue) {
                 $timeout(function() {
                     if (newValue === true) {

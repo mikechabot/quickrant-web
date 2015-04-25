@@ -2,97 +2,200 @@ var app = angular.module('quickrant', ['ui.bootstrap', 'ngAnimate', 'ngTimeago']
 
 app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 'QR_CONST', 'SessionService', 'RantService', 'ModalService', function ($scope, $timeout, $interval, QR_DATA, QR_CONST, SessionService, RantService, ModalService) {
 
-    var app = $scope.app = {
+    var _qr = $scope.app = {
         emotions: QR_DATA.emotions,
         shareUrls: QR_DATA.shareUrls,
         views: QR_CONST.VIEWS,
+        showPreview: false,
         defaults: {
             name: QR_CONST.DEFAULT_VALUE.NAME,
             location: QR_CONST.DEFAULT_VALUE.LOCATION
-        }
+        },
+        restrictions: QR_CONST.RESTRICTIONS
     };
 
-    $scope.rant = {};
-    $scope.allowReplies = false;
+    $scope.rant = {
+        allowComments: false
+    };
 
     var _init = function() {
         _getRants(1)
             .done(function(data) {
                 $scope.$apply(function() {
-                    _setRants(data.rants);
-                    _setPage(data.page);
-                    _setView(app.views.LIVE_STREAM);
+                    setRants(data.rants);
+                    setPage(data.page);
                 });
             })
-            .fail(_logError);
+            .fail(_logError)
+            .always(function() {
+                $scope.$apply(function() {
+                    setView(_qr.views.LIVE_STREAM);
+                })
+            })
     };
 
-    var _setPage = function(page) {
-        if (page) console.log(page);
-        $scope.page = page;
-    };
-
-    var _setRants = function(rants, concatenate) {
-        $scope.rants = concatenate ? $scope.rants.concat(rants) : rants;
-    };
-
-    var _setView = function(view) {
-        app.view = view;
-        if (view === app.views.POPULAR) {
-            //_getMostActiveRants();
-        }
-    };
-
-    var _postRant = function (rant) {
-        return RantService.postRant(rant);
-    };
-
+    /**
+     * Return a promise that corresponds to getting paginated rants
+     * @param pageNumber
+     * @returns {*}
+     * @private
+     */
     var _getRants = function(pageNumber) {
         return RantService.getPaginatedRants(pageNumber);
     };
 
+    /**
+     * Return a promise that corresponds to getting the popular rant list
+     * @returns {*}
+     * @private
+     */
+    var _getPopularRants = function() {
+        return RantService.getPopularRants();
+    };
+
+    /**
+     * Return a promise that corresponds to posting a rant
+     * @param rant
+     * @returns {*}
+     * @private
+     */
+    var _postRant = function (rant) {
+        return RantService.postRant(rant);
+    };
+
+    /**
+     * Return a promise that corresponds to opening a modal window
+     * @param options
+     * @returns {*|Window}
+     * @private
+     */
     var _openModal = function(options) {
         return ModalService.open(options);
     };
 
-    var _addRant = function(data) {
+    /**
+     * Insert a rant into rants at the first position
+     * @param data
+     * @private
+     */
+    function addRant(data) {
         $scope.rants.unshift(data.rant);
-    };
+    }
 
+    /**
+     * Set the page page
+     * @param page
+     * @private
+     */
+    function setPage(page) {
+        $scope.page = page;
+    }
+
+    /**
+     * Set the current view
+     * @param view
+     */
+    function setView(view) {
+        $scope.app.view = view;
+    }
+
+    /**
+     * Set the rants object; optional: concatenate to existing rants
+     * @param rants
+     * @param concatenate
+     * @private
+     */
+    function setRants(rants, concatenate) {
+        $scope.rants = concatenate ? $scope.rants.concat(rants) : rants;
+    }
+
+    /**
+     * Set popular rants
+     * @param rants
+     */
+
+
+    /**
+     * Show popular rants
+     */
+    function showPopularRants() {
+        _getPopularRants()
+            .done(function (rants) {
+                $scope.$apply(function() {
+                    $scope.popularRants = rants;
+                });
+            })
+            .fail(_logError);
+    }
+
+    function showRantPosted(data) {
+        _openModal({
+            templateUrl: '/templates/modals/rant-posted.html',
+            scope: $scope.$new(),
+            data: {id: data.response.id}
+        });
+    }
+
+    /**
+     * Helper method for logging errors
+     * @param error
+     * @private
+     */
     var _logError = function(error) {
         console.error(error.message);
     };
 
+    /**
+     * Post a rant
+     * @param rant
+     */
     $scope.postRant = function (rant) {
         _postRant(rant)
             .done(function(data) {
                 $scope.rant = {};
-                _addRant(data);
-                _openRantPosted(data);
-                _setView(app.views.LIVE_STREAM);
+                addRant(data);
+                showRantPosted(data);
+                setView(_qr.views.LIVE_STREAM);
             })
             .fail(_logError);
     };
 
-    $scope.showView = function(view) {
-        _setView(view);
-    };
-
+    /**
+     * Determine if more rants can be fetched
+     * @param rants
+     * @param page
+     * @returns {boolean}
+     */
     $scope.hasNextPage = function(rants, page) {
         if (!rants || !page) return false;
         return rants.length < page.totalElements;
     };
 
+    /**
+     * Get the next page of rants
+     * @param pageNumber
+     */
     $scope.getNextPage = function(pageNumber) {
         _getRants(pageNumber + 1)
             .done(function(data) {
                 $scope.$apply(function() {
-                    _setPage(data.page);
-                    _setRants(data.rants, true);
+                    $scope.rant = {};
+                    setPage(data.page);
+                    setRants(data.rants, true);
                 });
             })
             .fail(_logError);
     };
+
+    /**
+     * Watch for changes to the view
+     */
+    $scope.$watch('app.view', function(newView, oldView) {
+        if (newView === oldView) return;
+        if (newView === _qr.views.POPULAR) {
+            showPopularRants();
+        }
+    });
 
     //$interval(function() {
     //    RantService.getPaginatedRants($scope.rants, 1)
@@ -121,69 +224,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     //        });
     //};
 
-    //$scope.canFetchMoreRants = function() {
-    //    if ($scope.rants && $scope.page) {
-    //        return $scope.rants.length < $scope.page.totalElements;
-    //    }
-    //};
-
-
-
-    //function _getMostActiveRants() {
-    //    $scope.loading = true;
-    //    RantService.getMostActiveRants()
-    //        .done(function(mostActive) {
-    //            $scope.$apply(function() {
-    //                $scope.mostActive = mostActive;
-    //                $scope.loading = false;
-    //            });
-    //        });
-    //}
-
-    //function loadRants(pageNumber) {
-    //    $scope.loading = true;
-    //    RantService.getPaginatedRants($scope.rants, pageNumber)
-    //        .done(function (data) {
-    //            _setPageAndRants(data);
-    //        })
-    //        .fail(function(error) {
-    //            console.error(error.message);
-    //        })
-    //        .always(function() {
-    //            $timeout(function() {
-    //                $scope.loading = false;
-    //            });
-    //        });
-    //}
-
-    //function _setPageAndRants(data) {
-    //    $scope.rants = data.rants;
-    //    $scope.page = data.page;
-    //}
-
-    //$scope.$watch('currentPage', function (newPage, oldPage) {
-    //    if (newPage === oldPage) return;
-    //    loadRants(newPage);
-    //});
-
-    //TODO: put this in a directive
-    $scope.charsLeft = function (rant) {
-        return subtract(QR_CONST.RESTRICTIONS.MAX_CHAR, rant ? rant.length : 0);
-    };
-
-    var _openRantPosted = function(data) {
-        _openModal({
-            templateUrl: '/templates/modals/rant-posted.html',
-            scope: $scope.$new(),
-            data: {id: data.response.id}
-        });
-    };
-
-    $scope.nextPage = function () {
-        if ($scope.currentPage)
-        $scope.currentPage += 1;
-    };
-
     $scope.showAbout = function() {
         _openModal({
             templateUrl: '/templates/modals/about.html',
@@ -192,14 +232,14 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         });
     };
 
-    $scope.beta = function() {
+    $scope.showBeta = function() {
         _openModal({
             templateUrl: '/templates/modals/beta.html',
             scope: $scope.$new()
         });
     };
 
-    $scope.share = function() {
+    $scope.showShare = function() {
         _openModal({
             templateUrl: '/templates/modals/share.html',
             data: $scope.shareUrls,
@@ -208,30 +248,16 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         });
     };
 
-    //$scope.openRant = function(rant, searchTerm) {
-    //    var options = {};
-    //    if (rant) {
-    //        options = {
-    //            templateUrl: '/templates/modals/rant.html',
-    //            data: rant,
-    //            size: 'lg',
-    //            windowClass: 'rant-comment',
-    //            backdrop: 'static'
-    //        }
-    //    } else {
-    //        options = { templateUrl: '/templates/modals/rant-not-found.html',
-    //            data: searchTerm
-    //        }
-    //    }
-    //    if (rant) {
-    //        options.scope = $scope.$new();
-    //        ModalService.open(options);
-    //    }
-    //};
-
-    //authenticate();
-    //$scope.currentPage = 1;
-    //loadRants($scope.currentPage);
+    $scope.openRant = function(rant) {
+        _openModal({
+            templateUrl: '/templates/modals/rant.html',
+            data: rant,
+            size: 'lg',
+            scope: $scope.$new(),
+            windowClass: 'rant-comment',
+            backdrop: 'static'
+        });
+    };
 
     _init();
 

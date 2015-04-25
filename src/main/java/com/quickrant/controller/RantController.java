@@ -118,27 +118,27 @@ public class RantController {
      * Get most active Rants
      * @return Array of Rant objects
      */
-    @RequestMapping(value = "/mostactive", method = RequestMethod.POST)
-    public ResponseEntity getMostActive() {
+    @RequestMapping(value = "/popular", method = RequestMethod.POST)
+    public ResponseEntity getPopularRants() {
 
-        final int TOP_10 = 10;
+        final int TOP_15 = 15;
 
         /* Get rants with more than 1 comment */
         List<Rant> rants = rantService.findByCommentCountGreaterThan(1);
         Collections.sort(rants, new CommentCountComparator());
 
         int length = rants.size();
-        if (length > TOP_10) {
-            length = TOP_10;
+        if (length > TOP_15) {
+            length = TOP_15;
         }
 
         /* Set top N most active */
-        Rant[] mostActive = new Rant[length];
+        Rant[] popular = new Rant[length];
         for (int i = 0; i < length; i++) {
-            mostActive[i] = rants.get(i);
+            popular[i] = rants.get(i);
         }
 
-        return response.ok(null, mostActive);
+        return response.ok(null, popular);
     }
 
     /**
