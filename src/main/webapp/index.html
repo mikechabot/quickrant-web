@@ -144,7 +144,7 @@
           <h3 class="panel-title text-center" id="legend">{{rant.question}}</h3>
         </div>
         <div class="panel-body">
-          <form name="form" class="form-inline" role="form" ng-submit="postRant(rant)">
+          <form name="form" class="form-inline" role="form">
 
             <!-- Name and Location -->
             <div class="row">
@@ -155,6 +155,7 @@
                 <input copyable default-value="app.defaults.location" destination="rant.location" ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
               </div>
             </div>
+
             <!-- Rant -->
             <div class="row">
               <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
@@ -179,41 +180,14 @@
               </div>
             </div>
 
-            <!-- Submit and show preview -->
+            <!-- Submit -->
             <div class="text-center">
-              <button ng-class="{disabled: !form.$valid }" type="submit" id="submit" class="btn btn-default">
-                <span class="glyphicon glyphicon-send"></span>
-              </button>
-              <button type="button" class="btn btn-default" ng-click="app.showPreview = !app.showPreview">
-                <span class="glyphicon" ng-class="{'glyphicon-eye-open': !app.showPreview, 'glyphicon-eye-close': app.showPreview}"></span>
-              </button>
+              <button ng-class="{disabled: !form.$valid }" type="submit" ng-click="postRant(rant)" class="btn btn-default fa fa-send fa-1-5x"></button>
             </div>
           </form>
         </div>
       </div>
 
-      <!-- Preview (START) -->
-      <div collapse="!app.showPreview" class="preview rants-container" class="row">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-lg-1 col-sm-1 col-xs-2">
-                <img ng-src="/img/{{rant.face.emotion}}-small.gif">
-              </div>
-              <div class="col-lg-8 col-sm-10 col-xs-8">
-                <h2 class="panel-title margin-top-xs">{{rant.question}}</h2>
-              </div>
-            </div>
-          </div>
-          <div class="panel-body">
-            <blockquote>
-              <p>{{rant.rant}}</p>
-              <small><span class="mild-bold">{{rant.name}}</span> // {{rant.location}}</small>
-            </blockquote>
-          </div>
-        </div>
-      </div>
-      <!-- Preview (END) -->
     </div>
   </div>
   <!-- User interaction (END) -->
@@ -222,8 +196,8 @@
 
   <!-- Show new rants -->
   <div class="text-center">
-    <button style="margin-bottom: 10px" ng-show="newRants" class="btn btn-default btn-lg" ng-click="showNewRants(deltaData)">
-      <ng-pluralize count="newRants" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
+    <button style="margin-bottom: 10px" ng-show="newRantCount" class="btn btn-default btn-lg" ng-click="showNewRants(newData)">
+      <ng-pluralize count="newRantCount" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
     </button>
   </div>
 

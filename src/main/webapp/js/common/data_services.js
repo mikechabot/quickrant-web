@@ -43,6 +43,9 @@ app.service('DataAccessService', ['AjaxService', function (AjaxService) {
                     }
                     deferred.resolve(response.data);
                 } else {
+                    if (response.message) {
+                        console.error(response.message);
+                    }
                     deferred.reject(response);
                 }
             })

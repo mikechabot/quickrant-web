@@ -6,7 +6,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         emotions: QR_DATA.emotions,
         shareUrls: QR_DATA.shareUrls,
         views: QR_CONST.VIEWS,
-        showPreview: false,
         defaults: {
             name: QR_CONST.DEFAULT_VALUE.NAME,
             location: QR_CONST.DEFAULT_VALUE.LOCATION
@@ -45,6 +44,26 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     };
 
     /**
+     * Return a promise that corresponds to getting a single rant by id
+     * @param id
+     * @returns {*}
+     * @private
+     */
+    var _getRantById = function(id) {
+        var deferred = $.Deferred();
+        RantService.getRantById(id)
+            .done(function (rant) {
+                rant ?
+                    deferred.resolve(rant) :
+                    deferred.reject({message: 'Unable to locate rant with id: ' + id});
+            })
+            .fail(function() {
+                deferred.reject({message: 'Error occurred while getting rant with id: ' + id});
+            });
+        return deferred.promise();
+    };
+
+    /**
      * Return a promise that corresponds to getting the popular rant list
      * @returns {*}
      * @private
@@ -71,6 +90,15 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
      */
     var _openModal = function(options) {
         return ModalService.open(options);
+    };
+
+    /**
+     * Helper method for logging errors
+     * @param error
+     * @private
+     */
+    var _logError = function(error) {
+        console.error(error.message);
     };
 
     /**
@@ -110,12 +138,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     }
 
     /**
-     * Set popular rants
-     * @param rants
-     */
-
-
-    /**
      * Show popular rants
      */
     function showPopularRants() {
@@ -128,6 +150,10 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
             .fail(_logError);
     }
 
+    /**
+     * Show rant posted modal
+     * @param data
+     */
     function showRantPosted(data) {
         _openModal({
             templateUrl: '/templates/modals/rant-posted.html',
@@ -137,13 +163,23 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     }
 
     /**
-     * Helper method for logging errors
-     * @param error
-     * @private
+     * Return the number of new rants;
+     * @param data
+     * @returns {*}
      */
-    var _logError = function(error) {
-        console.error(error.message);
-    };
+    function getNewRantCount(data) {
+        if (!data) return false;
+        return data.page.totalElements - $scope.page.totalElements;
+    }
+
+    /**
+     * Store off any new data in anticipation of the user selecting 'Show N new rants'
+     * @param data
+     */
+    function storeNewRants(count, data) {
+        $scope.newRantCount = count
+        $scope.newData = data;
+    }
 
     /**
      * Post a rant
@@ -197,33 +233,53 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         }
     });
 
-    //$interval(function() {
-    //    RantService.getPaginatedRants($scope.rants, 1)
-    //        .done(function(data) {
-    //            var diff = data.page.totalElements - $scope.page.totalElements;
-    //            if (diff > 0) {
-    //                $scope.newRants = diff;
-    //                $scope.deltaData = data;
-    //            }
-    //        });
-    //}, QR_CONST.POLLING.RANTS);
+    /**
+     * Fetch new rants every N seconds
+     */
+    $interval(function() {
+        _getRants(1)
+            .done(function(data) {
+                var count = getNewRantCount(data);
+                if (count > 0) {
+                    storeNewRants(count, data);
+                }
+            })
+            .fail(_logError);
+    }, QR_CONST.POLLING.RANTS);
 
-    //$scope.showNewRants = function(rants) {
-    //    _setPageAndRants(rants);
-    //    $scope.deltaData = undefined;
-    //    $scope.newRants = undefined;
-    //};
+    /**
+     * Show new rants
+     * @param data
+     */
+    $scope.showNewRants = function(data) {
+        setPage(data.page);
+        setRants(data.rants);
+        $scope.newData = undefined;
+        $scope.newRantCount = undefined;
+    };
 
-    //$scope.findRantById = function(searchTerm) {
-    //    RantService.getRantById(searchTerm)
-    //        .done(function(rant) {
-    //            $scope.openRant(rant, searchTerm)
-    //        })
-    //        .fail(function(error) {
-    //            console.error(error.message);
-    //        });
-    //};
+    /**
+     * Find a rant by id
+     * @param id
+     */
+    $scope.findRantById = function(id) {
+        _getRantById(id)
+            .done(function(rant) {
+               $scope.openRant(rant);
+            })
+            .fail(function(error) {
+                console.warn(error.message);
+                _openModal({
+                    templateUrl: '/templates/modals/rant-not-found.html',
+                    data: id,
+                    scope: $scope.$new()
+                });
+            });
+    };
 
+    /**
+     * Open About modal
+     */
     $scope.showAbout = function() {
         _openModal({
             templateUrl: '/templates/modals/about.html',
@@ -232,6 +288,9 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         });
     };
 
+    /**
+     * Open Beta modal
+     */
     $scope.showBeta = function() {
         _openModal({
             templateUrl: '/templates/modals/beta.html',
@@ -239,6 +298,9 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         });
     };
 
+    /**
+     * Open Share modal
+     */
     $scope.showShare = function() {
         _openModal({
             templateUrl: '/templates/modals/share.html',
@@ -248,6 +310,10 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         });
     };
 
+    /**
+     * Open single rant modal
+     * @param rant
+     */
     $scope.openRant = function(rant) {
         _openModal({
             templateUrl: '/templates/modals/rant.html',

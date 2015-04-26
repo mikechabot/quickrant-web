@@ -32,6 +32,11 @@
   color: #1973BB;
 }
 
+.rant-comment > .panel-body {
+
+}
+
+
 /*.btn-angry {*/
   /*background-color: #C03C38;*/
   /*border-color: #ffffff;*/
@@ -262,11 +267,15 @@ textarea {
 }
 
 .single-rant .panel-title {
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .single-rant .panel-body blockquote {
   font-size: 24px;
+}
+
+.single-rant .panel-body blockquote small {
+  font-size: 16px;
 }
 
 .center-absolute {
