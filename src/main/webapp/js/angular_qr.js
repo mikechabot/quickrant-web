@@ -107,6 +107,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
      * @private
      */
     function addRant(data) {
+        $scope.page.totalElements + 1;
         $scope.rants.unshift(data.rant);
     }
 
