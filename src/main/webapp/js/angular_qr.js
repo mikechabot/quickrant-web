@@ -305,7 +305,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
     $scope.showShare = function() {
         _openModal({
             templateUrl: '/templates/modals/share.html',
-            data: $scope.shareUrls,
+            data: _qr.shareUrls,
             scope: $scope.$new(),
             backdrop: true
         });
