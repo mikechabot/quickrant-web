@@ -75,6 +75,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 var _rant = _createRantObject(rant);
                 DataAccessService.post('/rants', _rant)
                     .done(function(response) {
+                        _rant.id = response.id;
                         deferred.resolve({response: response, rant: _rant});
                     })
                     .fail(function (response) {
