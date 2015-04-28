@@ -176,6 +176,10 @@ textarea {
   color: #000000;
 }
 
+.light-bold {
+  font-weight: 400;
+}
+
 .mild-bold {
   font-weight: 600;
 }

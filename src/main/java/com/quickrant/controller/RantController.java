@@ -104,7 +104,6 @@ public class RantController {
         }
         try {
             Rant rant = rantService.findOne(rantId);
-            comment.setCreatedDate(new Date());
             rant.addComment(comment);
             rantService.save(rant);
             return response.ok("Comment added", comment);
@@ -121,24 +120,18 @@ public class RantController {
     @RequestMapping(value = "/popular", method = RequestMethod.POST)
     public ResponseEntity getPopularRants() {
 
-        final int TOP_15 = 15;
+        final int TOP_N = 15;
 
-        /* Get rants with more than 1 comment */
         List<Rant> rants = rantService.findByCommentCountGreaterThan(1);
         Collections.sort(rants, new CommentCountComparator());
 
-        int length = rants.size();
-        if (length > TOP_15) {
-            length = TOP_15;
+        if (rants.size() > TOP_N) {
+            for (int i = rants.size(); i > TOP_N; i--) {
+                rants.remove(i-1);
+            }
         }
 
-        /* Set top N most active */
-        Rant[] popular = new Rant[length];
-        for (int i = 0; i < length; i++) {
-            popular[i] = rants.get(i);
-        }
-
-        return response.ok(null, popular);
+        return response.ok(null, rants);
     }
 
     /**

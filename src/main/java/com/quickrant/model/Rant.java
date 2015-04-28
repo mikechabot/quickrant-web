@@ -3,6 +3,7 @@ package com.quickrant.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Document
@@ -65,9 +66,11 @@ public class Rant extends MongoDocument {
     }
 
     public void addComment(Comment comment) {
+        if (comment == null) throw new IllegalArgumentException ("Comment cannot be null");
         if (comments == null) {
             comments = new ArrayList<>();
         }
+        comment.setCreatedDate(new Date());
         comments.add(comment);
         commentCount++;
     }
