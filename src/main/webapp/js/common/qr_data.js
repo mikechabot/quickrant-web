@@ -26,7 +26,7 @@ app.value('QR_DATA',
                 emotion: 'angry',
                 styles: {
                     panel: 'danger',
-                    button: 'danger'
+                    button: 'angry'
                 },
                 questions: [
                     'You know what I hate?',

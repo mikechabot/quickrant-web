@@ -178,7 +178,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
      * @param data
      */
     function storeNewRants(count, data) {
-        $scope.newRantCount = count
+        $scope.newRantCount = count;
         $scope.newData = data;
     }
 
@@ -190,7 +190,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', 'QR_DATA', 
         _postRant(rant)
             .done(function(data) {
                 $scope.rant = {};
-                console.log(data);
                 addRant(data);
                 showRantPosted(data);
                 setView(_qr.views.LIVE_STREAM);

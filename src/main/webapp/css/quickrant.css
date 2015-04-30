@@ -1,10 +1,34 @@
-/** QUESTIONS **/
+/** BUTTONS **/
 .btn-question {
   margin: 3px;
+  padding-bottom: 2px;
+  font-family: 'Always Together';
+  font-size: 22px;
+}
+
+.btn-comment {
+  font-size: 18px;
+}
+
+
+/** ANGRY **/
+.btn-angry {
+  background-color: #CB3B37;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-angry:hover {
+  color: #ffffff;
+  background-color: #F4534E;
+  border-color: #ffffff;
+}
+
+.btn-angry:focus {
+  color: #ffffff;
 }
 
 /** HAPPY **/
-
 .btn-happy {
   background-color: #3D9BCB;
   border-color: #ffffff;
@@ -13,8 +37,8 @@
 
 .btn-happy:hover {
   color: #ffffff;
-  background-color: #286293;
-  border-color: #245580;
+  background-color: #4FB8ED;
+  border-color: #ffffff;
 }
 
 .btn-happy:focus {
@@ -31,8 +55,8 @@
   color: #1973BB;
 }
 
-/** SAD **/
 
+/** SAD **/
 .btn-sad {
   background-color: #555555;
   border-color: #ffffff;
@@ -59,6 +83,12 @@
   color: #555555;
 }
 
+/** NAV **/
+.navbar-brand {
+  font-family: 'Always Together';
+  font-size: 28px;
+}
+
 /** RANT FORM **/
 .form-container .form-control {
   margin: 5px;
@@ -68,6 +98,7 @@
 .form-control, .alert, .btn, .panel {
   border-radius:0;
 }
+
 
 /** SIDEBAR **/
 .sidebar {
@@ -92,18 +123,12 @@
   background-color: #696969;
 }
 
-
-.fa-1-5x {
-  font-size: 1.5em;
-}
-
+/** SHARE **/
 .btn-share {
   margin: 10px 10px;
 }
 
-/* MODAL
---------------------------------*/
-
+/** MODALS **/
 .modal .modal-body {
   max-height: 700px;
   overflow-y: auto;
@@ -114,21 +139,25 @@
   font-size: 14px;
 }
 
-/* RANT CONTENT
--------------------------------------------------- */
+
+/** RANT CONTAINER **/
+
+.rants-container {
+  font-family: 'Always Together';
+}
 
 .panel-rant {
-  border: 0px;
-  border-radius: 0;
-  box-shadow: none;
-  margin-bottom: 0px;
+  border: 0px;        /* Remove bootstrap */
+  border-radius: 0;   /* Remove bootstrap */
+  box-shadow: none;   /* Remove bootstrap */
+  margin-bottom: 0px; /* Remove bootstrap */
 }
 
 .rants-container .panel-title {
-  margin-left: -5px;
-  padding-top: 5px;
-  font-size: 16px;
-  font-weight: 300;
+  margin-left: -7px;
+  padding-top: 7px;
+  font-size: 24px;
+  color: #777777;
 }
 
 .rants-container .panel-body {
@@ -136,12 +165,22 @@
   padding: 5px 15px 0px;
 }
 
+.rants-container .panel-body blockquote {
+  font-size: 24px;
+  color: #777777;
+}
+
+.rants-container .panel-body blockquote small {
+  font-family: 'Open Sans';
+  font-size: 12px;
+}
+
 .single-rant .panel-title {
   font-size: 18px;
 }
 
 .single-rant .panel-body blockquote {
-  font-size: 24px;
+  font-size: 32px;
 }
 
 .single-rant .panel-body blockquote small {

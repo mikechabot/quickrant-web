@@ -79,7 +79,7 @@
     </div>
     <div class="collapse navbar-collapse" id="bs-navigation">
       <ul class="nav navbar-nav">
-        <li><a href ng-click="showAbout()">about</a></li>
+        <li><a href ng-click="showAbout()"><code>ABOUT</code></a></li>
         <li><a href ng-click="showBeta()"><code>BETA</code></a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -206,7 +206,7 @@
               <div class="panel-heading">
                 <div class="row">
                   <div class="col-lg-1 col-sm-1 col-xs-2">
-                    <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
+                    <img ng-src="/img/{{::rant.selection.emotion}}-sm.png">
                   </div>
                   <div ng-if="!rant.allowComments">
                     <div class="col-lg-10 col-sm-10 col-xs-10">
@@ -218,7 +218,7 @@
                       <h2 class="panel-title">{{::rant.selection.question}}</h2>
                     </div>
                     <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
-                      <button ng-click="openRant(rant)" class="btn btn-default">
+                      <button ng-click="openRant(rant)" class="btn btn-default btn-comment">
                         <i class="fa fa-comments-o fa-1-5x"></i>
                         <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
                       </button>
@@ -294,7 +294,7 @@
               <div class="panel-heading">
                 <div class="row">
                   <div class="col-lg-1 col-sm-1 col-xs-2">
-                    <img ng-src="/img/{{::rant.selection.emotion}}-small.gif">
+                    <img ng-src="/img/{{::rant.selection.emotion}}-sm.png">
                   </div>
                   <div ng-if="!rant.allowComments">
                     <div class="col-lg-10 col-sm-10 col-xs-10">
@@ -306,7 +306,7 @@
                       <h2 class="panel-title">{{::rant.selection.question}}</h2>
                     </div>
                     <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
-                      <button ng-click="openRant(rant)" class="btn btn-default">
+                      <button ng-click="openRant(rant)" class="btn btn-defaul btn-comment">
                         <i class="fa fa-comments-o fa-1-5x"></i>
                         <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
                       </button>
