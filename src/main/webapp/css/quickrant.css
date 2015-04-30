@@ -7,9 +7,8 @@
 }
 
 .btn-comment {
-  font-size: 18px;
+  font-size: 14px;
 }
-
 
 /** ANGRY **/
 .btn-angry {
@@ -99,7 +98,6 @@
   border-radius:0;
 }
 
-
 /** SIDEBAR **/
 .sidebar {
   font-family: 'Always Together';
@@ -142,10 +140,6 @@
 
 /** RANT CONTAINER **/
 
-.rants-container {
-  font-family: 'Always Together';
-}
-
 .panel-rant {
   border: 0px;        /* Remove bootstrap */
   border-radius: 0;   /* Remove bootstrap */
@@ -156,8 +150,9 @@
 .rants-container .panel-title {
   margin-left: -7px;
   padding-top: 7px;
-  font-size: 24px;
+  font-size: 16px;
   color: #777777;
+  font-weight: 300;
 }
 
 .rants-container .panel-body {
@@ -166,7 +161,7 @@
 }
 
 .rants-container .panel-body blockquote {
-  font-size: 24px;
+  font-size: 18px;
   color: #777777;
 }
 
@@ -176,15 +171,15 @@
 }
 
 .single-rant .panel-title {
-  font-size: 26px;
+  font-size: 18px;
 }
 
 .single-rant .panel-body blockquote {
-  font-size: 32px;
+  font-size: 24px;
 }
 
 .single-rant .panel-body blockquote small {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .center-absolute {
