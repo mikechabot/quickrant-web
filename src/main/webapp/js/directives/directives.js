@@ -145,7 +145,7 @@ app.directive('question', function () {
             question: '=',
             customStyle: '='
         },
-        template: '<button class="btn btn-{{customStyle}} question" type="button">{{::question}}</button>',
+        template: '<button class="btn btn-{{customStyle}} btn-question" type="button">{{::question}}</button>',
         link: function ($scope, $element, $attrs, questionsCtrl) {
             $element.bind('click', function () {
                 questionsCtrl.select($scope.question);

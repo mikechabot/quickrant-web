@@ -45,7 +45,8 @@
   <!-- styles -->
   <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link href="/css/font-awesome/font-awesome.min.css" rel="stylesheet">
-  <link href="/css/custom.css" rel="stylesheet">
+  <link href="/css/common.css" rel="stylesheet">
+  <link href="/css/quickrant.css" rel="stylesheet">
   <link href="/css/toggle.css" rel="stylesheet">
 
   <link rel="image_src" type="image/gif" href="http://quickrant.com/img/thumbnail.gif"/>
@@ -79,7 +80,7 @@
     <div class="collapse navbar-collapse" id="bs-navigation">
       <ul class="nav navbar-nav">
         <li><a href ng-click="showAbout()">about</a></li>
-        <li><a href ng-click="showBeta()">feedback</a></li>
+        <li><a href ng-click="showBeta()"><code>BETA</code></a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -96,34 +97,21 @@
 </nav>
 <!-- Navbar (END) -->
 
-<!-- Beta and Share (START) -->
+
 <div class="container">
 
-  <!-- Beta -->
-  <div class="center-absolute ribbon">
-    <div class="ribbon-stitches-top"></div>
-    <strong class="ribbon-content"><h1><a href style="color: inherit" ng-click="showBeta()">Beta</a></h1></strong>
-    <div class="ribbon-stitches-bottom"></div>
-  </div>
-
-  <!-- Share -->
+  <!-- Share (START) -->
   <div class="flex-container">
-    <div class="flex-item"></div>
-    <div class="flex-item">
+    <div class="flex-item text-right">
       <button ng-click="showShare()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button>
     </div>
   </div>
-</div>
-<!-- Beta and Share (END) -->
-
-<br><br>
-
-<div class="container">
+  <!-- Share (END) -->
 
   <!-- Faces -->
   <div faces data="app.emotions" rant="rant" class="row margin-bottom-lg text-center">
     <div ng-repeat="face in app.emotions" class="col-lg-4 col-sm-4 col-xs-4">
-      <a href face ng-model="face"><img class="img-circle" ng-src="/img/{{::face.emotion}}.gif"></a>
+      <a href face ng-model="face"><img ng-src="/img/{{::face.emotion}}.png"></a>
     </div>
   </div>
 
@@ -206,8 +194,8 @@
     <div class="row">
       <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
         <div class="list-group">
-          <a class="list-group-item active" href><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
-          <a class="list-group-item" href ng-click="app.view = app.views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
+          <a class="list-group-item active" href><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
+          <a class="list-group-item" href ng-click="app.view = app.views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
         </div>
         <hr>
       </div>
@@ -291,8 +279,8 @@
     <div class="row">
       <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
         <div class="list-group">
-          <a class="list-group-item" href ng-click="app.view = app.views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Live Stream</span></a>
-          <a class="list-group-item active" href><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="h4">Popular</span></a>
+          <a class="list-group-item" href ng-click="app.view = app.views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
+          <a class="list-group-item active" href><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
         </div>
         <hr>
       </div>
