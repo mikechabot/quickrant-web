@@ -88,7 +88,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
         },
         getRantById: function getRantById(id) {
             var deferred = $.Deferred();
-                DataAccessService.post('/rants/' + id)
+                DataAccessService.get('/rants/' + id)
                     .done(function(data) {
                         deferred.resolve(data);
                     })
@@ -111,7 +111,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
         },
         getPopularRants: function getPopularRants() {
             var deferred = $.Deferred();
-            DataAccessService.post('/rants/popular')
+            DataAccessService.get('/rants/popular')
                 .done(function (response) {
                     deferred.resolve(response);
                 })
@@ -122,7 +122,7 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
         },
         getRantsByQuestion: function getRantsByQuestion(question) {
             var deferred = $.Deferred();
-            DataAccessService.post('/rants/question', question)
+            DataAccessService.get('/rants/question', question)
                 .done(function (response) {
                     deferred.resolve({rants: response});
                 })

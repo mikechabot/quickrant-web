@@ -59,7 +59,7 @@ public class RantController {
      * @param id
      * @return a single Rant
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getRantById(@PathVariable String id) {
         if (id == null && id.isEmpty()) {
             return response.badRequest("Id cannot be null");
@@ -117,7 +117,7 @@ public class RantController {
      * Get most active Rants
      * @return Array of Rant objects
      */
-    @RequestMapping(value = "/popular", method = RequestMethod.POST)
+    @RequestMapping(value = "/popular", method = RequestMethod.GET)
     public ResponseEntity getPopularRants() {
 
         final int TOP_N = 15;

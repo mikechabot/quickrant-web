@@ -11,7 +11,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
-public class Bootstrap implements WebApplicationInitializer {
+public class BootstrapWeb implements WebApplicationInitializer {
 
     private static final String CONFIG_LOCATION = "com.quickrant.config";
     private static final String MAPPING_URL = "/spring/*";
