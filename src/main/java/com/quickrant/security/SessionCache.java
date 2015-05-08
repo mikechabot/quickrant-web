@@ -12,8 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Cache that holds unique session values, and the date of their creation; as such
- * this cache expects that not only is the key unique, but also the value.
+ * Cache that holds active sessions. Concurrent HashMap using a
+ * cookie value (a UUID) as the key, and a Session object as the value
  *
  *  > Thread-safe
  *  > Guaranteed singleton
@@ -23,14 +23,12 @@ public enum SessionCache {
 
     INSTANCE;
 
-    private final Logger log = Logger.getLogger(SessionCache.class);
-
     private ConcurrentMap<String, Session> cache = new ConcurrentHashMap<>(0);
     private Timer timer = new Timer();
 
-    int interval = 2;   // minutes
-    int expiry = 5;     // minutes
-    int delay = 10;     // seconds
+    int expiry = 30;     // Expire cache entries in N days
+    int interval = 5;    // Run the cleaning task every N minutes
+    int delay = 10;      // Delay the initial run of the cleaning task by N seconds
 
     private SessionCache() throws ExceptionInInitializerError {
         timer.schedule(new CleanTask(), delay * 1000, interval * 60 * 1000);
@@ -48,25 +46,25 @@ public enum SessionCache {
     }
 
     public void add(Session session) {
-        if (session == null || session.getId() == null)
-        cache.put(session.getId(), session);
+        if (session == null || session.getCookieValue() == null) return;
+        cache.put(session.getCookieValue(), session);
+    }
+
+    public boolean contains(String key) {
+        return cache.get(key) != null;
     }
 
     public boolean contains(Session session) {
-        if (session == null || session.getId() == null) return false;
-        return cache.get(session.getId()) != null;
+        if (session == null || session.getCookieValue() == null) return false;
+        return cache.get(session.getCookieValue()) != null;
     }
 
     /**
-     * Clean the cache every N minutes
+     * TimerTask that cleans the cache on an interval
      */
     protected class CleanTask extends TimerTask {
 
         private Logger log = Logger.getLogger(CleanTask.class);
-
-        public CleanTask() {
-            log.info("Session cached initialized. Expiry: " + expiry + " minute(s)");
-        }
 
         @Override
         public void run() {
@@ -75,7 +73,7 @@ public enum SessionCache {
         }
 
         /**
-         * Clean the cache
+         * Removed expired entries from the cache
          * @return
          */
         private void cleanCache() {
@@ -97,7 +95,7 @@ public enum SessionCache {
         private boolean isExpired(Session session) {
             DateTime sessionCreated = new DateTime(session.getCreatedDate());
             DateTime now = new DateTime();
-            return sessionCreated.isBefore(now.minusMinutes(expiry));
+            return sessionCreated.isBefore(now.minusDays(expiry));
         }
     }
 

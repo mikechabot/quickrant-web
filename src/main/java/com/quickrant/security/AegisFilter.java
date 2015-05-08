@@ -4,7 +4,7 @@ import com.quickrant.model.Session;
 import com.quickrant.service.SessionService;
 import com.quickrant.util.RequestWrapper;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -17,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class AegisFilter extends OncePerRequestFilter implements Filter {
@@ -54,14 +55,19 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
 
     }
 
+    /**
+     * Process a request based on method type
+     * @param wrapper
+     * @return the status of the request
+     */
     private HttpStatus processRequest(RequestWrapper wrapper) {
         HttpStatus status;
         switch(wrapper.getMethod()) {
             case "GET":
-                status = filterGet(wrapper);
+                status = processGet(wrapper);
                 break;
             case "POST":
-                status = filterPost(wrapper);
+                status = processPost(wrapper);
                 break;
             default:
                 status = HttpStatus.NOT_IMPLEMENTED;
@@ -70,7 +76,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
         return status;
     }
 
-    private HttpStatus filterPost(RequestWrapper wrapper) {
+    private HttpStatus processPost(RequestWrapper wrapper) {
         Cookie cookie = wrapper.getCookie("quickrant-uuid");
         if (cookie != null) {
             return HttpStatus.OK;
@@ -80,22 +86,65 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
         }
     }
 
-    private HttpStatus filterGet(RequestWrapper wrapper) {
-        if (wrapper.getCookie(COOKIE_NAME) == null) {
-            Session session = getNewSession(wrapper);
-            sessionService.save(session);
-            sessionCache.add(session);
-            Cookie cookie = getCookie(session.getId());
-            wrapper.getResponse().addCookie(cookie);
-            log("Cookie created");
+    /**
+     * Attach sessions to /GET requests
+     * @param wrapper
+     * @return
+     */
+    private HttpStatus processGet(RequestWrapper wrapper) {
+        if (!hasSession(wrapper)) {
+            String cookieValue = createCookie(wrapper);
+            createSession(wrapper, cookieValue);
+            log("Session created " + cookieValue);
         }
         return HttpStatus.OK;
     }
 
-    private Session getNewSession(RequestWrapper wrapper) {
-        return new Session(wrapper.getIpAddress(), wrapper.getUserAgent());
+    /**
+     * Determine if the request is attached to an active session
+     * @param wrapper
+     * @return
+     */
+    private boolean hasSession(RequestWrapper wrapper) {
+        Cookie cookie = wrapper.getCookie(COOKIE_NAME);
+        if (cookie != null) {
+            return sessionCache.contains(cookie.getValue());
+        }
+        return false;
     }
 
+    /**
+     * Create a Cookie and attach it to the response
+     * @param wrapper
+     * @return the value of the cookie
+     */
+    private String createCookie(RequestWrapper wrapper) {
+        String uuid = String.valueOf(UUID.randomUUID());
+        Cookie cookie = getCookie(uuid);
+        wrapper.getResponse().addCookie(cookie);
+        return uuid;
+    }
+
+
+    /**
+     * Create a session, add it to the database, then save it to the cache
+     * @param wrapper
+     * @param cookieValue
+     */
+    private void createSession(RequestWrapper wrapper, String cookieValue) {
+        Session session = new Session();
+        session.setIpAddress(wrapper.getIpAddress());
+        session.setUserAgent(wrapper.getUserAgent());
+        session.setCookieValue(cookieValue);
+        sessionService.save(session);
+        sessionCache.add(session);
+    }
+
+    /**
+     * Create a new cookie
+     * @param value
+     * @return the cookie
+     */
     private Cookie getCookie(String value) {
         Cookie cookie = new Cookie(COOKIE_NAME, value);
         cookie.setMaxAge(30*24*60*60);  // 1 month
@@ -103,6 +152,10 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
         return cookie;
     }
 
+    /**
+     * Log a message with some additional details
+     * @param message
+     */
     private void log(String message) {
         log.info(message + ": " + IpAddress + " -- " + UserAgent);
     }

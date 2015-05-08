@@ -5,12 +5,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Session extends MongoDocument {
 
+    private String cookieValue;
     private String ipAddress;
     private String userAgent;
 
-    public Session(String ipAddress, String userAgent) {
-        this.ipAddress = ipAddress;
-        this.userAgent = userAgent;
+    public String getCookieValue() {
+        return cookieValue;
+    }
+
+    public void setCookieValue(String cookieValue) {
+        this.cookieValue = cookieValue;
     }
 
     public String getIpAddress() {
@@ -28,5 +32,4 @@ public class Session extends MongoDocument {
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
     }
-
 }
