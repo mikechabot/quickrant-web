@@ -7,12 +7,15 @@
   </div>
   <div class="modal-body">
     <div class="text-center">
-      <a ng-href="{{data.facebook}}" class="btn btn-default btn-lg btn-share fa fa-facebook fa-3x" target="_blank"></a>
-      <a ng-href="{{data.twitter}}" class="btn btn-default btn-lg btn-share fa fa-twitter fa-3x" target="_blank"></a>
-      <a ng-href="{{data.reddit}}" class="btn btn-default btn-lg btn-share fa fa-reddit fa-3x" target="_blank"></a>
-      <a ng-href="{{data.reddit}}" class="btn btn-default btn-lg btn-share fa fa-tumblr fa-3x" target="_blank"></a>
-      <a ng-href="{{data.google}}" class="btn btn-default btn-lg btn-share fa fa-google-plus fa-3x" target="_blank"></a>
-      <a ng-href="{{data.stumbleupon}}" class="btn btn-default btn-lg btn-share fa fa-stumbleupon fa-3x" target="_blank"></a>
+      <a ng-href="{{shareUrls.facebook}}" class="btn btn-default btn-lg btn-share fa fa-facebook fa-3x" target="_blank"></a>
+      <a ng-href="{{shareUrls.twitter}}" class="btn btn-default btn-lg btn-share fa fa-twitter fa-3x" target="_blank"></a>
+      <a ng-href="{{shareUrls.reddit}}" class="btn btn-default btn-lg btn-share fa fa-reddit fa-3x" target="_blank"></a>
+      <a ng-href="{{shareUrls.reddit}}" class="btn btn-default btn-lg btn-share fa fa-tumblr fa-3x" target="_blank"></a>
+      <a ng-href="{{shareUrls.google}}" class="btn btn-default btn-lg btn-share fa fa-google-plus fa-3x" target="_blank"></a>
+      <a ng-href="{{shareUrls.stumbleupon}}" class="btn btn-default btn-lg btn-share fa fa-stumbleupon fa-3x" target="_blank"></a>
     </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-default" ng-click="$close()">Close</button>
   </div>
 </div>

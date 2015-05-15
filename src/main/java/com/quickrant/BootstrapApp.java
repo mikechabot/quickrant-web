@@ -19,7 +19,8 @@ public class BootstrapApp implements ApplicationListener<ContextRefreshedEvent> 
     @Autowired
     SessionService sessionService;
 
-    SessionCache cache = SessionCache.INSTANCE;
+    @Autowired
+    SessionCache sessionCache;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -28,8 +29,8 @@ public class BootstrapApp implements ApplicationListener<ContextRefreshedEvent> 
 
     private void populateSessionCache() {
         List<Session> sessions = sessionService.findAll();
-        cache.addAll(sessions);
-        log.info("Populating cache with " + cache.size() + " active sessions");
+        sessionCache.addSessions(sessions);
+        log.info("Populated cache with " + sessionCache.size() + " active sessions");
     }
 
 }

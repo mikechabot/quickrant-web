@@ -1,4 +1,4 @@
-app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAccessService, QR_CONST) {
+app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 'DialogService', function ($log, QR_CONST, QR_DATA, DataAccessService, DialogService) {
 
     /**
      * Generate Rant object from form input
@@ -57,15 +57,19 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
         };
     }
 
-    return ({
+    var _isInvalidSession = function(error) {
+        return error.message.indexOf("invalid session") > 0;
+    };
+
+    return {
         getPaginatedRants: function getRants(pageNumber) {
             var deferred = $.Deferred();
             DataAccessService.get('/rants/page/' + pageNumber)
                 .done(function(paginated) {
                     deferred.resolve(_createPageObject(paginated));
                 })
-                .fail(function(error) {
-                    deferred.reject({message: error.message});
+                .fail(function() {
+                    deferred.reject();
                 });
             return deferred.promise();
         },
@@ -73,13 +77,20 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
             var deferred = $.Deferred();
             if (rant.rant) {
                 var _rant = _createRantObject(rant);
+                var that = this;
                 DataAccessService.post('/rants', _rant)
-                    .done(function(response) {
-                        _rant.id = response.id;
-                        deferred.resolve({response: response, rant: _rant});
+                    .done(function(rant) {
+                        deferred.resolve(rant);
+                        that.openRant(rant);
                     })
-                    .fail(function (response) {
-                        deferred.reject({message: response.message});
+                    .fail(function (error) {
+                        if (_isInvalidSession(error)) {
+                            DialogService.notify(
+                                QR_DATA.notify.noSession.body,
+                                QR_DATA.notify.noSession.title
+                            );
+                        }
+                        deferred.reject({message: error.message});
                     });
             } else {
                 deferred.reject({message: 'Cannot post null rant'});
@@ -88,13 +99,13 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
         },
         getRantById: function getRantById(id) {
             var deferred = $.Deferred();
-                DataAccessService.get('/rants/' + id)
-                    .done(function(data) {
-                        deferred.resolve(data);
-                    })
-                    .fail(function(error) {
-                        deferred.reject({message: error.message});
-                    });
+            DataAccessService.get('/rants/' + id)
+                .done(function(data) {
+                    deferred.resolve(data);
+                })
+                .fail(function() {
+                    deferred.reject();
+                });
             return deferred.promise();
         },
         saveComment: function saveComment(comment, rantId) {
@@ -104,8 +115,8 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                 .done(function(response) {
                     deferred.resolve(response);
                 })
-                .fail(function(response) {
-                    deferred.reject({message: response.message});
+                .fail(function() {
+                    deferred.reject();
                 });
             return deferred.promise();
         },
@@ -130,6 +141,20 @@ app.service('RantService', ['DataAccessService', 'QR_CONST', function (DataAcces
                     deferred.reject({message: 'Unable to get most active rants'});
                 });
             return deferred.promise();
+        },
+        openRant: function(rant) {
+            var options = {
+                templateUrl: '/templates/modals/rant.html',
+                size: 'lg',
+                windowClass: 'rant-comment',
+                backdrop: 'static',
+                scope: {
+                    rant: rant
+                }
+            };
+            return DialogService.open(options)
+
         }
-    });
+    };
+
 }]);

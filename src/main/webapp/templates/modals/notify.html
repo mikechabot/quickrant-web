@@ -1,0 +1,9 @@
+<div>
+    <div ng-if="title" class="modal-header">
+        <h4 class="modal-title">{{title}}</h4>
+    </div>
+    <div class="modal-body" ng-bind-html="body | trusted"></div>
+    <div class="modal-footer">
+        <button class="btn btn-default fa fa-close fa-2x" ng-click="$close()"></button>
+    </div>
+</div>

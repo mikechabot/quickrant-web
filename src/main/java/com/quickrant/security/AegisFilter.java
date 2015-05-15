@@ -17,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import java.util.UUID;
 
 @Component
@@ -26,10 +27,11 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
 
     private final String COOKIE_NAME = "quickrant-uuid";
 
-    private SessionCache sessionCache = SessionCache.INSTANCE;
-
     @Autowired
     SessionService sessionService;
+
+    @Autowired
+    private SessionCache sessionCache;
 
     // Used for logging
     private String IpAddress;
@@ -46,12 +48,19 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
 
         HttpStatus status = processRequest(wrapper);
 
-        if (status.equals(HttpStatus.OK)) {
-            filterChain.doFilter(request, response);
-        } else {
-            response.sendError(status.value());
-            return;
+        switch(status) {
+            case OK:
+                // Do nothing
+                break;
+            case FORBIDDEN:
+                response.addHeader(StatusHeader.NO_SESSION.name(), status.getReasonPhrase());
+                break;
+            default:
+                response.sendError(status.value());
+
         }
+
+        filterChain.doFilter(request, response);
 
     }
 
@@ -77,8 +86,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
     }
 
     private HttpStatus processPost(RequestWrapper wrapper) {
-        Cookie cookie = wrapper.getCookie("quickrant-uuid");
-        if (cookie != null) {
+        if (hasSession(wrapper)) {
             return HttpStatus.OK;
         } else {
             log("POST attempted without cookies");
@@ -94,7 +102,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
     private HttpStatus processGet(RequestWrapper wrapper) {
         if (!hasSession(wrapper)) {
             String cookieValue = createCookie(wrapper);
-            createSession(wrapper, cookieValue);
+            createAndSaveSession(wrapper, cookieValue);
             log("Session created " + cookieValue);
         }
         return HttpStatus.OK;
@@ -105,12 +113,18 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
      * @param wrapper
      * @return
      */
-    private boolean hasSession(RequestWrapper wrapper) {
+    public boolean hasSession(RequestWrapper wrapper) {
         Cookie cookie = wrapper.getCookie(COOKIE_NAME);
-        if (cookie != null) {
-            return sessionCache.contains(cookie.getValue());
-        }
-        return false;
+        return cookie != null ?  isValid(cookie) : false;
+    }
+
+    /**
+     * Check the cache for the cookie
+     * @param cookie
+     * @return
+     */
+    private boolean isValid(Cookie cookie) {
+        return sessionCache.contains(cookie.getValue());
     }
 
     /**
@@ -125,19 +139,30 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
         return uuid;
     }
 
-
     /**
      * Create a session, add it to the database, then save it to the cache
      * @param wrapper
      * @param cookieValue
      */
-    private void createSession(RequestWrapper wrapper, String cookieValue) {
+    private void createAndSaveSession(RequestWrapper wrapper, String cookieValue) {
+        Session session = getSession(wrapper, cookieValue);
+        sessionService.save(session);
+        sessionCache.addSession(session);
+    }
+
+    /**
+     * Generate a new session object
+     * @param wrapper
+     * @param cookieValue
+     * @return
+     */
+    private Session getSession(RequestWrapper wrapper, String cookieValue) {
         Session session = new Session();
         session.setIpAddress(wrapper.getIpAddress());
         session.setUserAgent(wrapper.getUserAgent());
         session.setCookieValue(cookieValue);
-        sessionService.save(session);
-        sessionCache.add(session);
+        session.setCreatedDate(new Date());
+        return session;
     }
 
     /**
@@ -147,7 +172,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
      */
     private Cookie getCookie(String value) {
         Cookie cookie = new Cookie(COOKIE_NAME, value);
-        cookie.setMaxAge(30*24*60*60);  // 1 month
+        cookie.setMaxAge(sessionCache.expiry*24*60*60);
         cookie.setPath("/");
         return cookie;
     }

@@ -7,10 +7,12 @@ import com.mongodb.MongoClientException;
 import com.quickrant.factory.ResponseEntityFactory;
 import com.quickrant.model.Rant;
 import com.quickrant.model.Comment;
+import com.quickrant.security.StatusHeader;
 import com.quickrant.sort.MongoSort;
 import com.quickrant.sort.SortMethod;
 import com.quickrant.service.RantService;
 
+import com.quickrant.util.JsonResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @Controller
@@ -74,20 +77,23 @@ public class RantController {
     /**
      * Save a Rant
      * @param rant
-     * @param request
+     * @param httpResponse
      * @return id of Rant
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity saveRant(@RequestBody Rant rant, HttpServletRequest request) {
+    public ResponseEntity saveRant(@RequestBody Rant rant, HttpServletResponse httpResponse) {
         if (rant == null) throw new IllegalArgumentException("Rant cannot be null");
-        try {
-            rant.setCreatedDate(new Date());
-            rantService.save(rant);
-            ObjectNode data = nodeFactory.objectNode();
-            data.set("id", nodeFactory.textNode(rant.getId()));
-            return response.created("Rant saved", request.getServerName() + "/rants/" + rant.getId(), data);
-        } catch (MongoClientException ex) {
-            return response.badRequest("Failed to save rant");
+        if (httpResponse.getHeader(StatusHeader.NO_SESSION.name()) == null) {
+            try {
+                rant.setCreatedDate(new Date());
+                rantService.save(rant);
+                return response.ok("Rant saved", rant);
+            } catch (MongoClientException ex) {
+                return response.badRequest("Error saving rant: MongoClientException");
+            }
+        } else {
+            ResponseEntity<JsonResponse> json =  response.forbidden("Error saving rant: invalid session");
+            return json;
         }
     }
 

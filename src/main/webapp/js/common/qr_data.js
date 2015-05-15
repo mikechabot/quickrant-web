@@ -61,13 +61,26 @@ app.value('QR_DATA',
                 ]
             }
         },
-        shareUrls:
-            {
-                facebook: 'http://www.facebook.com/share.php?u=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required',
-                twitter: 'http://twitter.com/intent/tweet?status=Express yourself without yourself. Say anything to everyone. No login required + https://quickrant.com',
-                reddit: 'http://www.reddit.com/submit?url=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required',
-                google: 'https://plus.google.com/share?url=https://quickrant.com',
-                tumblr: 'http://www.tumblr.com/share?v=3&u=https://quickrant.com&t=Express yourself without yourself. Say anything to everyone. No login required',
-                stumbleupon: 'http://www.stumbleupon.com/submit?url=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required'
+        shareUrls: {
+            facebook: 'http://www.facebook.com/share.php?u=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required',
+            twitter: 'http://twitter.com/intent/tweet?status=Express yourself without yourself. Say anything to everyone. No login required + https://quickrant.com',
+            reddit: 'http://www.reddit.com/submit?url=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required',
+            google: 'https://plus.google.com/share?url=https://quickrant.com',
+            tumblr: 'http://www.tumblr.com/share?v=3&u=https://quickrant.com&t=Express yourself without yourself. Say anything to everyone. No login required',
+            stumbleupon: 'http://www.stumbleupon.com/submit?url=https://quickrant.com&title=Express yourself without yourself. Say anything to everyone. No login required'
+            },
+        notify: {
+            beta: {
+                title: 'Beta',
+                body: 'Quickrant is currently in beta while I add functionality and fix bugs. <br><br> If you see any abnormal behavior, or know of a feature you\'d like to see, feel free to <a href="https://github.com/mikechabot/quickrant-web/issues">create an issue or enhancement</a> on GitHub.'
+            },
+            notFound: {
+                body: 'It doesn\'t look as though there\'s a rant with id: ',
+                title: 'Uh oh...'
+            },
+            noSession: {
+                body: 'You\'ll need to enable cookies',
+                title: 'Something went wrong...'
             }
+        }
     });

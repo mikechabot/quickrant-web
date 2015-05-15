@@ -1,5 +1,5 @@
 /**
- * Service to perform AJAX calls
+ * Service to perform jQuery AJAX calls
  */
 app.service('AjaxService', function () {
     return {
@@ -12,22 +12,21 @@ app.service('AjaxService', function () {
 /**
  * Service to perform generic GET/POST actions
  */
-app.service('DataAccessService', ['AjaxService', function (AjaxService) {
+app.service('DataAccessService', ['AjaxService', 'QR_CONST', function (AjaxService, QR_CONST) {
 
     /**
      * AJAX request with response handling
      * @param type
      * @param url
      * @param data
-     * @returns The original promise is not returned, but rather a promise that wraps it.
-     *          This means we can handle cases where a successful response was sent from the server (200 OK),
-     *          but contained an error condition (i.e. unable to save record)
+     * @returns a promise wrapper
      * @private
      */
     var _request = function (type, url, data) {
         var options = {
             type: type,
-            url: '/spring' + url
+            url: '/spring' + url,
+            dataType: 'json'
         };
         if (data) {
             options.data = JSON.stringify(data);
@@ -37,20 +36,21 @@ app.service('DataAccessService', ['AjaxService', function (AjaxService) {
         var deferred = $.Deferred();
         AjaxService.request(options)
             .done(function (response) {
-                if (response.status === 'SUCCESS') {
-                    if (response.message) {
-                        console.log(response.message);
-                    }
+                if (response.status === QR_CONST.STATUS.SUCCESS) {
+                    if (response.message) console.log(response.message);
                     deferred.resolve(response.data);
-                } else {
-                    if (response.message) {
-                        console.error(response.message);
-                    }
-                    deferred.reject(response);
                 }
             })
-            .fail(function (response) {
-                deferred.reject(response)
+            /*
+             TODO: Watch for server changes
+             Haven't needed to return data back to the client on failure yet,
+             so this might change, but for now just log the error and
+             reject the promise. The service making the call can log additional
+             details if necessary, but nothing is being passed back on failure.
+             */
+            .fail(function (jqXHR, status, error) {
+                console.warn(error + ': ' + jqXHR.responseJSON.message);
+                deferred.reject(jqXHR.responseJSON);
             });
         return deferred;
     };

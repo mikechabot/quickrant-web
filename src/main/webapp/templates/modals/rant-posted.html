@@ -1,11 +1,11 @@
 <div>
-  <div class="modal-header">
-    <h3 class="modal-title">Thanks for speaking your mind</h3>
-  </div>
-  <div class="modal-body">
-    Check out your rant here: <code><a href ng-click="findRantById(data.id)">{{data.id}}</a></code>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-default fa fa-close fa-2x" ng-click="$close()"></button>
-  </div>
+    <div class="modal-header">
+        <h4 class="modal-title">Thanks for speaking your mind</h4>
+    </div>
+    <div class="modal-body">
+        Check out your rant here: <code><a href ng-click="openRant(rant)">{{rant.id}}</a></code>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default fa fa-close fa-2x" ng-click="$close()"></button>
+    </div>
 </div>

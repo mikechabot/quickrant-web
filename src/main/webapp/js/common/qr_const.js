@@ -1,4 +1,8 @@
 app.constant('QR_CONST', {
+    STATUS: {
+      ERROR: 'ERROR',
+      SUCCESS: 'SUCCESS'
+    },
     RESTRICTIONS: {
         MAX_CHAR: 500,
         MIN_CHAR: 2

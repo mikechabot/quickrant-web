@@ -1,6 +1,6 @@
 <div id="modal" ng-controller="CommentController">
   <div class="modal-header flex-container">
-    <h4 class="modal-title flex-item"><code>{{data.id}}</code></h4>
+    <h4 class="modal-title flex-item"><code>{{rant.id}}</code></h4>
     <button class="btn btn-default btn-lg flex-item fa fa-close fa-2x" ng-click="$close()"></button>
   </div>
   <div class="modal-body">
@@ -10,26 +10,26 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-lg-1 col-sm-1 col-xs-2">
-                <img ng-src="/img/{{data.selection.emotion}}-sm.png">
+                <img ng-src="/img/{{rant.selection.emotion}}-sm.png">
               </div>
               <div class="col-lg-10 col-sm-10 col-xs-s8">
-                <h1 class="panel-title">{{data.selection.question}}</h1>
+                <h1 class="panel-title">{{rant.selection.question}}</h1>
               </div>
             </div>
           </div>
           <div class="panel-body">
             <blockquote>
-              <p>{{data.rant}}</p>
-              <small><span class="mild-bold">{{data.ranter.name}}</span> // {{data.ranter.location}} // {{data.createdDate | timeago}}</small>
+              <p>{{rant.rant}}</p>
+              <small><span class="mild-bold">{{rant.ranter.name}}</span> // {{rant.ranter.location}} // {{rant.createdDate | timeago}}</small>
             </blockquote>
           </div>
         </div>
       </div>
     </div>
-    <hr ng-show="data.allowComments">
+    <hr ng-show="rant.allowComments">
     <!-- Form (START)-->
 
-    <div ng-show="data.allowComments && showForm" class="row">
+    <div ng-show="rant.allowComments && showForm" class="row">
       <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-8 form-container">
         <div class="panel panel-default margin-bottom-lg">
           <div class="panel-body">
@@ -57,7 +57,7 @@
                 <span class="text-danger" ng-show="form.$error.maxlength">Too much</span>
                 <span class="text-danger" ng-show="form.$error.minlength">Not enough</span>
                 <span ng-show="form.$valid">
-                  <ng-pluralize count="app.restrictions.MAX_CHAR - form.comment.length" when="{'0': 'No more characters left', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
+                  <ng-pluralize count="restrictions.MAX_CHAR - form.comment.length" when="{'0': 'No more characters left', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
                 </span>
               </span>
 
@@ -75,7 +75,7 @@
     </div>
     <!-- Form (END) -->
 
-    <div ng-if="data.allowComments" class="row rants-container" ng-repeat="comment in data.comments">
+    <div ng-if="rant.allowComments" class="row rants-container" ng-repeat="comment in rant.comments">
       <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-9">
         <div class="panel panel-rant">
           <div class="panel-body">
@@ -88,7 +88,7 @@
         <hr>
       </div>
     </div>
-    <div ng-if="!data.allowComments" class="row">
+    <div ng-if="!rant.allowComments" class="row">
       <hr>
       <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-9">
         <div class="panel panel-rant">
@@ -103,7 +103,7 @@
         <hr>
       </div>
     </div>
-    <div ng-show="data.allowComments" class="modal-footer">
+    <div ng-show="rant.allowComments" class="modal-footer">
       <div class="row">
         <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-8 form-container">
           <div ng-show="!showForm" class="text-center row">

@@ -21,7 +21,7 @@ public class ResponseEntityFactory {
     }
 
     public ResponseEntity badRequest(String message) {
-        return generate(HttpStatus.BAD_REQUEST, ResponseStatus.FAIL, null, message, null);
+        return generate(HttpStatus.BAD_REQUEST, ResponseStatus.ERROR, null, message, null);
     }
 
     public ResponseEntity created(String message, String location, Object data) {
@@ -30,6 +30,10 @@ public class ResponseEntityFactory {
 
     public ResponseEntity error(String message, Object data) {
         return generate(HttpStatus.INTERNAL_SERVER_ERROR, ResponseStatus.ERROR, null, message, data);
+    }
+
+    public ResponseEntity forbidden(String message) {
+        return generate(HttpStatus.FORBIDDEN, ResponseStatus.ERROR, null, message, null);
     }
 
     public ResponseEntity generate(HttpStatus httpStatus, ResponseStatus responseStatus, HttpHeaders headers, String message, Object data) {

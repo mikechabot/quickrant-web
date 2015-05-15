@@ -1,62 +1,57 @@
 package com.quickrant.security;
 
 import com.quickrant.model.Session;
-
+import com.quickrant.service.SessionService;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-/**
- * Cache that holds active sessions. Concurrent HashMap using a
- * cookie value (a UUID) as the key, and a Session object as the value
- *
- *  > Thread-safe
- *  > Guaranteed singleton
- *  > Self-cleaning
- */
-public enum SessionCache {
+@Component
+public class SessionCache extends ConcurrentMapCache {
 
-    INSTANCE;
+    @Autowired
+    private SessionService sessionService;
 
-    private ConcurrentMap<String, Session> cache = new ConcurrentHashMap<>(0);
     private Timer timer = new Timer();
 
-    int expiry = 30;     // Expire cache entries in N days
-    int interval = 5;    // Run the cleaning task every N minutes
-    int delay = 10;      // Delay the initial run of the cleaning task by N seconds
+    int expiry = 30;      // Expire cache entries in N days
+    int interval = 60;    // Run the cleaning task every N minutes
+    int delay = 10;       // Delay the initial run of the cleaning task by N seconds
 
-    private SessionCache() throws ExceptionInInitializerError {
+    public SessionCache() {
+        super("SessionCache");
         timer.schedule(new CleanTask(), delay * 1000, interval * 60 * 1000);
     }
 
-    public int size() {
-        return cache.size();
+    public void addSession(Session session) {
+        if (session == null || session.getCookieValue() == null) return;
+        put(session.getCookieValue(), session);
     }
 
-    public void addAll(List<Session> sessions) {
+    public int size() {
+        return getNativeCache().size();
+    }
+
+    public void addSessions(List<Session> sessions) {
         if (sessions == null || sessions.isEmpty()) return;
         for (Session session : sessions) {
-            add(session);
+            addSession(session);
         }
     }
 
-    public void add(Session session) {
-        if (session == null || session.getCookieValue() == null) return;
-        cache.put(session.getCookieValue(), session);
-    }
-
     public boolean contains(String key) {
-        return cache.get(key) != null;
+        return get(key) != null;
     }
 
     public boolean contains(Session session) {
         if (session == null || session.getCookieValue() == null) return false;
-        return cache.get(session.getCookieValue()) != null;
+        return get(session.getCookieValue()) != null;
     }
 
     /**
@@ -77,14 +72,18 @@ public enum SessionCache {
          * @return
          */
         private void cleanCache() {
-            int previous = cache.size();
-            for(Session session : cache.values()) {
+
+            int start = size();
+            for(Object each : getNativeCache().values()) {
+                Session session = (Session) each;
                 if (isExpired(session)) {
-                    cache.remove(session);
+                    evict(session.getCookieValue());
+                    sessionService.delete(session);
                 }
-            }
-            int current = cache.size();
-            log.info("Cleaned up " + (previous - current) + " cached cookies (" + current + " active)");
+        }
+            int finish = size();
+
+            log.info("Cleaned up " + (start - finish) + " cached cookies (" + finish + " active)");
         }
 
         /**
@@ -98,5 +97,6 @@ public enum SessionCache {
             return sessionCreated.isBefore(now.minusDays(expiry));
         }
     }
+
 
 }
