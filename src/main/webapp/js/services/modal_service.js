@@ -1,15 +1,10 @@
 /**
  * Open a modal window.
  */
-app.service('ModalService', ['$modal', '$document', function($modal, $document) {
-    var body = angular.element($document[0].body);
+app.service('ModalService', ['$modal', '$document', 'PromiseService', function($modal, $document, PromiseService) {
     return {
         open: function(options) {
-            body.addClass('modal-open');
-            return $modal.open(options)
-                .always(function() {
-                    body.removeClass('modal-open');
-                })
+            return PromiseService.convertAngularPromiseToJQueryPromise($modal.open(options).result);
         }
     }
 }]);
@@ -19,25 +14,16 @@ app.service('ModalService', ['$modal', '$document', function($modal, $document) 
  */
 app.service('DialogService', ['$rootScope', 'ModalService', function($rootScope, ModalService) {
 
-    /**
-     * Get a new scope object
-     * @param isolate
-     * @returns {Object|*}
-     * @private
-     */
-    var _newScope = function(isolate) {
-        return $rootScope.$new(isolate);
-    };
-
     return {
         open: function(options) {
 
-            // This scope is an object, not a legitimate scope instance
-            if (options.scope) {
-                var data = options.scope;
-                var scope = _newScope(true);
-                options.scope = scope;
-                copyObject(data, scope);
+            if (hasValue(options.scope)) {
+                if (options.scope.constructor.name !== 'Scope') {
+                    var data = options.scope;
+                    var scope = $rootScope.$new();
+                    options.scope = scope;
+                    copyObject(data, options.scope);
+                }
             }
 
             return ModalService.open(options);
@@ -46,7 +32,7 @@ app.service('DialogService', ['$rootScope', 'ModalService', function($rootScope,
 
             var options = {
                 templateUrl: '/templates/modals/notify.html',
-                scope:  _newScope(true)
+                scope:  $rootScope.$new()
             };
 
             options.scope.body = body;

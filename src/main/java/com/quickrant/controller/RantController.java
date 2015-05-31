@@ -7,6 +7,7 @@ import com.mongodb.MongoClientException;
 import com.quickrant.factory.ResponseEntityFactory;
 import com.quickrant.model.Rant;
 import com.quickrant.model.Comment;
+import com.quickrant.model.RantPage;
 import com.quickrant.security.StatusHeader;
 import com.quickrant.sort.MongoSort;
 import com.quickrant.sort.SortMethod;
@@ -53,8 +54,14 @@ public class RantController {
             return response.badRequest("Page number cannot be less than zero");
         }
         PageRequest pageRequest = getPageRequest(pageNumber, 15, SortMethod.ID_DESC);
-        Page data = rantService.findAll(pageRequest);
-        return response.ok(null, data);
+        Page page = rantService.findAll(pageRequest);
+        RantPage rantPage;
+        if (page != null) {
+            rantPage = new RantPage(page.getContent(), page.getContent().size(), page.getNumber() + 1, page.getTotalPages(), page.getTotalElements());
+            return response.ok(null, rantPage);
+        } else {
+            return response.error("Page doesn't exist", null);
+        }
     }
 
     /**

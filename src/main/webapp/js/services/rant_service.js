@@ -1,28 +1,6 @@
 app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 'DialogService', function ($log, QR_CONST, QR_DATA, DataAccessService, DialogService) {
 
     /**
-     * Generate Rant object from form input
-     * @param rant
-     * @returns {{rant: (*|.scope.rant|$scope.rant|.quickrant.rant), selection: {emotion: (*|.emotions.happy.emotion|.emotions.angry.emotion|.emotions.sad.emotion), question: (*|.scope.question|$scope.rant.question)}, ranter: {name: (*|.DEFAULT_VALUE.NAME|m.selectors.match.NAME|m.selectors.find.NAME), location: (*|$scope.default.location|number|DOMLocator|Location|String|Location)}, allowComments: (*|$scope.allowComments)}}
-     * @private
-     */
-    function _createRantObject(rant) {
-        return{
-            rant: rant.rant,
-            selection: {
-                emotion: rant.face.emotion,
-                question: rant.question
-            },
-            ranter: {
-                name: rant.name || QR_CONST.DEFAULT_VALUE.NAME,
-                location: rant.location || QR_CONST.DEFAULT_VALUE.LOCATION
-            },
-            allowComments: rant.allowComments,
-            createdDate: moment().toDate()
-        };
-    }
-
-    /**
      * Generate Comment object from form input
      * @param comment
      * @returns {{ranter: {name: (*|.DEFAULT_VALUE.NAME|m.selectors.match.NAME|m.selectors.find.NAME), location: (*|$scope.default.location|number|DOMLocator|Location|String|Location)}, comment: (*|$scope.form.comment)}}
@@ -38,25 +16,6 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
         }
     }
 
-    /**
-     * Generate an abridged Page object
-     * @param data
-     * @returns {{rants: (string|CSSStyleDeclaration.content|*|jQuery.content|c.DEFAULTS.content|.scope.content), page: {size: (*|modalInstance.size|size|number|Number|string), number: (*|inputType.number|.link.g.number|ld.number), totalPages: (*|totalPages), totalElements: *, numberOfElements: *}}}
-     * @private
-     */
-    function _createPageObject(data) {
-        return {
-            rants: data.content,
-            page: {
-                size: data.size,
-                number: data.number+1,
-                totalPages: data.totalPages,
-                totalElements: data.totalElements,
-                numberOfElements: data.numberOfElements
-            }
-        };
-    }
-
     var _isInvalidSession = function(error) {
         return error.message.indexOf("invalid session") > 0;
     };
@@ -66,19 +25,38 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
             var deferred = $.Deferred();
             DataAccessService.get('/rants/page/' + pageNumber)
                 .done(function(paginated) {
-                    deferred.resolve(_createPageObject(paginated));
+                    deferred.resolve(paginated);
                 })
                 .fail(function() {
                     deferred.reject();
                 });
             return deferred.promise();
         },
+        createRantFromFormSubmission: function(rantForm) {
+            if (rantForm.rant) {
+                return{
+                    rant: rantForm.rant,
+                    selection: {
+                        emotion: rantForm.face.emotion,
+                        question: rantForm.question
+                    },
+                    ranter: {
+                        name: rantForm.name || QR_CONST.DEFAULT_VALUE.NAME,
+                        location: rantForm.location || QR_CONST.DEFAULT_VALUE.LOCATION
+                    },
+                    allowComments: rantForm.allowComments,
+                    createdDate: moment().toDate()
+                };
+            }
+        },
         postRant: function postRant(rant) {
             var deferred = $.Deferred();
-            if (rant.rant) {
-                var _rant = _createRantObject(rant);
+            if (!hasValue(rant)) {
+                throw new Error('Rant cannot be null');
+                deferred.reject();
+            } else {
                 var that = this;
-                DataAccessService.post('/rants', _rant)
+                DataAccessService.post('/rants', rant)
                     .done(function(rant) {
                         deferred.resolve(rant);
                         that.openRant(rant);
@@ -92,8 +70,6 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
                         }
                         deferred.reject({message: error.message});
                     });
-            } else {
-                deferred.reject({message: 'Cannot post null rant'});
             }
             return deferred.promise();
         },

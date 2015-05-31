@@ -57,7 +57,8 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
          * @returns {*}
          * @private
          */
-        var _postRant = function (rant) {
+        var _postRant = function (rantForm) {
+            var rant = RantService.createRantFromFormSubmission(rantForm);
             return RantService.postRant(rant);
         };
 
@@ -81,7 +82,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
             return deferred.promise();
         };
 
-
         /**
          * Insert a rant into rants at the first position
          * @param data
@@ -92,14 +92,10 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
             $scope.rants.unshift(rant);
         }
 
-        /**
-         * Set the page page
-         * @param page
-         * @private
-         */
-        function setPage(page) {
-            $scope.page = page;
-        }
+        function setPageData(pageData, concatRants) {
+            $scope.rants = concatRants ? $scope.rants.concat(pageData.rants) : pageData.rants;
+            $scope.page = pageData.page;
+        };
 
         /**
          * Set the current view
@@ -107,16 +103,6 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
          */
         function setView(view) {
             $scope.app.view = view;
-        }
-
-        /**
-         * Set the rants object
-         * @param rants
-         * @param concatenate
-         * @private
-         */
-        function setRants(rants, concatenate) {
-            $scope.rants = concatenate ? $scope.rants.concat(rants) : rants;
         }
 
         /**
@@ -190,8 +176,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
                 .done(function (data) {
                     $scope.$safeApply(function () {
                         $scope.rant = {};
-                        setPage(data.page);
-                        setRants(data.rants, true);
+                        setPageData(data, true);
                     });
                 })
         };
@@ -201,8 +186,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
          * @param data
          */
         $scope.showNewRants = function (data) {
-            setPage(data.page);
-            setRants(data.rants);
+            setPageData(data);
             $scope.newData = undefined;
             $scope.newRantCount = undefined;
         };
@@ -246,9 +230,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
         $scope.showShare = function () {
             DialogService.open({
                 templateUrl: '/templates/modals/share.html',
-                scope: {
-                    shareUrls: _qr.shareUrls
-                }
+                scope: _qr.shareUrls
             });
         };
 
@@ -296,8 +278,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
             _getRants(1)
                 .done(function (data) {
                     $scope.$safeApply(function () {
-                        setRants(data.rants);
-                        setPage(data.page);
+                        setPageData(data);
                     });
                 })
                 .always(function () {

@@ -1,28 +1,25 @@
 /**
- * Custom filter to trust in
- */
-app.filter('trusted', ['$sce', function($sce) {
-    return function(input) {
-       return $sce.trustAsHtml(input);
-    }
-}]);
-
-/**
- * Determine whether an object is null/undefined. In the
- * event of a String, ensure the length > 0.
- *
+ * Check if an object is null or undefined
  * @param object
- * @returns {boolean}
+ * @returns {boolean|*}
  */
 function hasValue(object) {
-    if (object !== null && angular.isDefined(object)) {
-        if (angular.isString(object)) {
-            return !_.isEmpty(object);
-        }
-        return true;
-    } else {
-        return false;
-    }
+    return object !== null && angular.isDefined(object);
+};
+
+/**
+ * Check if an object is empty:
+ *  - null
+ *  - undefined
+ *  - empty string, array, object
+ *
+ * @param object
+ * @returns {*}
+ */
+function isEmpty(object) {
+    if (!hasValue(object)) return true;
+    if (_.isBoolean(object)) return !object;
+    return _.isEmpty(object);
 }
 
 /**
@@ -31,9 +28,13 @@ function hasValue(object) {
  * @param copy
  * @returns {*}
  */
-function copyObject(copyFrom, copyTo) {
-    for (var key in copyFrom) {
-        copyTo[key] = copyFrom[key];
+function copyObject(source, destination) {
+    if (!angular.isObject(source)) return;
+    if (!hasValue(destination)) {
+        destination = {};
     }
-    return copyTo;
+    for (var key in source) {
+        destination[key] = source[key];
+    }
+    return destination;
 }
