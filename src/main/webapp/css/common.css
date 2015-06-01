@@ -14,6 +14,10 @@ body.modal-open {
     overflow: hidden;
 }
 
+label.disabled {
+    opacity: .65
+}
+
 a:hover {
   text-decoration: none;
 }
@@ -53,6 +57,10 @@ blockquote {
 textarea {
   resize: vertical;
   min-height: 50px;
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 .always {

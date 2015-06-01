@@ -10,6 +10,17 @@
   font-size: 14px;
 }
 
+.btn-big-label {
+    text-align: center;
+    font-size: 22px;
+    padding: 10px;
+}
+
+.btn-big {
+    margin: 10px;
+    border: 1px solid #c0c0c0;
+}
+
 /** ANGRY **/
 .btn-angry {
   background-color: #CB3B37;
@@ -53,7 +64,6 @@
   border-color: #9EBDD5;
   color: #1973BB;
 }
-
 
 /** SAD **/
 .btn-sad {

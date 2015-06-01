@@ -62,10 +62,19 @@
               </span>
 
               <!-- Send button -->
-              <div class="text-center">
-                <button ng-class="{disabled: !form.$valid}" type="submit" id="submit" class="btn btn-default">
-                  <span class="glyphicon glyphicon-send"></span>
-                </button>
+              <div class="flex-center-container">
+                <div class="btn-group btn-big text-center">
+                  <label class="fa fa-1-5x pointer" ng-class="{disabled: !form.$valid }" ng-submit="saveComment(form)">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-send fa-stack-1x"></i>
+                    <i class="fa fa-stack-2x"></i>
+                  </span>
+                    <br>
+                  <span class="btn-big-label always">
+                    <span>post reply</span>
+                  </span>
+                  </label>
+                </div>
               </div>
 
             </form>
