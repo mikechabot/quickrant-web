@@ -19,6 +19,7 @@ function hasValue(object) {
 function isEmpty(object) {
     if (!hasValue(object)) return true;
     if (_.isBoolean(object)) return !object;
+    if (_.isFunction(object)) return false;
     return _.isEmpty(object);
 }
 

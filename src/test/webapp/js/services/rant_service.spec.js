@@ -3,21 +3,16 @@ describe('rant_service.js', function() {
     var service = undefined;
 
     var log = {};
-    var constants = {};
-    var data = {};
+    var QR_CONST = {};
+    var QR_DATA = {};
     var dataAccessService = {};
-    var dialogService = {
-        open: function () {
-
-        }
-    };
+    var dialogService = {};
 
     beforeEach(function() {
-        module('mocks');
         module('test', function($provide) {
             $provide.value('$log', log);
-            $provide.value('QR_CONST', constants);
-            $provide.value('QR_DATA', data);
+            $provide.value('QR_CONST', QR_CONST);
+            $provide.value('QR_DATA', QR_DATA);
             $provide.value('DataAccessService', dataAccessService);
             $provide.value('DialogService', dialogService);
         });
@@ -29,18 +24,26 @@ describe('rant_service.js', function() {
 
     describe('getPaginatedRants(pageNumber)', function() {
 
-        dataAccessService.get = jasmine.createSpy('dataAccessService get() spy').and.returnValue(promiseUtil.getPromise());
+        beforeEach(function() {
+            dataAccessService.get = jasmine.createSpy('dataAccessService get() spy').and.returnValue(promiseUtil.getPromise());
+        });
 
         it('should call the correct rest url', function () {
             service.getPaginatedRants(123);
             expect(dataAccessService.get).toHaveBeenCalledWith('/rants/page/123');
         });
 
+        afterEach(function() {
+            dataAccessService = {};
+        });
+
     });
 
     describe('postRant(rant)', function() {
 
-        dataAccessService.post = jasmine.createSpy('dataAccessService post() spy').and.returnValue(promiseUtil.getPromise());
+        beforeEach(function() {
+            dataAccessService.post = jasmine.createSpy('dataAccessService post() spy').and.returnValue(promiseUtil.getPromise());
+        });
 
         it('should call the correct rest url', function () {
             var rant = testData.getTestRant(rant);
@@ -58,8 +61,10 @@ describe('rant_service.js', function() {
             }).toThrow(new Error('Rant cannot be null'));
         });
 
+        afterEach(function() {
+            dataAccessService = {};
+        });
+
     });
-
-
 
 });

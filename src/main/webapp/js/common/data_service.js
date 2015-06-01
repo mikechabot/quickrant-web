@@ -37,17 +37,12 @@ app.service('DataAccessService', ['AjaxService', 'QR_CONST', function (AjaxServi
         AjaxService.request(options)
             .done(function (response) {
                 if (response.status === QR_CONST.STATUS.SUCCESS) {
-                    if (response.message) console.log(response.message);
+                    if (response.message) {
+                        console.log(response.message);
+                    }
                     deferred.resolve(response.data);
                 }
             })
-            /*
-             TODO: Watch for server changes
-             Haven't needed to return data back to the client on failure yet,
-             so this might change, but for now just log the error and
-             reject the promise. The service making the call can log additional
-             details if necessary, but nothing is being passed back on failure.
-             */
             .fail(function (jqXHR, status, error) {
                 console.warn(error + ': ' + jqXHR.responseJSON.message);
                 deferred.reject(jqXHR.responseJSON);

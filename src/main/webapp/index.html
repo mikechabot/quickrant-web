@@ -28,18 +28,18 @@
   <script src="/js/third-party/google/google-analytics.js"></script>
 
   <!-- scripts (versioned) -->
-  <script src="/js/angular_qr.js?201504301201"></script>
-  <script src="/js/common/data_service.js?201504301201"></script>
-  <script src="/js/services/rant_service.js?201504301201"></script>
-  <script src="/js/services/session_service.js?201504301201"></script>
-  <script src="/js/services/modal_service.js?201504301201"></script>
-  <script src="/js/services/promise_service.js?201504301201"></script>
-  <script src="/js/controllers/comment_controller.js?201504301201"></script>
-  <script src="/js/directives/directives.js?201504301201"></script>
-  <script src="/js/filters/filters.js?201504301201"></script>
-  <script src="/js/common/qr_data.js?201504301201"></script>
-  <script src="/js/common/qr_const.js?201504301201"></script>
-  <script src="/js/common/common.js?201504301201"></script>
+  <script src="/js/angular_qr.js?201505310856"></script>
+  <script src="/js/common/data_service.js?201505310856"></script>
+  <script src="/js/services/rant_service.js?201505310856"></script>
+  <script src="/js/services/session_service.js?201505310856"></script>
+  <script src="/js/services/modal_service.js?201505310856"></script>
+  <script src="/js/services/promise_service.js?201505310856"></script>
+  <script src="/js/controllers/rant_dialog_controller.js?201505310856"></script>
+  <script src="/js/directives/directives.js?201505310856"></script>
+  <script src="/js/filters/filters.js?201505310856"></script>
+  <script src="/js/common/qr_data.js?201505310856"></script>
+  <script src="/js/common/qr_const.js?201505310856"></script>
+  <script src="/js/common/common.js?201505310856"></script>
 
   <!-- fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
@@ -101,14 +101,6 @@
 
 
 <div class="container">
-
-  <!-- Share (START) -->
-  <div class="flex-container">
-    <div class="flex-item text-right">
-      <button ng-click="showShare()" class="btn btn-default btn-lg fa fa-share-alt fa-2x"></button>
-    </div>
-  </div>
-  <!-- Share (END) -->
 
   <!-- Faces -->
   <div faces data="app.emotions" rant="rant" class="row margin-bottom-lg text-center">
@@ -198,6 +190,7 @@
         <div class="list-group">
           <a class="list-group-item active" href><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
           <a class="list-group-item" href ng-click="app.view = app.views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
+          <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
         </div>
         <hr>
       </div>
@@ -221,8 +214,7 @@
                     </div>
                     <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
                       <button ng-click="openRant(rant)" class="btn btn-default btn-comment">
-                        <i class="fa fa-comments-o fa-1-5x"></i>
-                        <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
+                        <i class="fa fa-comments-o fa-1-5x"></i> | {{rant.commentCount}}
                       </button>
                     </div>
                   </div>
@@ -249,7 +241,7 @@
           <!-- Up and down -->
           <div ng-show="hasNextPage(rants, page) && !loading">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="getNextPage(page.number)"></button>
+              <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="getNextPage(page.pageNumber)"></button>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
               <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
@@ -283,6 +275,7 @@
         <div class="list-group">
           <a class="list-group-item" href ng-click="app.view = app.views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
           <a class="list-group-item active" href><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
+          <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
         </div>
         <hr>
       </div>
@@ -309,8 +302,7 @@
                     </div>
                     <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
                       <button ng-click="openRant(rant)" class="btn btn-default btn-comment">
-                        <i class="fa fa-comments-o fa-1-5x"></i>
-                        <span ng-show="{{rant.commentCount > 0}}"> | {{rant.commentCount}}</span>
+                        <i class="fa fa-comments-o fa-1-5x"></i> | {{rant.commentCount}}
                       </button>
                     </div>
                   </div>

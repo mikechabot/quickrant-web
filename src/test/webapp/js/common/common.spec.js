@@ -37,6 +37,9 @@ describe('common.js', function() {
         it("should return true passed an empty object", function() {
             expect(hasValue({})).toEqual(true);
         });
+        it("should return true passed a function ", function() {
+            expect(hasValue(foobar)).toEqual(true);
+        });
         it("should return true if passed a boolean (false)", function() {
             expect(hasValue(false)).toEqual(true);
         });
@@ -62,6 +65,9 @@ describe('common.js', function() {
         });
         it("should return true if passed an empty object", function() {
             expect(isEmpty({})).toBe(true);
+        });
+        it("should return false if passed a function ", function() {
+            expect(isEmpty(foobar)).toEqual(false);
         });
         it("should return true if passed a boolean (false)", function() {
             expect(isEmpty(false)).toBe(true);

@@ -88,7 +88,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
          * @private
          */
         function addRant(rant) {
-            $scope.page.totalElements++;
+            $scope.page.totalRants++;
             $scope.rants.unshift(rant);
         }
 
@@ -124,7 +124,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
          */
         function getNewRantCount(data) {
             if (!data) return false;
-            return data.page.totalElements - $scope.page.totalElements;
+            return data.page.totalRants - $scope.page.totalRants;
         }
 
         /**
@@ -164,7 +164,7 @@ app.controller('MainController', ['$scope', '$timeout', '$interval', '$log', 'QR
          */
         $scope.hasNextPage = function (rants, page) {
             if (!rants || !page) return false;
-            return rants.length < page.totalElements;
+            return rants.length < page.totalRants;
         };
 
         /**

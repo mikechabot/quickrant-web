@@ -21,17 +21,6 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
     };
 
     return {
-        getPaginatedRants: function getRants(pageNumber) {
-            var deferred = $.Deferred();
-            DataAccessService.get('/rants/page/' + pageNumber)
-                .done(function(paginated) {
-                    deferred.resolve(paginated);
-                })
-                .fail(function() {
-                    deferred.reject();
-                });
-            return deferred.promise();
-        },
         createRantFromFormSubmission: function(rantForm) {
             if (rantForm.rant) {
                 return{
@@ -44,10 +33,22 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
                         name: rantForm.name || QR_CONST.DEFAULT_VALUE.NAME,
                         location: rantForm.location || QR_CONST.DEFAULT_VALUE.LOCATION
                     },
+                    comments: [],
                     allowComments: rantForm.allowComments,
                     createdDate: moment().toDate()
                 };
             }
+        },
+        getPaginatedRants: function getRants(pageNumber) {
+            var deferred = $.Deferred();
+            DataAccessService.get('/rants/page/' + pageNumber)
+                .done(function(paginated) {
+                    deferred.resolve(paginated);
+                })
+                .fail(function() {
+                    deferred.reject();
+                });
+            return deferred.promise();
         },
         postRant: function postRant(rant) {
             var deferred = $.Deferred();
@@ -129,7 +130,6 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
                 }
             };
             return DialogService.open(options)
-
         }
     };
 

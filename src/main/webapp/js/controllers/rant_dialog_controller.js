@@ -1,4 +1,4 @@
-app.controller('CommentController', ['$scope', '$timeout', 'RantService', 'QR_CONST', function($scope, $timeout, RantService, QR_CONST) {
+app.controller('RantDialogController', ['$scope', '$timeout', 'RantService', 'QR_CONST', function($scope, $timeout, RantService, QR_CONST) {
 
     $scope.showForm = true;
 
@@ -8,11 +8,8 @@ app.controller('CommentController', ['$scope', '$timeout', 'RantService', 'QR_CO
         RantService.saveComment(comment, $scope.rant.id)
             .done(function(_comment) {
                 $scope.$apply(function () {
-                    if (!$scope.rant.comments) {
-                        $scope.rant.comments = [];
-                    }
                     $scope.rant.comments.push(_comment);
-                    $scope.rant.commentCount = $scope.rant.comments.length;
+                    $scope.rant.commentCount += 1;
                     //TODO: move this to a directive
                     $('.modal-body').animate({scrollTop: $('.modal-body')[0].scrollHeight }, 'slow');
                     _reset();
