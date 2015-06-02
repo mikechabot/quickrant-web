@@ -25,7 +25,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
 
     private static Logger log = Logger.getLogger(AegisFilter.class);
 
-    private final String COOKIE_NAME = "quickrant-uuid";
+    public static final String COOKIE_NAME = "quickrant-uuid";
 
     @Autowired
     SessionService sessionService;

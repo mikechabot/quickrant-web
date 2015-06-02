@@ -16,6 +16,7 @@ public class Rant extends MongoDocument {
     private boolean allowComments;
     private List<Comment> comments;
     private long commentCount;
+    private String cookie;
 
     public Ranter getRanter() {
         return ranter;
@@ -73,6 +74,14 @@ public class Rant extends MongoDocument {
         comment.setCreatedDate(new Date());
         comments.add(comment);
         commentCount++;
+    }
+
+    public String getCookie() {
+        return cookie;
+    }
+
+    public void setCookie(String cookie) {
+        this.cookie = cookie;
     }
 
     public long getCommentCount() {

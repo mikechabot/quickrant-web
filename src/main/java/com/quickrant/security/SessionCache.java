@@ -72,7 +72,6 @@ public class SessionCache extends ConcurrentMapCache {
          * @return
          */
         private void cleanCache() {
-
             int start = size();
             for(Object each : getNativeCache().values()) {
                 Session session = (Session) each;
@@ -80,9 +79,8 @@ public class SessionCache extends ConcurrentMapCache {
                     evict(session.getCookieValue());
                     sessionService.delete(session);
                 }
-        }
+            }
             int finish = size();
-
             log.info("Cleaned up " + (start - finish) + " cached cookies (" + finish + " active)");
         }
 

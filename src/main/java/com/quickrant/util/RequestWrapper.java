@@ -3,6 +3,7 @@ package com.quickrant.util;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 public class RequestWrapper {
 
@@ -48,6 +49,18 @@ public class RequestWrapper {
 
     public String getUserAgent() {
         return request.getHeader("User-Agent");
+    }
+
+    public String getHeader(String name) {
+        return request.getHeader(name);
+    }
+
+    public Enumeration<String> getHeaderNames() {
+        return request.getHeaderNames();
+    }
+
+    public Enumeration<String> getHeaders(String name) {
+        return request.getHeaders(name);
     }
 
     public Cookie[] getCookies() {
