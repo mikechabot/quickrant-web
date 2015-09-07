@@ -1,19 +1,18 @@
 package com.quickrant.controller;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.mongodb.MongoClientException;
 import com.quickrant.factory.ResponseEntityFactory;
+import com.quickrant.factory.SimpleJsonResponseFactory;
 import com.quickrant.model.Rant;
 import com.quickrant.model.Comment;
 import com.quickrant.model.RantPage;
 import com.quickrant.security.AegisFilter;
-import com.quickrant.security.SessionCache;
 import com.quickrant.security.StatusHeader;
 import com.quickrant.sort.MongoSort;
 import com.quickrant.sort.SortMethod;
-import com.quickrant.service.RantService;
+import com.quickrant.repository.RantRepository;
 
 import com.quickrant.util.JsonResponse;
 import com.quickrant.util.RequestWrapper;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -40,10 +38,10 @@ public class RantController {
     private static Logger log = Logger.getLogger(RantController.class);
 
     @Autowired
-    private RantService rantService;
+    private RantRepository rantService;
 
     @Autowired
-    protected ResponseEntityFactory response;
+    protected SimpleJsonResponseFactory responseFactory;
 
     protected JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
 
@@ -55,16 +53,16 @@ public class RantController {
     @RequestMapping(value = "/page/{pageNumber}", method = RequestMethod.GET)
          public ResponseEntity getPage(@PathVariable int pageNumber) {
         if (--pageNumber < 0) {
-            return response.badRequest("Page number cannot be less than zero");
+            return responseFactory.fail("Page number cannot be less than zero");
         }
         PageRequest pageRequest = getPageRequest(pageNumber, 15, SortMethod.ID_DESC);
         Page page = rantService.findAll(pageRequest);
         RantPage rantPage;
         if (page != null) {
             rantPage = new RantPage(page.getContent(), page.getContent().size(), page.getNumber() + 1, page.getTotalPages(), page.getTotalElements());
-            return response.ok(null, rantPage);
+            return responseFactory.success(null, rantPage);
         } else {
-            return response.error("Page doesn't exist", null);
+            return responseFactory.fail("Page doesn't exist", null);
         }
     }
 

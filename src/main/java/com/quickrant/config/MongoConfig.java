@@ -1,6 +1,6 @@
 package com.quickrant.config;
 
-import com.quickrant.service.ServicePackage;
+import com.quickrant.repository.RepositoryPackage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,7 +14,7 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguratio
 
 @Configuration
 @Import(RepositoryRestMvcConfiguration.class)
-@EnableMongoRepositories(basePackageClasses=ServicePackage.class)
+@EnableMongoRepositories(basePackageClasses=RepositoryPackage.class)
 public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override

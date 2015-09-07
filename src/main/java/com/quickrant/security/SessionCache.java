@@ -1,7 +1,7 @@
 package com.quickrant.security;
 
 import com.quickrant.model.Session;
-import com.quickrant.service.SessionService;
+import com.quickrant.repository.SessionRepository;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.TimerTask;
 public class SessionCache extends ConcurrentMapCache {
 
     @Autowired
-    private SessionService sessionService;
+    private SessionRepository sessionService;
 
     private Timer timer = new Timer();
 

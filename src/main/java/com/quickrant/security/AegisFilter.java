@@ -1,7 +1,7 @@
 package com.quickrant.security;
 
 import com.quickrant.model.Session;
-import com.quickrant.service.SessionService;
+import com.quickrant.repository.SessionRepository;
 import com.quickrant.util.RequestWrapper;
 import org.apache.log4j.Logger;
 
@@ -28,7 +28,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
     public static final String COOKIE_NAME = "quickrant-uuid";
 
     @Autowired
-    SessionService sessionService;
+    SessionRepository sessionService;
 
     @Autowired
     private SessionCache sessionCache;
