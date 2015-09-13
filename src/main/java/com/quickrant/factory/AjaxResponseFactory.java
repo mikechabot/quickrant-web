@@ -1,14 +1,13 @@
 package com.quickrant.factory;
 
-
-import com.quickrant.util.ResponseStatus;
+import com.quickrant.http.ResponseStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SimpleJsonResponseFactory extends JsonResponseEntityFactory {
+public class AjaxResponseFactory extends JsonResponseEntityFactory {
 
     public ResponseEntity success() {
         return getResponseEntity(HttpStatus.OK, ResponseStatus.SUCCESS, null, null, null);

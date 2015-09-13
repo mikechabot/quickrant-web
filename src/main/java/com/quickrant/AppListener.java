@@ -1,15 +1,16 @@
 package com.quickrant;
 
-import com.quickrant.model.Session;
-import com.quickrant.security.SessionCache;
-import com.quickrant.repository.SessionRepository;
-import org.apache.log4j.Logger;
+import com.quickrant.domain.Session;
+import com.quickrant.service.SessionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 @Component
 public class AppListener implements ApplicationListener<ContextRefreshedEvent> {
@@ -17,10 +18,7 @@ public class AppListener implements ApplicationListener<ContextRefreshedEvent> {
     private static final Logger log = Logger.getLogger(AppListener.class);
 
     @Autowired
-    SessionRepository sessionService;
-
-    @Autowired
-    SessionCache sessionCache;
+    private SessionService sessionService;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -28,9 +26,9 @@ public class AppListener implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void populateSessionCache() {
-        List<Session> sessions = sessionService.findAll();
-        sessionCache.addSessions(sessions);
-        log.info("Populated cache with " + sessionCache.size() + " active sessions");
+        List<Session> sessions = sessionService.getPersistedSessions();
+        sessionService.addSessionsToCache(sessions);
+        log.info("Populated cache with " + sessionService.getNumberOfActiveSessions() + " active sessions");
     }
 
 }

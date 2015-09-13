@@ -22,14 +22,14 @@ describe('rant_service.js', function() {
         service = RantService;
     }));
 
-    describe('getPaginatedRants(pageNumber)', function() {
+    describe('getRantsByPageNumber(pageNumber)', function() {
 
         beforeEach(function() {
             dataAccessService.get = jasmine.createSpy('dataAccessService get() spy').and.returnValue(promiseUtil.getPromise());
         });
 
         it('should call the correct rest url', function () {
-            service.getPaginatedRants(123);
+            service.getRantsByPageNumber(123);
             expect(dataAccessService.get).toHaveBeenCalledWith('/rants/page/123');
         });
 

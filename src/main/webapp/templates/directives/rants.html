@@ -1,0 +1,51 @@
+<div class="rants-container">
+  <div class="row">
+    <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
+      <div class="list-group">
+        <a class="list-group-item active" href><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
+        <a class="list-group-item" href ng-click="app.view = app.views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp;<span class="sidebar-label">Popular</span></a>
+        <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
+      </div>
+      <hr>
+    </div>
+    <div class="col-lg-10 col-md-9 col-sm-9">
+      <div ng-repeat="rant in rants" class="row">
+        <div class="col-lg-offset-1 col-lg-8 col-md-offset-1 col-md-9">
+          <div class="panel panel-text">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-lg-1 col-sm-1 col-xs-2">
+                  <img ng-src="/img/{{::rant.emotion | lowercase}}-sm.png">
+                </div>
+                <div ng-if="!rant.allowComments">
+                  <div class="col-lg-10 col-sm-10 col-xs-10">
+                    <h2 class="panel-title">{{::rant.question}}</h2>
+                  </div>
+                </div>
+                <div ng-if="rant.allowComments">
+                  <div class="col-lg-9 col-sm-9 col-xs-7">
+                    <h2 class="panel-title">{{::rant.question}}</h2>
+                  </div>
+                  <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
+                    <button ng-click="openRant(rant)" class="btn btn-default btn-text">
+                      <i class="fa fa-comments-o fa-1-5x"></i> | {{rant.commentCount}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body">
+              <blockquote>
+                <p class="margin-bottom-md">{{::rant.text}}</p>
+                <small>
+                  <span class="mild-bold">{{::rant.name}}</span> // {{::rant.location}} // {{rant.createdDate | timeago}}
+                </small>
+              </blockquote>
+            </div>
+          </div>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

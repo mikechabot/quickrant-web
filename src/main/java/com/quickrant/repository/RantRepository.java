@@ -11,6 +11,4 @@ public interface RantRepository extends MongoRepository<Rant, String> {
 
     List<Rant> findByCommentCountGreaterThan(long count);
 
-    List<Rant> findByRantLike(String rant);
-
 }

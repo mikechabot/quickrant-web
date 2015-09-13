@@ -1,15 +1,18 @@
-package com.quickrant.model;
+package com.quickrant.domain;
+
+import com.quickrant.model.Rant;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public class RantPage {
 
     private List<Rant> rants;
-    private Page page;
+    private PageInfo pageInfo;
 
-    public RantPage(List<Rant> rants, int pageSize, int pageNumber, int totalPages, long totalRants) {
-        this.rants = rants;
-        this.page = new Page(pageSize, pageNumber, totalPages, totalRants);
+    public RantPage(Page page) {
+        this.rants = page.getContent();
+        this.pageInfo = new PageInfo(page.getNumber(), rants.size(), page.getTotalPages(), page.getTotalElements());
     }
 
     public List<Rant> getRants() {
@@ -20,34 +23,26 @@ public class RantPage {
         this.rants = rants;
     }
 
-    public Page getPage() {
-        return page;
+    public PageInfo getPageInfo() {
+        return pageInfo;
     }
 
-    public void setPage(Page page) {
-        this.page = page;
+    public void setPageInfo(PageInfo pageInfo) {
+        this.pageInfo = pageInfo;
     }
 
-    private class Page {
+    private class PageInfo {
 
-        private int pageSize;
         private int pageNumber;
+        private int pageSize;
         private int totalPages;
         private long totalRants;
 
-        public Page(int pageSize, int pageNumber, int totalPages, long totalRants) {
-            this.pageSize = pageSize;
+        public PageInfo(int pageNumber, int pageSize, int totalPages, long totalRants) {
             this.pageNumber = pageNumber;
+            this.pageSize = pageSize;
             this.totalPages = totalPages;
             this.totalRants = totalRants;
-        }
-
-        public int getPageSize() {
-            return pageSize;
-        }
-
-        public void setPageSize(int pageSize) {
-            this.pageSize = pageSize;
         }
 
         public int getPageNumber() {
@@ -56,6 +51,14 @@ public class RantPage {
 
         public void setPageNumber(int pageNumber) {
             this.pageNumber = pageNumber;
+        }
+
+        public int getPageSize() {
+            return pageSize;
+        }
+
+        public void setPageSize(int pageSize) {
+            this.pageSize = pageSize;
         }
 
         public int getTotalPages() {

@@ -39,11 +39,11 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
                 };
             }
         },
-        getPaginatedRants: function getRants(pageNumber) {
+        getRantsByPageNumber: function getRants(pageNumber) {
             var deferred = $.Deferred();
             DataAccessService.get('/rants/page/' + pageNumber)
-                .done(function(paginated) {
-                    deferred.resolve(paginated);
+                .done(function(page) {
+                    deferred.resolve(page);
                 })
                 .fail(function() {
                     deferred.reject();

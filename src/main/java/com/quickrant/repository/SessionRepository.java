@@ -1,6 +1,6 @@
 package com.quickrant.repository;
 
-import com.quickrant.model.Session;
+import com.quickrant.domain.Session;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 

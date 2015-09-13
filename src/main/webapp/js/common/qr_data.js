@@ -2,7 +2,7 @@ app.value('QR_DATA',
     {
         emotions: {
             happy: {
-                emotion: 'happy',
+                name: 'happy',
                 styles: {
                     panel: 'happy',
                     button: 'happy'
@@ -23,7 +23,7 @@ app.value('QR_DATA',
                 ]
             },
             angry: {
-                emotion: 'angry',
+                name: 'angry',
                 styles: {
                     panel: 'danger',
                     button: 'angry'
@@ -42,7 +42,7 @@ app.value('QR_DATA',
                 ]
             },
             sad: {
-                emotion: 'sad',
+                name: 'sad',
                 styles: {
                     panel: 'sad',
                     button: 'sad'

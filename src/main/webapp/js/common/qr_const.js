@@ -1,20 +1,21 @@
 app.constant('QR_CONST', {
     STATUS: {
-      ERROR: 'ERROR',
-      SUCCESS: 'SUCCESS'
+        SUCCESS: 'SUCCESS',
+        FAIL: 'FAIL',
+        ERROR: 'ERROR'
     },
     RESTRICTIONS: {
         MAX_CHAR: 500,
         MIN_CHAR: 2
     },
-    DEFAULT_VALUE : {
+    DEFAULT_VALUES : {
         NAME: 'Anonymous',
         LOCATION: 'Earth'
     },
-    EMOTION: {
-        HAPPY: 'happy',
-        SAD: 'sad',
-        ANGRY: 'angry'
+    EMOTIONS: {
+        HAPPY: 'HAPPY',
+        SAD: 'SAD',
+        ANGRY: 'ANGRY'
     },
     POLLING: {
        RANTS: 10000

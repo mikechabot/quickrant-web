@@ -1,6 +1,6 @@
 package com.quickrant.factory;
 
-import com.quickrant.util.ResponseStatus;
+import com.quickrant.http.ResponseStatus;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

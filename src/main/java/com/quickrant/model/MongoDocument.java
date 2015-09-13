@@ -4,18 +4,21 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+
+import javax.validation.constraints.NotNull;
 
 public class MongoDocument {
 
     @Id
     public String id;
 
+    @NotNull
     @CreatedDate
-    public Date createdDate;
+    public DateTime createdDate;
 
     @LastModifiedDate
-    public Date lastModifiedDate;
+    public DateTime lastModifiedDate;
 
     public String getId() {
         return id;
@@ -25,19 +28,19 @@ public class MongoDocument {
         this.id = id;
     }
 
-    public Date getCreatedDate() {
+    public DateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(DateTime createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Date getLastModifiedDate() {
+    public DateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(Date lastModifiedDate) {
+    public void setLastModifiedDate(DateTime lastModifiedDate) {
         lastModifiedDate = lastModifiedDate;
     }
 
