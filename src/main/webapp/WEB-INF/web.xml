@@ -1,102 +1,32 @@
-<web-app 
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    version="3.0">
-  
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
   <display-name>quickrant</display-name>
-  
-  <!-- Bootstrap class runs during servlet container creation -->
-  <listener>
-    <listener-class>com.quickrant.web.Bootstrap</listener-class>
-  </listener>
 
-  <!-- Open a connection for each request -->
-  <filter>
-    <filter-name>ActiveJdbcFilter</filter-name>
-    <filter-class>com.quickrant.api.filters.ActiveJdbcFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>ActiveJdbcFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
-  <!-- Don't waste cycles on certain requests -->
-  <filter>
-    <filter-name>ExclusionFilter</filter-name>
-    <filter-class>com.quickrant.web.filters.ExclusionFilter</filter-class>
-    <init-param>
-      <param-name>exclusions</param-name>
-      <param-value>\/img\/*,\/css\/*,\/js\/*,\/ico\/*</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>ExclusionFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
-  <!-- Reject gargage requests -->
-  <filter>
-    <filter-name>AegisFilter</filter-name>
-    <filter-class>com.quickrant.web.filters.AegisFilter</filter-class>
-    <init-param>
-      <param-name>aegis</param-name>
-      <param-value>com.quickrant.web.security.Aegis</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>AegisFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-  
-  <!-- Process incoming requests -->
-  <filter>
-    <filter-name>RequestFilter</filter-name>
-    <filter-class>com.quickrant.web.filters.RequestFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>RequestFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
+  <!--<security-constraint>-->
+    <!--<web-resource-collection>-->
+      <!--<web-resource-name>quickrant</web-resource-name>-->
+      <!--<url-pattern>/*</url-pattern>-->
+    <!--</web-resource-collection>-->
+    <!--<user-data-constraint>-->
+      <!--<transport-guarantee>CONFIDENTIAL</transport-guarantee>-->
+    <!--</user-data-constraint>-->
+  <!--</security-constraint>-->
 
-  <!-- Send /rant requests to RantController -->
-  <servlet>
-    <servlet-name>RantController</servlet-name>
-    <servlet-class>com.quickrant.web.controller.RantController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>RantController</servlet-name>
-    <url-pattern>/rant/*</url-pattern>
-  </servlet-mapping>
-  
-  <!-- Send /ajax requests to AjaxController -->
-  <servlet>
-    <servlet-name>AjaxController</servlet-name>
-    <servlet-class>com.quickrant.web.controller.AjaxController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AjaxController</servlet-name>
-    <url-pattern>/ajax/*</url-pattern>
-  </servlet-mapping>
-  
-  <!-- Error pages -->
+  <error-page>
+    <error-code>500</error-code>
+    <location>/templates/errors/500.html</location>
+  </error-page>
   <error-page>
     <error-code>404</error-code>
-    <location>/404.jsp</location>
+    <location>/templates/errors/404.html</location>
   </error-page>
-  <error-page>    
-    <error-code>403</error-code>
-    <location>/403.jsp</location>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/templates/errors/403.html</location>
   </error-page>
-  <error-page>    
-    <error-code>500</error-code>
-    <location>/500.jsp</location>
-  </error-page>
-  
-  <!-- Welcome list -->
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
 
 </web-app>

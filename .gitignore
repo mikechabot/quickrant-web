@@ -1,6 +1,6 @@
-/.settings
-/.classpath
-/.project
-/target
-/src/main/webapp/WEB-INF/etc/rant.properties
+/quickrant-web.iws
+/quickrant-web.ipr
+/quickrant-web.iml
 /build.bat
+target
+.idea
