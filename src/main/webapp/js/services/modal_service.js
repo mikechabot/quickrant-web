@@ -41,6 +41,9 @@ app.service('DialogService', ['$rootScope', 'ModalService', function($rootScope,
             }
 
             return ModalService.open(options);
+        },
+        error: function(body) {
+            return this.notify(body, "Error");
         }
     }
 

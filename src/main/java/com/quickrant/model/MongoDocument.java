@@ -1,8 +1,6 @@
 package com.quickrant.model;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.*;
 
 import java.util.Date;
 
@@ -12,10 +10,19 @@ public class MongoDocument {
     public String id;
 
     @CreatedDate
-    public Date createdDate;
+    protected Date createdDate;
+
+    @CreatedBy
+    protected String createdBy;
 
     @LastModifiedDate
-    public Date lastModifiedDate;
+    protected Date lastModifiedDate;
+
+    @LastModifiedBy
+    protected String lastModifiedBy;
+
+    @Version
+    protected Long version;
 
     public String getId() {
         return id;
@@ -33,12 +40,36 @@ public class MongoDocument {
         this.createdDate = createdDate;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public Date getLastModifiedDate() {
         return lastModifiedDate;
     }
 
     public void setLastModifiedDate(Date lastModifiedDate) {
-        lastModifiedDate = lastModifiedDate;
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @Override
@@ -63,7 +94,10 @@ public class MongoDocument {
         return "MongoDocument{" +
                 "id='" + id + '\'' +
                 ", createdDate=" + createdDate +
-                ", LastModifiedDate=" + lastModifiedDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                ", version=" + version +
                 '}';
     }
 

@@ -1,0 +1,9 @@
+##############
+# QUICKRANT
+##############
+
+# [REQUIRED] Session cookie name
+session-cookie-name=
+
+# [OPTIONAL] Session cache entry expiry in days (Default: 30)
+#session-cache-expiry=

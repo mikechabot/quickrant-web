@@ -1,37 +1,30 @@
 package com.quickrant.controller;
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.quickrant.domain.RantPageResponse;
+import com.quickrant.domain.RantPageRequest;
+import com.quickrant.http.RequestWrapper;
+import com.quickrant.service.SessionService;
 
-import com.mongodb.MongoClientException;
-import com.quickrant.factory.ResponseEntityFactory;
-import com.quickrant.model.Rant;
-import com.quickrant.model.Comment;
-import com.quickrant.model.RantPage;
-import com.quickrant.security.AegisFilter;
-import com.quickrant.security.SessionCache;
-import com.quickrant.security.StatusHeader;
-import com.quickrant.sort.MongoSort;
-import com.quickrant.sort.SortMethod;
-import com.quickrant.service.RantService;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
 
-import com.quickrant.util.JsonResponse;
-import com.quickrant.util.RequestWrapper;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import com.quickrant.factory.AjaxResponseFactory;
+import com.quickrant.model.Rant;
+import com.quickrant.domain.Comment;
+import com.quickrant.service.RantService;
+import com.quickrant.util.StringUtil;
+
+
+import org.apache.log4j.Logger;
 
 @Controller
 @RequestMapping(value = "/rants")
@@ -43,29 +36,25 @@ public class RantController {
     private RantService rantService;
 
     @Autowired
-    protected ResponseEntityFactory response;
+    private AjaxResponseFactory ajaxResponse;
 
-    protected JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
+    @Autowired
+    private SessionService sessionService;
 
     /**
      * Get a page of Rants
-     * @param pageNumber
+     * @param pageRequest
      * @return Page of Rant objects
      */
-    @RequestMapping(value = "/page/{pageNumber}", method = RequestMethod.GET)
-         public ResponseEntity getPage(@PathVariable int pageNumber) {
-        if (--pageNumber < 0) {
-            return response.badRequest("Page number cannot be less than zero");
+    @RequestMapping(value = "/page", method = RequestMethod.POST)
+    public ResponseEntity getPage(@RequestBody RantPageRequest pageRequest) {
+        if (pageRequest.getPageNumber() < 0) {
+            return ajaxResponse.fail("Page number cannot be less than zero");
         }
-        PageRequest pageRequest = getPageRequest(pageNumber, 15, SortMethod.ID_DESC);
-        Page page = rantService.findAll(pageRequest);
-        RantPage rantPage;
-        if (page != null) {
-            rantPage = new RantPage(page.getContent(), page.getContent().size(), page.getNumber() + 1, page.getTotalPages(), page.getTotalElements());
-            return response.ok(null, rantPage);
-        } else {
-            return response.error("Page doesn't exist", null);
-        }
+        RantPageResponse pageResponse = rantService.getRantPage(pageRequest);
+        return pageResponse != null
+                ? ajaxResponse.success(null, pageResponse)
+                : ajaxResponse.fail("Unable to locate rant page with page number '" + pageRequest.getPageNumber() + "'");
     }
 
     /**
@@ -75,41 +64,36 @@ public class RantController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getRantById(@PathVariable String id) {
-        if (id == null && id.isEmpty()) {
-            return response.badRequest("Id cannot be null");
+        if (StringUtil.isEmpty(id)) {
+            return ajaxResponse.fail("Rant id cannot be null");
         }
-        Rant rant = rantService.findOne(id);
-        if (rant != null) {
-            return response.ok(null, rant);
-        }
-        return response.badRequest("Cannot locate rant with id " + id);
+        Rant rant = rantService.getRantById(id);
+        return rant != null
+                ? ajaxResponse.success(null, rant)
+                : ajaxResponse.fail("Unable to locate rant with id '" + id + "'");
     }
 
     /**
      * Save a Rant
      * @param rant
-     * @param httpResponse
      * @return id of Rant
      */
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity saveRant(@RequestBody Rant rant, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        if (rant == null) throw new IllegalArgumentException("Rant cannot be null");
-        RequestWrapper wrapper = new RequestWrapper(httpRequest, httpResponse);
-        String noSession = wrapper.getHeader(StatusHeader.NO_SESSION.name());
-        if (noSession == null) {
-            try {
-                rant.setCreatedDate(new Date());
-                rant.setCookie(wrapper.getCookie(AegisFilter.COOKIE_NAME).getValue());
-                rantService.save(rant);
-                return response.ok("Rant saved", rant);
-            } catch (MongoClientException ex) {
-                log.error("Error saving rant", ex);
-                return response.badRequest("Error saving rant: MongoClientException");
-            }
-        } else {
-            ResponseEntity<JsonResponse> json =  response.forbidden("Error saving rant: invalid session");
-            return json;
+        if (rant == null) {
+            ajaxResponse.fail("Rant cannot be null");
         }
+
+        RequestWrapper request = new RequestWrapper(httpRequest, httpResponse);
+
+        rant.setIpAddress(request.getIpAddress());
+        rant.setUserAgent(request.getUserAgent());
+        rant.setCookieValue(request.getCookieValue(sessionService.getCacheName()));
+
+        rantService.saveRant(rant);
+        return rant.getId() != null
+                ? ajaxResponse.success("Rant saved", rant)
+                : ajaxResponse.error("Failed to save rant");
     }
 
     /**
@@ -119,19 +103,16 @@ public class RantController {
      * @return
      */
     @RequestMapping(value = "/comment/{rantId}", method = RequestMethod.POST)
-    public ResponseEntity saveComment(@PathVariable String rantId, @RequestBody Comment comment) {
+    public ResponseEntity saveComment(@PathVariable String rantId, @RequestBody @Valid Comment comment) {
         if (comment == null) {
-            return response.badRequest("Comment cannot be null");
+            return ajaxResponse.fail("Save comment failed: Comment cannot be null");
         }
-        try {
-            Rant rant = rantService.findOne(rantId);
-            rant.addComment(comment);
-            rantService.save(rant);
-            return response.ok("Comment added", comment);
-        } catch(MongoClientException ex) {
-            log.error("Failed to save comment", ex);
-            return response.error("Failed to save comment", ex);
+        Rant rant = rantService.getRantById(rantId);
+        if (rant ==  null) {
+            return ajaxResponse.fail("Save comment failed: Unable to locate rant (" + rantId + ")");
         }
+        rantService.addCommentToRant(rant, comment);
+        return ajaxResponse.success();
     }
 
     /**
@@ -140,46 +121,7 @@ public class RantController {
      */
     @RequestMapping(value = "/popular", method = RequestMethod.GET)
     public ResponseEntity getPopularRants() {
-
-        final int TOP_N = 15;
-
-        List<Rant> rants = rantService.findByCommentCountGreaterThan(1);
-        Collections.sort(rants, new CommentCountComparator());
-
-        if (rants.size() > TOP_N) {
-            for (int i = rants.size(); i > TOP_N; i--) {
-                rants.remove(i-1);
-            }
-        }
-
-        return response.ok(null, rants);
-    }
-
-    /**
-     * Generate a PageRequest
-     * @param pageNumber page number from which to start
-     * @param size number of objects to pull
-     * @param sortMethod sort method
-     * @return
-     */
-    public PageRequest getPageRequest(int pageNumber, int size, SortMethod sortMethod ) {
-        return new PageRequest(pageNumber, size, MongoSort.SORT_BY.get(sortMethod));
-    }
-
-    /**
-     * Sort Rants by commentCount descending
-     */
-    public class CommentCountComparator implements Comparator<Rant> {
-        public int compare(Rant o1, Rant o2) {
-            long c1 = o1.getCommentCount();
-            long c2 = o2.getCommentCount();
-            if (c1 > c2) {
-                return -1;
-            } else if (c1 < c2) {
-                return 1;
-            }
-            return 0;
-        }
+        return ajaxResponse.success(null, getPopularRants());
     }
 
 }

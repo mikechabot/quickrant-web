@@ -1,20 +1,20 @@
 package com.quickrant.service;
 
+import com.quickrant.domain.Comment;
+import com.quickrant.domain.RantPageResponse;
+import com.quickrant.domain.RantPageRequest;
 import com.quickrant.model.Rant;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public interface RantService extends MongoRepository<Rant, String> {
+public interface RantService {
 
-    List<Rant> findByCommentCountGreaterThan(long count);
-
-    List<Rant> findByRantLike(String rant);
+    Page getPageByPageNumber(int pageNumber);
+    RantPageResponse getRantPage(RantPageRequest pageRequest);
+    List<Rant> getPopularRants();
+    Rant getRantById(String id);
+    void addCommentToRant(Rant rant, Comment comment);
+    void saveRant(Rant rant);
 
 }

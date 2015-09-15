@@ -1,45 +1,110 @@
 package com.quickrant.model;
 
+import com.quickrant.domain.Comment;
+import com.quickrant.domain.Emotion;
+
+import com.quickrant.model.MongoDocument;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Document
 public class Rant extends MongoDocument {
 
-    private Ranter ranter;
-    private String rant;
-    private Selection selection;
-    private List<String> hashtags;
+    private String name;
+    private String location;
+    private String text;
+    private Emotion emotion;
+    private String question;
+    private String cookieValue;
+    private String userAgent;
+    private String ipAddress;
     private boolean allowComments;
-    private List<Comment> comments;
     private long commentCount;
-    private String cookie;
+    private List<String> hashtags;
+    private List<Comment> comments;
 
-    public Ranter getRanter() {
-        return ranter;
+    public String getName() {
+        return name;
     }
 
-    public void setRanter(Ranter ranter) {
-        this.ranter = ranter;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getRant() {
-        return rant;
+    public String getLocation() {
+        return location;
     }
 
-    public void setRant(String rant) {
-        this.rant = rant;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public Selection getSelection() {
-        return selection;
+    public String getText() {
+        return text;
     }
 
-    public void setSelection(Selection selection) {
-        this.selection = selection;
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Emotion getEmotion() {
+        return emotion;
+    }
+
+    public void setEmotion(Emotion emotion) {
+        this.emotion = emotion;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getCookieValue() {
+        return cookieValue;
+    }
+
+    public void setCookieValue(String cookieValue) {
+        this.cookieValue = cookieValue;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public boolean isAllowComments() {
+        return allowComments;
+    }
+
+    public void setAllowComments(boolean allowComments) {
+        this.allowComments = allowComments;
+    }
+
+    public long getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(long commentCount) {
+        this.commentCount = commentCount;
     }
 
     public List<String> getHashtags() {
@@ -48,14 +113,6 @@ public class Rant extends MongoDocument {
 
     public void setHashtags(List<String> hashtags) {
         this.hashtags = hashtags;
-    }
-
-    public boolean getAllowComments() {
-        return allowComments;
-    }
-
-    public void setAllowComments(boolean allowComments) {
-        this.allowComments = allowComments;
     }
 
     public List<Comment> getComments() {
@@ -71,24 +128,28 @@ public class Rant extends MongoDocument {
         if (comments == null) {
             comments = new ArrayList<>();
         }
-        comment.setCreatedDate(new Date());
+        comment.setCreatedTime(new DateTime());
         comments.add(comment);
         commentCount++;
     }
 
-    public String getCookie() {
-        return cookie;
-    }
-
-    public void setCookie(String cookie) {
-        this.cookie = cookie;
-    }
-
-    public long getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(long commentCount) {
-        this.commentCount = commentCount;
+    @Override
+    public String toString() {
+        return "Rant{" +
+                "name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", text='" + text + '\'' +
+                ", emotion=" + emotion +
+                ", question='" + question + '\'' +
+                ", cookieValue='" + cookieValue + '\'' +
+                ", userAgent='" + userAgent + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", allowComments=" + allowComments +
+                ", commentCount=" + commentCount +
+                ", hashtags=" + hashtags +
+                ", comments=" + comments +
+                '}';
     }
 }
+
+

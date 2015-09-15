@@ -80,32 +80,71 @@ app.directive('focus', ['$timeout', function ($timeout) {
     }
 }]);
 
-app.directive('faces', ['$timeout', function ($timeout) {
+app.directive('navigation', ['QR_DATA', 'DialogService', function (QR_DATA, DialogService) {
     return {
-        restrict: 'A',
-        scope: {
-            data: '=',
-            rant: '='
-        },
+        restrict: 'E',
+        templateUrl: '/templates/directives/navigation.html',
+        scope: true,
         controller: function ($scope) {
-            this.select = function (face) {
-                $timeout(function () {
-                    if (face === $scope.rant.face) {
-                        $scope.rant = {};
-                        return;
-                    }
-                    $scope.rant.face = face;
-                    $scope.rant.question = undefined;
+
+            var notify = QR_DATA.notify;
+
+            $scope.showAbout = function() {
+                DialogService.open({
+                    templateUrl: '/templates/modals/about.html',
+                    size: 'lg'
                 });
             };
+
+            $scope.showBeta = function() {
+                DialogService.notify(notify.beta.body, notify.beta.title);
+            };
+
         }
     }
 }]);
 
-app.directive('face', function () {
+app.directive('emotions', ['$timeout', function ($timeout) {
+
+    var templateHtml =
+        '<div class="row margin-bottom-lg text-center"> ' +
+        '<div ng-repeat="emotion in emotions" class="col-lg-4 col-sm-4 col-xs-4">' +
+        '<a href emotion ng-model="emotion"><img ng-src="/img/{{::emotion.name | lowercase}}.png"></a>' +
+        '</div>' +
+        '</div>';
+
+    return {
+        restrict: 'E',
+        template: templateHtml,
+        scope: {
+            emotions: '=',
+            selection: '=',
+            rant: '='
+        },
+        controller: function ($scope) {
+            this.select = function (emotion) {
+                $timeout(function () {
+                    _alwaysClear();
+                    !_alreadySelected(emotion)
+                        ? $scope.selection.emotion = emotion.name
+                        : delete $scope.selection.emotion;
+                });
+            };
+            function _alreadySelected(emotion) {
+                return emotion.name === $scope.selection.emotion;
+            }
+            function _alwaysClear() {
+                delete $scope.selection.question;
+                $scope.rant = {};
+            }
+        }
+    }
+}]);
+
+app.directive('emotion', function () {
     return {
         restrict: 'A',
-        require: '^faces',
+        require: '^emotions',
         scope: {
             ngModel: '='
         },
@@ -117,25 +156,39 @@ app.directive('face', function () {
     }
 });
 
-app.directive('questions', function () {
+app.directive('questions', ['$timeout', function ($timeout) {
+    var templateHtml =
+        '<div ng-repeat="emotion in emotions" class="text-center">' +
+        '<div ng-if="showQuestionsForEmotion(emotion, selection)" class="row margin-bottom-lg">' +
+        '<div class="col-lg-offset-1 col-lg-10">' +
+        '<question ng-repeat="question in emotion.questions" question="question" button-style="emotion.styles.button"></question>' +
+        '</div>' +
+        '</div>';
     return {
-        restrict: 'A',
+        restrict: 'E',
+        template: templateHtml,
         scope: {
-            rant: '='
+            emotions: '=',
+            selection: '='
         },
         controller: function ($scope) {
             this.select = function (question) {
-                $scope.$apply(function () {
-                    if (question === $scope.rant.question) {
-                        $scope.rant.question = undefined;
-                        return;
-                    }
-                    $scope.rant.question = question;
+                $timeout(function() {
+                    !_alreadySelected(question)
+                        ? $scope.selection.question = question
+                        : delete $scope.selection.question;
                 });
             };
+            function _alreadySelected(question) {
+                return question === $scope.selection.question;
+            }
+            $scope.showQuestionsForEmotion = function(emotion, selection) {
+                if (_.isEmpty(selection)) return false;
+                return emotion.name === selection.emotion;
+            }
         }
     };
-});
+}]);
 
 app.directive('question', function () {
     return {
@@ -143,13 +196,125 @@ app.directive('question', function () {
         require: '^questions',
         scope: {
             question: '=',
-            customStyle: '='
+            buttonStyle: '='
         },
-        template: '<button class="btn btn-{{customStyle}} btn-question" type="button">{{::question}}</button>',
-        link: function ($scope, $element, $attrs, questionsCtrl) {
+        template: '<button class="btn btn-{{buttonStyle}} btn-question" type="button">{{::question}}</button>',
+        link: function (scope, $element, $attrs, questionsCtrl) {
             $element.bind('click', function () {
-                questionsCtrl.select($scope.question);
+                questionsCtrl.select(scope.question);
             });
         }
     }
 });
+
+app.directive('rants', ['$timeout', 'RantService', 'DialogService', function ($timeout, RantService, DialogService) {
+    return {
+        restrict: 'E',
+        templateUrl: '/templates/directives/rants.html',
+        scope: true,
+        link: function (scope) {
+
+            scope.rants = {};
+            var statsMap = {};
+
+            scope.hasNextPage = function(pageStats) {
+                if (!pageStats) return;
+                return true;
+            };
+
+            var _getRantsSize = function() {
+                return scope.rants.length
+            };
+
+            var _getRantsByPageNumber = function(pageNumber) {
+                return RantService.getRantsByPageNumber(pageNumber, _getRantsSize());
+            };
+
+            var _getFirstPage = function() {
+                return _getRantsByPageNumber(0);
+            };
+
+            var _initFirstPage = function(page) {
+                $timeout(function() {
+                    scope.rants = page.rants;
+                    statsMap = RantService.getPageStatisticsMap(page);
+                    scope.statsList = RantService.getPageStatistics(statsMap);
+                });
+            };
+
+            var _initQuickrant = function() {
+                _getFirstPage()
+                    .done(function (page) {
+                        _initFirstPage(page);
+                    })
+                    .fail(function(error) {
+                        DialogService.error(error.message);
+                    });
+            };
+
+            _initQuickrant();
+        }
+    }
+}]);
+
+app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService', function ($timeout, QR_CONST, RantService, DialogService) {
+    return {
+        restrict: 'E',
+        templateUrl: '/templates/directives/rant-form.html',
+        scope: {
+            rant: '=',
+            emotions: '=',
+            selection: '='
+        },
+        controller: function ($scope) {
+
+            var validationWatch;
+            var emotions = $scope.emotions;
+
+            $scope.rant.allowComments = false;
+
+            $scope.getPanelStyleForSelection = function(selection) {
+                var emotionKey = selection.emotion;
+                var emotion = emotions[emotionKey];
+                return emotion.styles.panel;
+            };
+
+            $scope.getCharactersLeft = function(rant) {
+                if (!rant.text) return;
+                return QR_CONST.RESTRICTIONS.MAX_CHAR - rant.text.length;
+            };
+
+            $scope.postRant = function(rant) {
+                RantService.postRant(rant, $scope.selection)
+                    .done(function() {
+                        DialogService.notify('rant posted', 'success');
+                    })
+                    .fail(function(error) {
+                        DialogService.error(error.message);
+                    })
+                    .always(function() {
+                        $timeout(function() {
+                            $scope.rant = {};
+                        });
+                    });
+            };
+
+            function _buildValidationWatch() {
+                if (validationWatch) {
+                    console.log('killing watch');
+                    validationWatch();
+                }
+                validationWatch = $scope.$watch('form.text.$error', function(properties) {
+                    $scope.error = {};
+                    _.each(properties, function(value, key) {
+                        if (value === true) {
+                            $scope.error[key] = true;
+                        }
+                    });
+                }, true);
+            }
+
+            _buildValidationWatch();
+        }
+    }
+}]);

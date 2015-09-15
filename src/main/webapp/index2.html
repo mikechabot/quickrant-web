@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html ng-app="quickrant" lang="en">
+<head>
+  <!-- meta standard -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Express yourself without yourself. Say anything to everyone. No login required.">
+
+  <!-- meta og -->
+  <meta property="og:type" name="og:type" content="website"/>
+  <meta property="og:image" name="og:image" content="http://quickrant.com/img/thumbnail.gif"/>
+  <meta property="og:url" name="og:url" content="http://quickrant.com/"/>
+  <meta property="og:title" name="og:title" content="quickrant | express yourself without yourself"/>
+  <meta property="og:description" name="og:description" content="Express yourself without yourself. Say anything to everyone. No login required."/>
+
+  <title>quickrant | express yourself without yourself</title>
+
+  <!-- scripts -->
+  <script src="/js/third-party/jquery/jquery-2.1.3.min.js"></script>
+  <script src="/js/third-party/angular/angular.js"></script>
+  <script src="/js/third-party/ng-animate/angular-animate.min.js"></script>
+  <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
+  <script src="/js/third-party/bootstrap/bootstrap.min.js"></script>
+  <script src="/js/third-party/underscore/underscore-min.js"></script>
+  <script src="/js/third-party/ng-timeago/ngtimeago.js"></script>
+  <script src="/js/third-party/moment/moment.js"></script>
+  <script src="/js/third-party/google/google-analytics.js"></script>
+
+  <!-- scripts (versioned) -->
+  <script src="/js/angular_qr.js?v=201505310856"></script>
+  <script src="/js/common/data_service.js?v=201506010111"></script>
+  <script src="/js/services/rant_service.js?v=201506010111"></script>
+  <script src="/js/services/session_service.js?v=201506010111"></script>
+  <script src="/js/services/modal_service.js?v=201506010111"></script>
+  <script src="/js/services/promise_service.js?v=201506010111"></script>
+  <script src="/js/controllers/rant_dialog_controller.js?v=201506010111"></script>
+  <script src="/js/directives/directives.js?v=201506010111"></script>
+  <script src="/js/filters/filters.js?v=201506010111"></script>
+  <script src="/js/common/qr_data.js?v=201506010111"></script>
+  <script src="/js/common/qr_const.js?v=201506010111"></script>
+  <script src="/js/common/common.js?v=201506010111"></script>
+
+  <!-- fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+
+  <!-- styles -->
+  <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/font-awesome/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/css/common.css?v=201506010111" rel="stylesheet">
+  <link href="/css/quickrant.css?v=201506010111" rel="stylesheet">
+
+  <link rel="image_src" type="image/gif" href="http://quickrant.com/img/thumbnail.gif"/>
+
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/ico/favicon.png">
+
+  <!-- touch icons -->
+  <link href="/ico/Icon.png" rel="apple-touch-icon" sizes="57x57">
+  <link href="/ico/Icon-60.png" rel="apple-touch-icon" sizes="60x60">
+  <link href="/ico/Icon-72.png" rel="apple-touch-icon" sizes="72x72">
+  <link href="/ico/Icon-72@2x.png" rel="apple-touch-icon" sizes="144x144">
+  <link href="/ico/Icon-Small-50@2x.png" rel="apple-touch-icon" sizes="100x100">
+
+</head>
+<body ng-controller="AppController">
+<div ng-controller="MainController">
+<!-- Navbar (START) -->
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navigation">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">quickrant</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-navigation">
+      <ul class="nav navbar-nav">
+        <li><a href ng-click="showAbout()"><code>ABOUT</code></a></li>
+        <li><a href ng-click="showBeta()"><code>BETA</code></a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="rant" ng-model="search.id" placeholder="Find rant by id" class="form-control">
+            </div>
+            <button ng-click="findRantById(search.id)" class="btn btn-default btn-lg fa fa-search"></button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Navbar (END) -->
+
+
+<div class="container">
+
+  <!-- Faces -->
+  <div faces data="emotions" rant="rant" class="row margin-bottom-lg text-center">
+    <div ng-repeat="face in emotions" class="col-lg-4 col-sm-4 col-xs-4">
+      <a href face ng-model="face"><img ng-src="/img/{{::face.emotion}}.png"></a>
+    </div>
+  </div>
+
+  <!-- Questions -->
+  <div questions ng-repeat="face in emotions" rant="rant" class="rant-center">
+    <div ng-show="face === rant.face" class="row margin-bottom-lg">
+      <div class="col-lg-offset-1 col-lg-10">
+        <question ng-repeat="question in face.questions" question="question" custom-style="face.styles.button"></question>
+      </div>
+    </div>
+  </div>
+
+  <!-- User interaction (START) -->
+  <div ng-if="rant.question" class="row">
+    <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-10 form-container">
+      <div class="panel panel-{{rant.face.styles.panel}} margin-bottom-lg">
+        <div class="panel-heading">
+          <h3 class="panel-title text-center" id="legend">{{rant.question}}</h3>
+        </div>
+        <div class="panel-body">
+          <form name="forms.form" class="form-inline" role="form">
+
+            <!-- Name and Location -->
+            <div class="row">
+              <div class="col-lg-offset-1 col-lg-5 col-sm-offset-1 col-sm-5">
+                <input copyable default-value="app.defaults.name" destination="rant.name" ng-model="form.name" class="form-control" type="text" placeholder="Name (optional)">
+              </div>
+              <div class="col-lg-5 col-sm-5">
+                <input copyable default-value="app.defaults.location" destination="rant.location" ng-model="form.location" class="form-control" type="text" placeholder="Location (optional)">
+              </div>
+            </div>
+
+            <!-- Rant -->
+            <div class="row">
+              <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
+                <textarea focus ng-model="rant.text" ng-minlength="3" ng-maxlength="500" ng-required="true" name="rant" class="form-control" rows="5" placeholder="Say something..."></textarea>
+              </div>
+            </div>
+
+            <!-- Validation -->
+            <span class="help-block text-center">
+              <span class="text-danger" ng-show="form.$error.maxlength">Too much</span>
+              <span class="text-danger" ng-show="form.$error.minlength">Too few</span>
+              <span ng-show="form.$valid">
+                <ng-pluralize count="app.restrictions.MAX_CHAR - rant.text.length" when="{'0': 'No more characters', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
+              </span>
+            </span>
+
+            <!-- Allow comments -->
+            <div class="flex-center-container">
+              <div class="btn-group btn-big text-center">
+                <label class="fa fa-1-5x pointer" ng-click="rant.allowComments = !rant.allowComments" ng-model="rant.allowComments">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa" ng-class="{'fa-comments-o fa-stack-1x': !rant.allowComments, 'fa-stack-2x': rant.allowComments}"></i>
+                    <i class="fa" ng-class="{'fa-ban fa-stack-2x text-danger': !rant.allowComments, 'fa-comments-o fa-stack-1x': rant.allowComments}"></i>
+                  </span>
+                  <br>
+                  <span class="btn-big-label always">
+                    <span ng-show="rant.allowComments">comments</span>
+                    <span ng-show="!rant.allowComments">no comments</span>
+                  </span>
+                </label>
+              </div>
+
+              <!-- Submit -->
+              <div class="btn-group btn-big text-center">
+                <label class="fa fa-1-5x pointer" ng-class="{disabled: !form.$valid }" ng-click="postRant(rant)">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-send fa-stack-1x"></i>
+                    <i class="fa fa-stack-2x"></i>
+                  </span>
+                  <br>
+                  <span class="btn-big-label always">
+                    <span>post rant</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- User interaction (END) -->
+
+  <hr>
+
+  <!-- Show new rants -->
+  <div class="text-center">
+    <button style="margin-bottom: 10px" ng-show="newRantCount" class="btn btn-default btn-lg" ng-click="showNewRants(newData)">
+      <ng-pluralize count="newRantCount" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
+    </button>
+  </div>
+
+  <!-- Rants container (START) -->
+  <div ng-show="app.view === views.LIVE_STREAM" class="rants-container">
+    <div class="row">
+      <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
+        <div class="list-group">
+          <a class="list-group-item active" href><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
+          <a class="list-group-item" href ng-click="app.view = app.views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
+          <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
+        </div>
+        <hr>
+      </div>
+      <div class="col-lg-10 col-md-9 col-sm-9">
+        <div ng-repeat="rant in rants" class="row">
+          <div class="col-lg-offset-1 col-lg-8 col-md-offset-1 col-md-9">
+            <div class="panel panel-text">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-lg-1 col-sm-1 col-xs-2">
+                    <img ng-src="/img/{{::rant.emotion | lowercase}}-sm.png">
+                  </div>
+                  <div ng-if="!rant.allowComments">
+                    <div class="col-lg-10 col-sm-10 col-xs-10">
+                      <h2 class="panel-title">{{::rant.question}}</h2>
+                    </div>
+                  </div>
+                  <div ng-if="rant.allowComments">
+                    <div class="col-lg-9 col-sm-9 col-xs-7">
+                      <h2 class="panel-title">{{::rant.question}}</h2>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
+                      <button ng-click="openRant(rant)" class="btn btn-default btn-text">
+                        <i class="fa fa-comments-o fa-1-5x"></i> | {{rant.commentCount}}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div><pre>{{rant}}</pre>
+              <div class="panel-body">
+                <blockquote>
+                  <p class="margin-bottom-md">{{::rant.text}}</p>
+                  <small><span class="mild-bold">{{::rant.name}}</span> // {{::rant.location}} // {{rant.createdDate | timeago}}</small>
+                </blockquote>
+              </div>
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer buttons (START) -->
+    <div class="row">
+      <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
+        <div class="row text-center margin-bottom-lg">
+
+          <!-- Up and down -->
+          <div ng-show="hasNextPage(rants, page) && !loading">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="getNextPage(page.pageNumber)"></button>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+              <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
+            </div>
+          </div>
+
+          <!-- End of the interwebz -->
+          <div ng-show="!hasNextPage(rants, page) && !loading">
+            <div class="help-block col-lg-12">
+              <i class="fa fa-child fa-2x"></i><em>Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i>
+            </div>
+            <div class="col-lg-12 margin-bottom-lg">
+              <button ng-show="hasNextPage(rants, page) && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- Footer buttons (END) -->
+  </div>
+  <!-- Rants container (END) -->
+
+
+  <!-- Popular container (START) -->
+  <div ng-show="app.view === app.views.POPULAR" class="rants-container">
+    <div class="row">
+      <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
+        <div class="list-group">
+          <a class="list-group-item" href ng-click="app.view = app.views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
+          <a class="list-group-item active" href><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
+          <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
+        </div>
+        <hr>
+      </div>
+      <div class="col-lg-10 col-md-9 col-sm-9">
+        <div ng-repeat="rant in popularRants" class="row">
+          <div class="col-lg-1 col-md-2 col-sm-2 text-center">
+            <h4><code># {{$index + 1}}</code></h4>
+          </div>
+          <div class="col-lg-8 col-md-9 col-sm-10">
+            <div class="panel panel-text">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-lg-1 col-sm-1 col-xs-2">
+                    <img ng-src="/img/{{::rant.selection.emotion}}-sm.png">
+                  </div>
+                  <div ng-if="!rant.allowComments">
+                    <div class="col-lg-10 col-sm-10 col-xs-10">
+                      <h2 class="panel-title">{{::rant.selection.question}}</h2>
+                    </div>
+                  </div>
+                  <div ng-if="rant.allowComments">
+                    <div class="col-lg-9 col-sm-9 col-xs-7">
+                      <h2 class="panel-title">{{::rant.selection.question}}</h2>
+                    </div>
+                    <div class="col-lg-2 col-sm-2 col-xs-1 text-right">
+                      <button ng-click="openRant(rant)" class="btn btn-default btn-text">
+                        <i class="fa fa-comments-o fa-1-5x"></i> | {{rant.commentCount}}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body">
+                <blockquote>
+                  <p class="margin-bottom-md">{{::rant.text}}</p>
+                  <small><span class="mild-bold">{{::rant.name}}</span> // {{::rant.location}} // {{rant.createdDate | timeago}}</small>
+                </blockquote>
+              </div>
+            </div>
+            <hr>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer buttons (Up only) -->
+    <div class="row">
+      <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
+        <div class="row text-center margin-bottom-lg">
+          <div>
+            <div class="col-lg-12 margin-bottom-lg">
+              <button ng-show="hasNextPage(rants, page) && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- Popular container (END) -->
+</div>
+</div>
+</body>
+</html>

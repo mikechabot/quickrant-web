@@ -1,14 +1,23 @@
-package com.quickrant.util;
+package com.quickrant.http;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.util.Enumeration;
 
 public class RequestWrapper {
 
     private HttpServletRequest request;
     private HttpServletResponse response;
+
+    public RequestWrapper(HttpServletRequest request) {
+        new RequestWrapper(request, null);
+    }
+
+    public RequestWrapper(HttpServletResponse response) {
+        new RequestWrapper(null, response);
+    }
 
     public RequestWrapper(HttpServletRequest request, HttpServletResponse response) {
         this.request = request;
@@ -23,24 +32,24 @@ public class RequestWrapper {
         return response;
     }
 
-    public String getMethod() {
-        return request.getMethod().toUpperCase();
+    public HttpMethod getMethod() {
+       return HttpMethod.valueOf(request.getMethod().toUpperCase());
     }
 
     public boolean isGet() {
-        return request.getMethod().equalsIgnoreCase("GET");
+        return getMethod().equals(HttpMethod.GET);
     }
 
     public boolean isPost() {
-        return request.getMethod().equalsIgnoreCase("POST");
+        return getMethod().equals(HttpMethod.POST);
     }
 
     public boolean isPut() {
-        return request.getMethod().equalsIgnoreCase("PUT");
+        return getMethod().equals(HttpMethod.PUT);
     }
 
     public boolean isDelete() {
-        return request.getMethod().equalsIgnoreCase("DELETE");
+        return getMethod().equals(HttpMethod.DELETE);
     }
 
     public String getIpAddress() {
