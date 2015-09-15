@@ -2,45 +2,30 @@ package com.quickrant.model;
 
 import com.quickrant.domain.Comment;
 import com.quickrant.domain.Emotion;
-import org.joda.time.DateTime;
+
+import com.quickrant.model.MongoDocument;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Document
 public class Rant extends MongoDocument {
 
-    @NotNull
     private String name;
-
-    @NotNull
     private String location;
-
-    @NotNull
     private String text;
-
-    @NotNull
     private Emotion emotion;
-
-    @NotNull
     private String question;
-
-    @NotNull
-    private String cookie;
-
-    @NotNull
+    private String cookieValue;
     private String userAgent;
-
-    private List<String> hashtags;
+    private String ipAddress;
     private boolean allowComments;
     private long commentCount;
+    private List<String> hashtags;
     private List<Comment> comments;
-
-    public Rant() {
-        //
-    }
 
     public String getName() {
         return name;
@@ -82,12 +67,28 @@ public class Rant extends MongoDocument {
         this.question = question;
     }
 
-    public List<String> getHashtags() {
-        return hashtags;
+    public String getCookieValue() {
+        return cookieValue;
     }
 
-    public void setHashtags(List<String> hashtags) {
-        this.hashtags = hashtags;
+    public void setCookieValue(String cookieValue) {
+        this.cookieValue = cookieValue;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
     public boolean isAllowComments() {
@@ -106,20 +107,12 @@ public class Rant extends MongoDocument {
         this.commentCount = commentCount;
     }
 
-    public String getCookie() {
-        return cookie;
+    public List<String> getHashtags() {
+        return hashtags;
     }
 
-    public void setCookie(String cookie) {
-        this.cookie = cookie;
-    }
-
-    public String getUserAgent() {
-        return userAgent;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
+    public void setHashtags(List<String> hashtags) {
+        this.hashtags = hashtags;
     }
 
     public List<Comment> getComments() {
@@ -140,6 +133,23 @@ public class Rant extends MongoDocument {
         commentCount++;
     }
 
+    @Override
+    public String toString() {
+        return "Rant{" +
+                "name='" + name + '\'' +
+                ", location='" + location + '\'' +
+                ", text='" + text + '\'' +
+                ", emotion=" + emotion +
+                ", question='" + question + '\'' +
+                ", cookieValue='" + cookieValue + '\'' +
+                ", userAgent='" + userAgent + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", allowComments=" + allowComments +
+                ", commentCount=" + commentCount +
+                ", hashtags=" + hashtags +
+                ", comments=" + comments +
+                '}';
+    }
 }
 
 

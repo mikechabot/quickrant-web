@@ -1,7 +1,9 @@
 package com.quickrant.service;
 
+import com.quickrant.beans.SessionCacheProperties;
+import com.quickrant.factory.SessionCookieFactory;
 import com.quickrant.repository.SessionRepository;
-import com.quickrant.domain.Session;
+import com.quickrant.model.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,28 +23,29 @@ public class SessionServiceImpl extends ConcurrentMapCache implements SessionSer
 
     private static Logger log = Logger.getLogger(SessionServiceImpl.class);
 
-    public static final String SESSION_COOKIE_NAME = "quickrant-uuid";      // Cookie name
-    public static final int CACHE_ENTRY_EXPIRY_IN_DAYS = 30;                                    // Expire cache entries in N days
-
     @Autowired
     private SessionRepository sessionRepository;
 
     @Autowired
-    private SessionCookieService cookieService;
+    private SessionCookieFactory sessionCookieFactory;
+
+    @Autowired
+    private SessionCacheProperties sessionCacheProperties;
 
     public SessionServiceImpl() {
         super("SessionServiceImpl");
     }
 
     @Override
-    public List<Session> getPersistedSessions() {
-        return sessionRepository.findAll();
+    public List<Session> getActiveSessions() {
+        return sessionRepository.findByActiveIsTrue();
     }
 
     @Override
     public Session createSession(String ipAddress, String userAgent) {
-        Cookie cookie = cookieService.createCookieWithRandomValue(SESSION_COOKIE_NAME);
+        Cookie cookie = sessionCookieFactory.getSessionCookie();
         Session session = new Session(cookie, ipAddress, userAgent);
+        sessionRepository.save(session);
         addSessionToCache(session);
         return session;
     }
@@ -50,7 +53,6 @@ public class SessionServiceImpl extends ConcurrentMapCache implements SessionSer
     @Override
     public void addSessionToCache(Session session) {
         if (session == null || session.getSessionKey() == null) throw new IllegalArgumentException("Session and/or cookie value cannot be null");
-        sessionRepository.save(session);
         put(session.getSessionKey(), session);
     }
 
@@ -63,14 +65,10 @@ public class SessionServiceImpl extends ConcurrentMapCache implements SessionSer
     }
 
     @Override
-    public String getNewSessionKey() {
-        return null;
-    }
-
-    @Override
-    public void deleteSession(Session session) {
+    public void inactivateSession(Session session) {
         evict(session.getSessionKey());
-        sessionRepository.delete(session);
+        session.setActive(false);
+        sessionRepository.save(session);
     }
 
     @Override
@@ -84,16 +82,10 @@ public class SessionServiceImpl extends ConcurrentMapCache implements SessionSer
     }
 
     @Override
-    public boolean exists(Session session) {
-        if (session == null || session.getSessionKey() == null) return false;
-        return exists(session.getSessionKey());
-    }
-
-    @Override
     public boolean isExpired(Session session) {
         DateTime sessionCreated = new DateTime(session.getCreatedDate());
         DateTime now = new DateTime();
-        return sessionCreated.isBefore(now.minusDays(CACHE_ENTRY_EXPIRY_IN_DAYS));
+        return sessionCreated.isBefore(now.minusDays(sessionCacheProperties.getCacheEntryExpiry()));
     }
 
     @Override
@@ -103,11 +95,21 @@ public class SessionServiceImpl extends ConcurrentMapCache implements SessionSer
         for(Object each : getNativeCache().values()) {
             Session session = (Session) each;
             if (isExpired(session)) {
-                deleteSession(session);
+                inactivateSession(session);
             }
         }
         int finish = getNumberOfActiveSessions();
         log.info("Cleaned up " + (start - finish) + " cached cookies (" + finish + " active)");
+    }
+
+    @Override
+    public String getCacheName() {
+        return sessionCacheProperties.getCacheName();
+    }
+
+    @Override
+    public int getCacheEntryExpiryInDays() {
+        return sessionCacheProperties.getCacheEntryExpiry();
     }
 
 }

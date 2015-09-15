@@ -1,28 +1,24 @@
-package com.quickrant.domain;
+package com.quickrant.model;
 
 import com.quickrant.model.MongoDocument;
-
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.servlet.http.Cookie;
-import javax.validation.constraints.NotNull;
 
 @Document
 public class Session extends MongoDocument {
 
-    @NotNull
     private Cookie cookie;
-
-    @NotNull
     private String ipAddress;
-
-    @NotNull
     private String userAgent;
+
+    private boolean active;
 
     public Session(Cookie cookie, String ipAddress, String userAgent) {
         this.cookie = cookie;
         this.ipAddress = ipAddress;
         this.userAgent = userAgent;
+        this.active = true;
     }
 
     public Cookie getCookie() {
@@ -51,5 +47,13 @@ public class Session extends MongoDocument {
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

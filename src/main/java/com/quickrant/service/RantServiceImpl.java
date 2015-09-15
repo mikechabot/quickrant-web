@@ -2,6 +2,7 @@ package com.quickrant.service;
 
 import javax.validation.Valid;
 
+import com.quickrant.domain.RantPageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.quickrant.comparator.CommentCountComparator;
 import com.quickrant.domain.Comment;
-import com.quickrant.domain.RantPage;
+import com.quickrant.domain.RantPageResponse;
 import com.quickrant.model.Rant;
 import com.quickrant.repository.RantRepository;
 import com.quickrant.sort.MongoSort;
@@ -35,12 +36,20 @@ public class RantServiceImpl implements RantService {
     }
 
     @Override
-    public RantPage getRantPageByPageNumber(int pageNumber) {
+    public RantPageResponse getRantPage(RantPageRequest pageRequest) {
+
+        int pageNumber = pageRequest.getPageNumber();
         if (pageNumber < 0) {
             throw new IllegalArgumentException("Page number cannot be less than zero");
         }
+
         Page page = getPageByPageNumber(pageNumber);
-        return page != null ? new RantPage(page) : null;
+        if (page == null) {
+            return null;
+        }
+
+        RantPageResponse pageResponse = new RantPageResponse(page, pageRequest.getNumberOfRantsViewed());
+        return pageResponse;
     }
 
     @Override
@@ -70,7 +79,7 @@ public class RantServiceImpl implements RantService {
     }
 
     @Override
-    public void saveRant(@Valid Rant rant) {
+    public void saveRant(Rant rant) {
         rantRepository.save(rant);
     }
 

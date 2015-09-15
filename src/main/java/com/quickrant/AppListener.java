@@ -1,6 +1,6 @@
 package com.quickrant;
 
-import com.quickrant.domain.Session;
+import com.quickrant.model.Session;
 import com.quickrant.service.SessionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class AppListener implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void populateSessionCache() {
-        List<Session> sessions = sessionService.getPersistedSessions();
+        List<Session> sessions = sessionService.getActiveSessions();
         sessionService.addSessionsToCache(sessions);
         log.info("Populated cache with " + sessionService.getNumberOfActiveSessions() + " active sessions");
     }

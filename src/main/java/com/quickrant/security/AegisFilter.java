@@ -2,12 +2,11 @@ package com.quickrant.security;
 
 import java.io.IOException;
 
-import com.quickrant.domain.Session;
+import com.quickrant.model.Session;
 import com.quickrant.http.HttpMethod;
 import com.quickrant.http.RequestWrapper;
 
 import com.quickrant.service.SessionService;
-import com.quickrant.service.SessionServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +102,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
      * @return
      */
     public boolean hasSession(RequestWrapper wrapper) {
-        Cookie cookie = wrapper.getCookie(SessionServiceImpl.SESSION_COOKIE_NAME);
+        Cookie cookie = wrapper.getCookie(sessionService.getCacheName());
         return cookie != null ?  isValid(cookie) : false;
     }
 

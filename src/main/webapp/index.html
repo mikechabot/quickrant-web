@@ -42,6 +42,7 @@
   <script src="/js/filters/filters.js?v=201506010111"></script>
   <script src="/js/common/qr_data.js?v=201506010111"></script>
   <script src="/js/common/qr_const.js?v=201506010111"></script>
+  <script src="/js/common/http_const.js?v=201506010111"></script>
   <script src="/js/common/common.js?v=201506010111"></script>
 
   <!-- fonts -->
@@ -68,18 +69,13 @@
 
 </head>
 <body ng-controller="AppController">
-
-
   <navigation></navigation>
-
   <div ng-controller="MainController" class="container">
-
     <emotions emotions="emotions" selection="selection" rant="rant"></emotions>
     <questions ng-if="isEmotionSelected(selection)" emotions="emotions" selection="selection"></questions>
     <rant-form ng-if="isQuestionSelected(selection)" rant="rant" emotions="emotions" selection="selection"></rant-form>
     <hr>
     <rants ng-show="view === views.LIVE_STREAM"></rants>
-
   </div>
 </div>
 </body>

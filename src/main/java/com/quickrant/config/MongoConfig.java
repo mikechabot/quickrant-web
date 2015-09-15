@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
@@ -14,6 +15,7 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguratio
 
 @Configuration
 @Import(RepositoryRestMvcConfiguration.class)
+@EnableMongoAuditing
 @EnableMongoRepositories(basePackageClasses=RepositoryPackage.class)
 public class MongoConfig extends AbstractMongoConfiguration {
 

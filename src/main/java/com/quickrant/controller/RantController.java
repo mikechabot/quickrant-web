@@ -1,8 +1,11 @@
 package com.quickrant.controller;
 
+import com.quickrant.domain.RantPageResponse;
+import com.quickrant.domain.RantPageRequest;
 import com.quickrant.http.RequestWrapper;
-import com.quickrant.service.SessionServiceImpl;
+import com.quickrant.service.SessionService;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,11 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.quickrant.factory.AjaxResponseFactory;
 import com.quickrant.model.Rant;
 import com.quickrant.domain.Comment;
-import com.quickrant.domain.RantPage;
 import com.quickrant.service.RantService;
 import com.quickrant.util.StringUtil;
 
-import org.joda.time.DateTime;
 
 import org.apache.log4j.Logger;
 
@@ -35,22 +36,25 @@ public class RantController {
     private RantService rantService;
 
     @Autowired
-    protected AjaxResponseFactory ajaxResponse;
+    private AjaxResponseFactory ajaxResponse;
+
+    @Autowired
+    private SessionService sessionService;
 
     /**
      * Get a page of Rants
-     * @param pageNumber
+     * @param pageRequest
      * @return Page of Rant objects
      */
-    @RequestMapping(value = "/page/{pageNumber}", method = RequestMethod.GET)
-    public ResponseEntity getPage(@PathVariable int pageNumber) {
-        if (pageNumber < 0) {
+    @RequestMapping(value = "/page", method = RequestMethod.POST)
+    public ResponseEntity getPage(@RequestBody RantPageRequest pageRequest) {
+        if (pageRequest.getPageNumber() < 0) {
             return ajaxResponse.fail("Page number cannot be less than zero");
         }
-        RantPage rantPage = rantService.getRantPageByPageNumber(pageNumber);
-        return rantPage != null
-                ? ajaxResponse.success(null, rantPage)
-                : ajaxResponse.fail("Unable to locate rant page with page number '" + pageNumber + "'");
+        RantPageResponse pageResponse = rantService.getRantPage(pageRequest);
+        return pageResponse != null
+                ? ajaxResponse.success(null, pageResponse)
+                : ajaxResponse.fail("Unable to locate rant page with page number '" + pageRequest.getPageNumber() + "'");
     }
 
     /**
@@ -75,16 +79,16 @@ public class RantController {
      * @return id of Rant
      */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity saveRant(@RequestBody @Valid Rant rant, HttpServletRequest httpRequest) {
+    public ResponseEntity saveRant(@RequestBody Rant rant, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         if (rant == null) {
             ajaxResponse.fail("Rant cannot be null");
         }
 
-        RequestWrapper request = new RequestWrapper(httpRequest);
+        RequestWrapper request = new RequestWrapper(httpRequest, httpResponse);
 
-        rant.setCookie(request.getCookie(SessionServiceImpl.SESSION_COOKIE_NAME).getValue());
+        rant.setIpAddress(request.getIpAddress());
         rant.setUserAgent(request.getUserAgent());
-        rant.setCreatedDate(new DateTime());
+        rant.setCookieValue(request.getCookieValue(sessionService.getCacheName()));
 
         rantService.saveRant(rant);
         return rant.getId() != null
@@ -119,6 +123,5 @@ public class RantController {
     public ResponseEntity getPopularRants() {
         return ajaxResponse.success(null, getPopularRants());
     }
-
 
 }

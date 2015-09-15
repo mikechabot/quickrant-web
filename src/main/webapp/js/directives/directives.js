@@ -109,7 +109,7 @@ app.directive('emotions', ['$timeout', function ($timeout) {
     var templateHtml =
         '<div class="row margin-bottom-lg text-center"> ' +
         '<div ng-repeat="emotion in emotions" class="col-lg-4 col-sm-4 col-xs-4">' +
-        '<a href emotion ng-model="emotion"><img ng-src="/img/{{::emotion.name}}.png"></a>' +
+        '<a href emotion ng-model="emotion"><img ng-src="/img/{{::emotion.name | lowercase}}.png"></a>' +
         '</div>' +
         '</div>';
 
@@ -214,18 +214,38 @@ app.directive('rants', ['$timeout', 'RantService', 'DialogService', function ($t
         scope: true,
         link: function (scope) {
 
+            scope.rants = {};
+            var statsMap = {};
+
+            scope.hasNextPage = function(pageStats) {
+                if (!pageStats) return;
+                return true;
+            };
+
+            var _getRantsSize = function() {
+                return scope.rants.length
+            };
+
             var _getRantsByPageNumber = function(pageNumber) {
-                return RantService.getRantsByPageNumber(pageNumber)
+                return RantService.getRantsByPageNumber(pageNumber, _getRantsSize());
+            };
+
+            var _getFirstPage = function() {
+                return _getRantsByPageNumber(0);
+            };
+
+            var _initFirstPage = function(page) {
+                $timeout(function() {
+                    scope.rants = page.rants;
+                    statsMap = RantService.getPageStatisticsMap(page);
+                    scope.statsList = RantService.getPageStatistics(statsMap);
+                });
             };
 
             var _initQuickrant = function() {
-                _getRantsByPageNumber(0)
+                _getFirstPage()
                     .done(function (page) {
-                        $timeout(function() {
-                            scope.rants = page.rants;
-                            scope.pageInfo = page.pageInfo;
-                        });
-
+                        _initFirstPage(page);
                     })
                     .fail(function(error) {
                         DialogService.error(error.message);
@@ -233,12 +253,11 @@ app.directive('rants', ['$timeout', 'RantService', 'DialogService', function ($t
             };
 
             _initQuickrant();
-
         }
     }
 }]);
 
-app.directive('rantForm', ['QR_CONST', function (QR_CONST) {
+app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService', function ($timeout, QR_CONST, RantService, DialogService) {
     return {
         restrict: 'E',
         templateUrl: '/templates/directives/rant-form.html',
@@ -252,6 +271,8 @@ app.directive('rantForm', ['QR_CONST', function (QR_CONST) {
             var validationWatch;
             var emotions = $scope.emotions;
 
+            $scope.rant.allowComments = false;
+
             $scope.getPanelStyleForSelection = function(selection) {
                 var emotionKey = selection.emotion;
                 var emotion = emotions[emotionKey];
@@ -261,6 +282,21 @@ app.directive('rantForm', ['QR_CONST', function (QR_CONST) {
             $scope.getCharactersLeft = function(rant) {
                 if (!rant.text) return;
                 return QR_CONST.RESTRICTIONS.MAX_CHAR - rant.text.length;
+            };
+
+            $scope.postRant = function(rant) {
+                RantService.postRant(rant, $scope.selection)
+                    .done(function() {
+                        DialogService.notify('rant posted', 'success');
+                    })
+                    .fail(function(error) {
+                        DialogService.error(error.message);
+                    })
+                    .always(function() {
+                        $timeout(function() {
+                            $scope.rant = {};
+                        });
+                    });
             };
 
             function _buildValidationWatch() {

@@ -1,11 +1,24 @@
 app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 'DialogService', function ($log, QR_CONST, QR_DATA, DataAccessService, DialogService) {
 
-    /**
-     * Generate Comment object from form input
-     * @param comment
-     * @returns {{ranter: {name: (*|.DEFAULT_VALUE.NAME|m.selectors.match.NAME|m.selectors.find.NAME), location: (*|$scope.default.location|number|DOMLocator|Location|String|Location)}, comment: (*|$scope.form.comment)}}
-     * @private
-     */
+    function _createNewRant(rant, selection) {
+        return {
+            text: rant.text,
+            name: rant.name || QR_CONST.DEFAULT_VALUES.NAME,
+            location: rant.location || QR_CONST.DEFAULT_VALUES.LOCATION,
+            allowComments: rant.allowComments,
+            emotion: selection.emotion,
+            question: selection.question,
+            comments: []
+        }
+    }
+
+    function _createNewPageRequest(pageNumber, numberOfRantsViewed) {
+        return {
+            pageNumber: pageNumber,
+            numberOfRantsViewed: numberOfRantsViewed
+        }
+    }
+
     function _createCommentObject(comment) {
         return {
             ranter: {
@@ -15,63 +28,30 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
             comment: comment.comment
         }
     }
-
-    var _isInvalidSession = function(error) {
-        return error.message.indexOf("invalid session") > 0;
-    };
-
     return {
-        createRantFromFormSubmission: function(rantForm) {
-            if (rantForm.rant) {
-                return{
-                    rant: rantForm.rant,
-                    selection: {
-                        emotion: rantForm.face.emotion,
-                        question: rantForm.question
-                    },
-                    ranter: {
-                        name: rantForm.name || QR_CONST.DEFAULT_VALUE.NAME,
-                        location: rantForm.location || QR_CONST.DEFAULT_VALUE.LOCATION
-                    },
-                    comments: [],
-                    allowComments: rantForm.allowComments,
-                    createdDate: moment().toDate()
-                };
-            }
-        },
-        getRantsByPageNumber: function getRants(pageNumber) {
+        getRantsByPageNumber: function getRants(pageNumber, numberOfRantsViewed) {
+            if (pageNumber < 0) throw new Error('Page number cannot be less than zero')
             var deferred = $.Deferred();
-            DataAccessService.get('/rants/page/' + pageNumber)
+            DataAccessService.post('/rants/page', _createNewPageRequest(pageNumber, numberOfRantsViewed))
                 .done(function(page) {
                     deferred.resolve(page);
                 })
-                .fail(function() {
-                    deferred.reject();
+                .fail(function(error) {
+                    deferred.reject(error);
                 });
             return deferred.promise();
         },
-        postRant: function postRant(rant) {
+        postRant: function postRant(rant, selection) {
+            if (!rant || !selection) throw new Error('Rant and/or selection cannot be null');
+
             var deferred = $.Deferred();
-            if (!hasValue(rant)) {
-                throw new Error('Rant cannot be null');
-                deferred.reject();
-            } else {
-                var that = this;
-                DataAccessService.post('/rants', rant)
-                    .done(function(rant) {
-                        deferred.resolve(rant);
-                        that.openRant(rant);
-                    })
-                    .fail(function (error) {
-                        if (_isInvalidSession(error)) {
-                            DialogService.notify(
-                                QR_DATA.notify.noSession.body,
-                                QR_DATA.notify.noSession.title
-                            );
-                        }
-                        deferred.reject({message: error.message});
-                    });
-            }
+            DataAccessService.post('/rants', _createNewRant(rant, selection))
+                .done(function(rant) {
+                    deferred.resolve(rant);
+                })
+                .fail(function(error) {
+                    deferred.reject(error);
+                });
             return deferred.promise();
         },
         getRantById: function getRantById(id) {
@@ -130,6 +110,16 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
                 }
             };
             return DialogService.open(options)
+        },
+        getPageStatisticsMap: function(page) {
+            if (!page) return;
+            return page.pageStatistics;
+        },
+        getPageStatistics: function(statsMap) {
+            if (!statsMap) return;
+            return  _.sortBy(statsMap, function(stat) {
+                return stat.sortOrder;
+            });
         }
     };
 

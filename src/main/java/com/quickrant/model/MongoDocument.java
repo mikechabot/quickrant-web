@@ -1,24 +1,28 @@
 package com.quickrant.model;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.*;
 
-import org.joda.time.DateTime;
-
-import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 public class MongoDocument {
 
     @Id
     public String id;
 
-    @NotNull
     @CreatedDate
-    public DateTime createdDate;
+    protected Date createdDate;
+
+    @CreatedBy
+    protected String createdBy;
 
     @LastModifiedDate
-    public DateTime lastModifiedDate;
+    protected Date lastModifiedDate;
+
+    @LastModifiedBy
+    protected String lastModifiedBy;
+
+    @Version
+    protected Long version;
 
     public String getId() {
         return id;
@@ -28,20 +32,44 @@ public class MongoDocument {
         this.id = id;
     }
 
-    public DateTime getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(DateTime createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 
-    public DateTime getLastModifiedDate() {
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(DateTime lastModifiedDate) {
-        lastModifiedDate = lastModifiedDate;
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @Override
@@ -66,7 +94,10 @@ public class MongoDocument {
         return "MongoDocument{" +
                 "id='" + id + '\'' +
                 ", createdDate=" + createdDate +
-                ", LastModifiedDate=" + lastModifiedDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                ", version=" + version +
                 '}';
     }
 
