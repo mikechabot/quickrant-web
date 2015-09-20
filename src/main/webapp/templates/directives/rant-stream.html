@@ -1,3 +1,10 @@
+<!-- Show new rants -->
+<div class="text-center">
+  <button ng-show="page.hasPolledRants()" class="btn btn-default btn-lg margin-bottom-sm" ng-click="showPolledRants()">
+    <ng-pluralize count="page.getPolledRantCount()" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
+  </button>
+</div>
+
 <div class="rants-container">
   <div class="row">
     <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
@@ -9,7 +16,7 @@
       <hr>
     </div>
     <div class="col-lg-8 col-md-7 col-sm-7">
-      <div ng-repeat="rant in rants" class="row">
+      <div ng-repeat="rant in page.getRants()" class="row">
         <div class="col-lg-offset-1 col-lg-11 col-md-offset-1 col-md-11">
           <div class="panel panel-text">
             <div class="panel-heading">
@@ -45,14 +52,38 @@
           </div>
           <hr>
         </div>
+
+        <!-- Footer buttons (START) -->
+        <div ng-if="isLastRant($index)" class="row margin-bottom-lg">
+          <div class="text-center col-lg-offset-1 col-lg-11 col-md-offset-1 col-md-11">
+
+            <!-- Up and down -->
+            <div ng-show="page.hasNextPage()">
+             <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
+             <div class="inline-block spacer-lg"></div>
+             <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="getNextPage()"></button>
+            </div>
+
+            <!-- End of the interwebz -->
+            <div ng-show="!page.hasNextPage()">
+              <div class="help-block">
+                <i class="fa fa-child fa-2x"></i><em>Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i>
+              </div>
+              <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
 
+    <!-- Page statistics -->
     <div class="col-lg-2 col-md-2 col-sm-2 sidebar text-right">
       <div class="page-info">
-        <div ng-repeat="stat in statsList" class="media hidden-xs">
+        <div ng-repeat="stat in page.getStatisticsList()" class="media hidden-xs">
           <div class="media-left">
-            <h2>{{stat.number}}</h2>
+            <h2>{{stat.value}}</h2>
           </div>
           <div class="media-body">
             {{stat.label}}
@@ -63,35 +94,5 @@
 
   </div>
 
-  <!-- Footer buttons (START) -->
-  <div class="row">
-    <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-9">
-      <div class="row text-center margin-bottom-lg">
-
-        <!-- Up and down -->
-        <div ng-show="hasNextPage(pageInfo) && !loading">
-          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-            <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
-          </div>
-          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-            <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="getNextPage(page.pageNumber)"></button>
-          </div>
-        </div>
-
-        <!-- End of the interwebz -->
-        <div ng-show="!hasNextPage(pageInfo) && !loading">
-          <div class="help-block col-lg-12">
-            <i class="fa fa-child fa-2x"></i><em>Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i>
-          </div>
-          <div class="col-lg-12 margin-bottom-lg">
-            <button ng-show="hasNextPage(page) && !loading" class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
-            <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
 
 </div>

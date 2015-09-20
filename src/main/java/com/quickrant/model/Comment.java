@@ -1,22 +1,13 @@
-package com.quickrant.domain;
+package com.quickrant.model;
 
-import org.joda.time.DateTime;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
+@Document
+public class Comment extends MongoDocument {
 
-public class Comment {
-
-    @NotNull
     public String name;
-
-    @NotNull
     public String location;
-
-    @NotNull
     private String text;
-
-    @NotNull
-    private DateTime createdTime;
 
     public String getName() {
         return name;
@@ -42,21 +33,12 @@ public class Comment {
         this.text = text;
     }
 
-    public DateTime getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(DateTime createdTime) {
-        this.createdTime = createdTime;
-    }
-
     @Override
     public String toString() {
         return "Comment{" +
                 "name='" + name + '\'' +
                 ", location='" + location + '\'' +
                 ", text='" + text + '\'' +
-                ", createdTime=" + createdTime +
                 '}';
     }
 

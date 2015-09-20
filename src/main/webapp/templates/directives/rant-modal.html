@@ -1,6 +1,6 @@
 <div id="modal" ng-controller="RantDialogController">
   <div class="modal-header flex-container">
-    <h4 class="modal-title flex-item"><code>{{text.id}}</code></h4>
+    <h4 class="modal-title flex-item"><code>{{rant.id}}</code></h4>
     <button class="btn btn-default btn-lg flex-item fa fa-close fa-2x" ng-click="$close()"></button>
   </div>
   <div class="modal-body">
@@ -10,26 +10,27 @@
           <div class="panel-heading">
             <div class="row">
               <div class="col-lg-1 col-sm-1 col-xs-2">
-                <img ng-src="/img/{{text.selection.emotion}}-sm.png">
+                <img ng-src="/img/{{rant.emotion | lowercase}}-sm.png">
               </div>
               <div class="col-lg-10 col-sm-10 col-xs-s8">
-                <h1 class="panel-title">{{text.selection.question}}</h1>
+                <h1 class="panel-title">{{rant.question}}</h1>
               </div>
             </div>
           </div>
           <div class="panel-body">
             <blockquote>
-              <p>{{text.text}}</p>
-              <small><span class="mild-bold">{{text.ranter.name}}</span> // {{text.ranter.location}} // {{text.createdDate | timeago}}</small>
+              <p>{{rant.text}}</p>
+              <small><span class="mild-bold">{{rant.name}}</span> // {{rant.location}} // {{rant.createdDate | timeago}}</small>
             </blockquote>
           </div>
         </div>
       </div>
     </div>
-    <hr ng-show="text.allowComments">
-    <!-- Form (START)-->
 
-    <div ng-show="text.allowComments && showForm" class="row">
+    <hr ng-show="rant.allowComments">
+
+    <!-- Form (START)-->
+    <div ng-show="rant.allowComments && showForm" class="row">
       <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-8 form-container">
         <div class="panel panel-default margin-bottom-lg">
           <div class="panel-body">
@@ -47,17 +48,17 @@
 
               <!-- Comment -->
               <div class="row">
-                <div ng-class="{'has-error': form.$error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
+                <div ng-class="{'has-error': error.maxlength}" class="col-lg-offset-1 col-lg-10 col-sm-offset-1 col-sm-10">
                   <textarea focus focus-trigger="true" ng-model="form.text" ng-minlength="3" ng-maxlength="500" required="true" class="form-control form-text" rows="5" placeholder="Say something..."></textarea>
                 </div>
               </div>
 
                 <!-- Validation -->
               <span class="help-block text-center">
-                <span class="text-danger" ng-show="form.$error.maxlength">Too much</span>
-                <span class="text-danger" ng-show="form.$error.minlength">Not enough</span>
+                <span class="text-danger" ng-show="error.maxlength">Too much</span>
+                <span class="text-danger" ng-show="error.minlength">Not enough</span>
                 <span ng-show="form.$valid">
-                  <ng-pluralize count="restrictions.MAX_CHAR - form.text.length" when="{'0': 'No more characters left', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
+                  <ng-pluralize count="getCharactersLeft(form.text)" when="{'0': 'No more characters left', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
                 </span>
               </span>
 
@@ -84,20 +85,20 @@
     </div>
     <!-- Form (END) -->
 
-    <div ng-if="text.allowComments" class="row rants-container" ng-repeat="text in text.comments">
+    <div ng-if="rant.allowComments" class="row rants-container" ng-repeat="comment in rant.comments">
       <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-9">
         <div class="panel panel-text">
           <div class="panel-body">
             <blockquote>
-              <p>{{text.text}}</p>
-              <small><span class="mild-bold">{{text.ranter.name}}</span> // {{text.ranter.location}} // {{text.createdDate | timeago}}</small>
+              <p>{{comment.text}}</p>
+              <small><span class="mild-bold">{{comment.name}}</span> // {{comment.location}} // {{comment.createdDate | timeago}}</small>
             </blockquote>
           </div>
         </div>
         <hr>
       </div>
     </div>
-    <div ng-if="!text.allowComments" class="row">
+    <div ng-if="!rant.allowComments" class="row">
       <hr>
       <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-9">
         <div class="panel panel-text">
@@ -112,15 +113,15 @@
         <hr>
       </div>
     </div>
-    <div ng-show="text.allowComments" class="modal-footer">
+    <div ng-show="rant.allowComments" class="modal-footer">
       <div class="row">
         <div class="col-lg-offset-2 col-lg-8 col-sm-offset-2 col-sm-8 form-container">
           <div ng-show="!showForm" class="text-center row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <button class="btn btn-default btn-lg fa fa-reply fa-2x" ng-click="showForm = !showForm" scroll-on-click scroll-element=".modal-body" scoll-to-pixel="0" focus-on=".form-text"></button>
+              <button scroll-on-click scroll-element=".modal-body" class="btn btn-default btn-lg fa fa-chevron-up fa-2x"></button>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-              <button scroll-on-click scroll-element=".modal-body" class="btn btn-default btn-lg fa fa-chevron-up fa-2x"></button>
+              <button class="btn btn-default btn-lg fa fa-reply fa-2x" ng-click="showForm = !showForm" scroll-on-click scroll-element=".modal-body" scoll-to-pixel="0" focus-on=".form-text"></button>
             </div>
           </div>
           <div ng-show="showForm" class="text-center row">

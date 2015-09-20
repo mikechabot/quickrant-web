@@ -1,9 +1,7 @@
 package com.quickrant.model;
 
-import com.quickrant.domain.Comment;
 import com.quickrant.domain.Emotion;
 
-import com.quickrant.model.MongoDocument;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import org.joda.time.DateTime;
@@ -128,7 +126,6 @@ public class Rant extends MongoDocument {
         if (comments == null) {
             comments = new ArrayList<>();
         }
-        comment.setCreatedTime(new DateTime());
         comments.add(comment);
         commentCount++;
     }

@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-lg-offset-3 col-lg-6 col-sm-offset-2 col-sm-8 col-xs-offset-1 col-xs-10 form-container">
-    <div class="panel panel-{{getPanelStyleForSelection(selection)}} margin-bottom-lg">
+    <div class="panel panel-{{getPanelStyleForEmotion(selection)}} margin-bottom-lg">
       <div class="panel-heading">
         <h3 class="panel-title text-center" id="legend">{{selection.question}}</h3>
       </div>
@@ -32,7 +32,6 @@
               <ng-pluralize count="getCharactersLeft(rant)" when="{'0': 'No more characters', 'one': '1 character left', 'other': '{} characters left'}"></ng-pluralize>
             </span>
           </span>
-
 
           <div class="flex-center-container">
 

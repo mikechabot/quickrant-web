@@ -14,7 +14,8 @@ import javax.servlet.ServletRegistration;
 public class Bootstrap implements WebApplicationInitializer {
 
     private static final String CONFIG_LOCATION = "com.quickrant.config";
-    private static final String MAPPING_URL = "/spring/*";
+    private static final String URL_MAPPING = "/spring/*";
+    private static final String FILTER_NAME = "aegisFilter";
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
@@ -22,11 +23,11 @@ public class Bootstrap implements WebApplicationInitializer {
         context.setConfigLocation(CONFIG_LOCATION);
 
         servletContext.addListener(new ContextLoaderListener(context));
-        servletContext.addFilter("aegisFilter", new DelegatingFilterProxy("aegisFilter")).addMappingForUrlPatterns(null, false, "/spring/*");
+        servletContext.addFilter(FILTER_NAME, new DelegatingFilterProxy(FILTER_NAME)).addMappingForUrlPatterns(null, false, URL_MAPPING);
 
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("DispatcherServlet", new DispatcherServlet(context));
         dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping(MAPPING_URL);
+        dispatcher.addMapping(URL_MAPPING);
     }
 
 }

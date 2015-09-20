@@ -37,12 +37,16 @@
   <script src="/js/services/session_service.js?v=201506010111"></script>
   <script src="/js/services/modal_service.js?v=201506010111"></script>
   <script src="/js/services/promise_service.js?v=201506010111"></script>
+  <script src="/js/services/statistics_service.js?v=201506010111"></script>
+  <script src="/js/factories/quickrant_factory.js?v=201506010111"></script>
+  <script src="/js/factories/rant_page_factory.js?v=201506010111"></script>
   <script src="/js/controllers/rant_dialog_controller.js?v=201506010111"></script>
   <script src="/js/directives/directives.js?v=201506010111"></script>
   <script src="/js/filters/filters.js?v=201506010111"></script>
   <script src="/js/common/qr_data.js?v=201506010111"></script>
   <script src="/js/common/qr_const.js?v=201506010111"></script>
   <script src="/js/common/http_const.js?v=201506010111"></script>
+  <script src="/js/common/array_service.js?v=201506010111"></script>
   <script src="/js/common/common.js?v=201506010111"></script>
 
   <!-- fonts -->
@@ -69,14 +73,19 @@
 
 </head>
 <body ng-controller="AppController">
+
   <navigation></navigation>
+
   <div ng-controller="MainController" class="container">
-    <emotions emotions="emotions" selection="selection" rant="rant"></emotions>
-    <questions ng-if="isEmotionSelected(selection)" emotions="emotions" selection="selection"></questions>
-    <rant-form ng-if="isQuestionSelected(selection)" rant="rant" emotions="emotions" selection="selection"></rant-form>
-    <hr>
-    <rants ng-show="view === views.LIVE_STREAM"></rants>
+    <div ng-show="isLoaded()">
+      <emotions emotions="quickrant.emotions" selection="quickrant.selection" rant="rant"></emotions>
+      <questions ng-if="quickrant.isEmotionSelected()" emotions="quickrant.emotions" selection="quickrant.selection"></questions>
+      <rant-form ng-if="quickrant.isQuestionSelected()" rant="quickrant.rant" emotions="quickrant.emotions" selection="quickrant.selection"></rant-form>
+      <hr>
+      <rants page="quickrant.page"></rants>
+    </div>
   </div>
+
 </div>
 </body>
 </html>

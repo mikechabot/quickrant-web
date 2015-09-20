@@ -1,6 +1,5 @@
 package com.quickrant.model;
 
-import com.quickrant.model.MongoDocument;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.servlet.http.Cookie;

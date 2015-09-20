@@ -2,21 +2,26 @@ app.controller('RantDialogController', ['$scope', '$timeout', 'RantService', 'QR
 
     $scope.showForm = true;
 
-    $scope.restrictions = QR_CONST.RESTRICTIONS;
+    function _addCommentToRant(comment) {
+        $scope.rant.comments.push(comment);
+        $scope.rant.commentCount += 1;
+    }
 
-    $scope.saveComment = function(comment) {
+    function _resetForm() {
+        $scope.form.location = undefined;
+        $scope.form.name = undefined;
+        $scope.form.text = undefined;
+    }
+
+    $scope.saveComment = function(form) {
+        var comment = RantService.createNewComment(form);
+        if (!comment || !comment.text) return;
         RantService.saveComment(comment, $scope.rant.id)
-            .done(function(_comment) {
-                $scope.$apply(function () {
-                    $scope.rant.comments.push(_comment);
-                    $scope.rant.commentCount += 1;
-                    //TODO: move this to a directive
-                    $('.modal-body').animate({scrollTop: $('.modal-body')[0].scrollHeight }, 'slow');
-                    _reset();
-                });
-            })
-            .fail(function(error) {
-                console.error(error.message);
+            .done(function(comment) {
+                _addCommentToRant(comment);
+                _resetForm();
+                //TODO: move this to a directive
+                $('.modal-body').animate({scrollTop: $('.modal-body')[0].scrollHeight }, 'slow');
             })
             .always(function() {
                 $timeout(function() {
@@ -25,10 +30,18 @@ app.controller('RantDialogController', ['$scope', '$timeout', 'RantService', 'QR
             });
     };
 
-    function _reset() {
-        $scope.form.location = undefined;
-        $scope.form.name = undefined;
-        $scope.form.comment = undefined;
-    }
+    $scope.getCharactersLeft = function(text) {
+        if (!text) return;
+        return QR_CONST.RESTRICTIONS.MAX_CHAR - text.length;
+    };
+
+    $scope.$watch('form.text.$error', function(errors) {
+        $scope.error = {};
+        _.each(errors, function(value, key) {
+            if (value === true) {
+                $scope.error[key] = true;
+            }
+        });
+    }, true);
 
 }]);

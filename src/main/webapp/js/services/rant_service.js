@@ -1,10 +1,12 @@
 app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 'DialogService', function ($log, QR_CONST, QR_DATA, DataAccessService, DialogService) {
 
+    var basePath = '/rants';
+
     function _createNewRant(rant, selection) {
         return {
             text: rant.text,
-            name: rant.name || QR_CONST.DEFAULT_VALUES.NAME,
-            location: rant.location || QR_CONST.DEFAULT_VALUES.LOCATION,
+            name: _getName(rant.name),
+            location: _getLocation(rant.location),
             allowComments: rant.allowComments,
             emotion: selection.emotion,
             question: selection.question,
@@ -12,27 +14,26 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
         }
     }
 
-    function _createNewPageRequest(pageNumber, numberOfRantsViewed) {
+    function _createNewComment(form) {
         return {
-            pageNumber: pageNumber,
-            numberOfRantsViewed: numberOfRantsViewed
+            name: _getName(form.name),
+            location: _getLocation(form.location),
+            text: form.text
         }
     }
 
-    function _createCommentObject(comment) {
-        return {
-            ranter: {
-                name: comment.name || QR_CONST.DEFAULT_VALUE.NAME,
-                location: comment.location || QR_CONST.DEFAULT_VALUE.LOCATION
-            },
-            comment: comment.comment
-        }
+    function _getName(name) {
+        return name || QR_CONST.DEFAULT_VALUES.NAME;
     }
+
+    function _getLocation(location) {
+        return location || QR_CONST.DEFAULT_VALUES.LOCATION;
+    }
+
     return {
-        getRantsByPageNumber: function getRants(pageNumber, numberOfRantsViewed) {
-            if (pageNumber < 0) throw new Error('Page number cannot be less than zero')
+        getFirstPage: function() {
             var deferred = $.Deferred();
-            DataAccessService.post('/rants/page', _createNewPageRequest(pageNumber, numberOfRantsViewed))
+            this.getPageByPageNumber(0)
                 .done(function(page) {
                     deferred.resolve(page);
                 })
@@ -41,85 +42,59 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
                 });
             return deferred.promise();
         },
-        postRant: function postRant(rant, selection) {
-            if (!rant || !selection) throw new Error('Rant and/or selection cannot be null');
-
+        getPageByPageNumber: function getRants(pageNumber) {
+            if (pageNumber < 0) throw new Error('Page number cannot be less than zero');
             var deferred = $.Deferred();
-            DataAccessService.post('/rants', _createNewRant(rant, selection))
-                .done(function(rant) {
-                    deferred.resolve(rant);
+            DataAccessService.get(basePath + '/page/' + pageNumber)
+                .done(function(page) {
+                    deferred.resolve(page);
                 })
                 .fail(function(error) {
                     deferred.reject(error);
                 });
             return deferred.promise();
         },
+        getRantsCreatedAfter: function(date) {
+            return DataAccessService.get(basePath + '/since/' + date);
+        },
+        postRant: function postRant(rant, selection) {
+            if (!rant || !selection) throw new Error('Rant and/or selection cannot be null');
+            return DataAccessService.post(basePath, _createNewRant(rant, selection))
+        },
         getRantById: function getRantById(id) {
-            var deferred = $.Deferred();
-            DataAccessService.get('/rants/' + id)
-                .done(function(data) {
-                    deferred.resolve(data);
-                })
-                .fail(function() {
-                    deferred.reject();
-                });
-            return deferred.promise();
+            return DataAccessService.get(basePath + '/' + id);
         },
         saveComment: function saveComment(comment, rantId) {
             var deferred = $.Deferred();
-            var _comment = _createCommentObject(comment);
-            DataAccessService.post('/rants/comment/' + rantId, _comment)
-                .done(function(response) {
-                    deferred.resolve(response);
-                })
-                .fail(function() {
-                    deferred.reject();
-                });
+            if (!hasValue(comment.text)) {
+                deferred.reject("Comment cannot be empty");
+            } else {
+                deferred = DataAccessService.post(basePath + '/comment/' + rantId, comment);
+            }
             return deferred.promise();
+
         },
         getPopularRants: function getPopularRants() {
-            var deferred = $.Deferred();
-            DataAccessService.get('/rants/popular')
-                .done(function (response) {
-                    deferred.resolve(response);
-                })
-                .fail(function () {
-                    deferred.reject({message: 'Unable to get popular rants'});
-                });
-            return deferred.promise();
+            return DataAccessService.get(basePath + '/popular');
         },
         getRantsByQuestion: function getRantsByQuestion(question) {
-            var deferred = $.Deferred();
-            DataAccessService.get('/rants/question', question)
-                .done(function (response) {
-                    deferred.resolve({rants: response});
-                })
-                .fail(function () {
-                    deferred.reject({message: 'Unable to get most active rants'});
-                });
-            return deferred.promise();
+            return DataAccessService.get(basePath + '/question', question);
         },
         openRant: function(rant) {
             var options = {
-                templateUrl: '/templates/modals/rant.html',
+                templateUrl: '/templates/directives/rant-modal.html',
                 size: 'lg',
                 windowClass: 'rant-comment',
                 backdrop: 'static',
+                animation: false,
                 scope: {
                     rant: rant
                 }
             };
             return DialogService.open(options)
         },
-        getPageStatisticsMap: function(page) {
-            if (!page) return;
-            return page.pageStatistics;
-        },
-        getPageStatistics: function(statsMap) {
-            if (!statsMap) return;
-            return  _.sortBy(statsMap, function(stat) {
-                return stat.sortOrder;
-            });
+        createNewComment: function(form) {
+            return _createNewComment(form);
         }
     };
 

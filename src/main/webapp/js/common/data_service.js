@@ -10,13 +10,21 @@ app.service('AjaxService', function () {
 });
 
 /**
- * Service to perform generic GET/POST actions
+ * Service to perform generic GET/POST actions (Uses JQuery promises)
  */
-app.service('DataAccessService', ['$log', 'AjaxService', 'QR_DATA', 'QR_CONST', 'HTTP_CONST', 'DialogService',
-    function ($log, AjaxService, QR_DATA, QR_CONST, HTTP_CONST, DialogService) {
+app.service('DataAccessService', ['AjaxService', 'QR_DATA', 'QR_CONST', 'HTTP_CONST', 'DialogService',
+    function (AjaxService, QR_DATA, QR_CONST, HTTP_CONST, DialogService) {
 
         var _urlPrefix = '/spring';
 
+        /**
+         * Execute an AJAX request
+         * @param type
+         * @param url
+         * @param data
+         * @returns {*}
+         * @private
+         */
         var _request = function (type, url, data) {
             var options = {
                 type: type,
@@ -29,6 +37,7 @@ app.service('DataAccessService', ['$log', 'AjaxService', 'QR_DATA', 'QR_CONST', 
             }
 
             var deferred = $.Deferred();
+
             AjaxService.request(options)
                 .done(function (response) {
                     _isSuccess(response)
@@ -38,19 +47,51 @@ app.service('DataAccessService', ['$log', 'AjaxService', 'QR_DATA', 'QR_CONST', 
                 .fail(function (jqXHR, status, error) {
                     _error(deferred, jqXHR, error);
                 });
+
             return deferred;
         };
 
+        /**
+         * Determine from the response whether the request was successful
+         * @param response
+         * @returns {*|boolean}
+         * @private
+         */
+        var _isSuccess = function(response) {
+            return response && (response.status === QR_CONST.STATUS.SUCCESS);
+        };
+
+        /**
+         * Resolve the promise with response data; log messages
+         * @param deferred
+         * @param response
+         * @private
+         */
         var _success = function(deferred, response) {
             deferred.resolve(response.data);
-            if (response.message) $log.info(response.message);
+            if (response.message){
+                console.log(response.message);
+            }
         };
 
+        /**
+         * Reject the promise; log messages
+         * @param deferred
+         * @param response
+         * @private
+         */
         var _fail = function(deferred, response) {
             deferred.reject(response);
-            $log.error(response);
+            console.error(response);
         };
 
+        /**
+         * Reject the promise; notify user of certain statuses; log messages
+         * @param deferred
+         * @param jqXHR
+         * @param error
+         * @private
+         */
         var _error = function(deferred, jqXHR, error) {
             if (jqXHR.status === HTTP_CONST.STATUS.FORBIDDEN) {
                 DialogService.notify(
@@ -58,13 +99,17 @@ app.service('DataAccessService', ['$log', 'AjaxService', 'QR_DATA', 'QR_CONST', 
                     QR_DATA.notify.noSession.title
                 );
             }
-            deferred.reject(jqXHR.responseJSON);
-            $log.error(error + ': ' + jqXHR.responseJSON.message);
+            var responseJson = jqXHR.responseJSON;
+            if (angular.isDefined(responseJson)){
+                console.error(jqXHR.status, error, responseJson.message);
+                deferred.reject(responseJson)
+            } else {
+                console.error(jqXHR.status, error, 'No message provided');
+                deferred.reject();
+            }
+
         };
 
-        var _isSuccess = function(response) {
-            return response && (response.status === QR_CONST.STATUS.SUCCESS);
-        };
 
     return {
         get: function (url) {

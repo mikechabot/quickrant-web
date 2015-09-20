@@ -1,7 +1,5 @@
 package com.quickrant.controller;
 
-import com.quickrant.domain.RantPageResponse;
-import com.quickrant.domain.RantPageRequest;
 import com.quickrant.http.RequestWrapper;
 import com.quickrant.service.SessionService;
 
@@ -9,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.quickrant.factory.AjaxResponseFactory;
 import com.quickrant.model.Rant;
-import com.quickrant.domain.Comment;
+import com.quickrant.model.Comment;
 import com.quickrant.service.RantService;
 import com.quickrant.util.StringUtil;
 
 
 import org.apache.log4j.Logger;
+
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rants")
@@ -43,18 +45,32 @@ public class RantController {
 
     /**
      * Get a page of Rants
-     * @param pageRequest
+     * @param pageNumber
      * @return Page of Rant objects
      */
-    @RequestMapping(value = "/page", method = RequestMethod.POST)
-    public ResponseEntity getPage(@RequestBody RantPageRequest pageRequest) {
-        if (pageRequest.getPageNumber() < 0) {
+    @RequestMapping(value = "/page/{pageNumber}", method = RequestMethod.GET)
+    public ResponseEntity getPage(@PathVariable int pageNumber) {
+        if (pageNumber < 0) {
             return ajaxResponse.fail("Page number cannot be less than zero");
         }
-        RantPageResponse pageResponse = rantService.getRantPage(pageRequest);
-        return pageResponse != null
-                ? ajaxResponse.success(null, pageResponse)
-                : ajaxResponse.fail("Unable to locate rant page with page number '" + pageRequest.getPageNumber() + "'");
+        Page page = rantService.getPageByPageNumber(pageNumber);
+        return page != null
+                ? ajaxResponse.success(null, page)
+                : ajaxResponse.fail("Unable to locate rant page with page number '" + pageNumber + "'");
+    }
+
+    /**
+     * Get list of Rants since a specified date
+     * @param date
+     * @return
+     */
+    @RequestMapping(value = "/since/{date}", method = RequestMethod.GET)
+    public ResponseEntity getRantsSince(@PathVariable Long date) {
+        if (date == null) {
+            return ajaxResponse.fail("Date cannot be null");
+        }
+        List<Rant> rants = rantService.getRantsCreatedAfter(new Date(date));
+        return ajaxResponse.success(null, rants);
     }
 
     /**
@@ -103,7 +119,7 @@ public class RantController {
      * @return
      */
     @RequestMapping(value = "/comment/{rantId}", method = RequestMethod.POST)
-    public ResponseEntity saveComment(@PathVariable String rantId, @RequestBody @Valid Comment comment) {
+    public ResponseEntity saveComment(@PathVariable String rantId, @RequestBody Comment comment) {
         if (comment == null) {
             return ajaxResponse.fail("Save comment failed: Comment cannot be null");
         }
@@ -112,7 +128,7 @@ public class RantController {
             return ajaxResponse.fail("Save comment failed: Unable to locate rant (" + rantId + ")");
         }
         rantService.addCommentToRant(rant, comment);
-        return ajaxResponse.success();
+        return ajaxResponse.success("Comment saved", comment);
     }
 
     /**

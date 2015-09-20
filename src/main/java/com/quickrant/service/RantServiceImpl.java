@@ -1,16 +1,12 @@
 package com.quickrant.service;
 
-import javax.validation.Valid;
-
-import com.quickrant.domain.RantPageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.quickrant.comparator.CommentCountComparator;
-import com.quickrant.domain.Comment;
-import com.quickrant.domain.RantPageResponse;
+import com.quickrant.model.Comment;
 import com.quickrant.model.Rant;
 import com.quickrant.repository.RantRepository;
 import com.quickrant.sort.MongoSort;
@@ -18,6 +14,7 @@ import com.quickrant.sort.SortMethod;
 import com.quickrant.util.StringUtil;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,20 +33,9 @@ public class RantServiceImpl implements RantService {
     }
 
     @Override
-    public RantPageResponse getRantPage(RantPageRequest pageRequest) {
-
-        int pageNumber = pageRequest.getPageNumber();
-        if (pageNumber < 0) {
-            throw new IllegalArgumentException("Page number cannot be less than zero");
-        }
-
-        Page page = getPageByPageNumber(pageNumber);
-        if (page == null) {
-            return null;
-        }
-
-        RantPageResponse pageResponse = new RantPageResponse(page, pageRequest.getNumberOfRantsViewed());
-        return pageResponse;
+    public List<Rant> getRantsCreatedAfter(Date date) {
+        if (date == null) throw new IllegalArgumentException("Date cannot be null");
+        return rantRepository.findByCreatedDateGreaterThan(date);
     }
 
     @Override
@@ -72,8 +58,11 @@ public class RantServiceImpl implements RantService {
     }
 
     @Override
-    public void addCommentToRant(@Valid Rant rant, @Valid Comment comment) {
+    public void addCommentToRant(Rant rant, Comment comment) {
         if (rant == null || comment == null) throw new IllegalArgumentException("Rant and/or comment cannot be null");
+        Date createdDate = new Date();
+        comment.setCreatedDate(createdDate);
+        comment.setLastModifiedDate(createdDate);
         rant.addComment(comment);
         saveRant(rant);
     }

@@ -13,29 +13,23 @@ app.controller('AppController', ['$scope', function ($scope) {
     };
 }]);
 
-app.controller('MainController', ['$scope', 'QR_DATA', 'QR_CONST', function ($scope, QR_DATA, QR_CONST) {
-
-    $scope.isEmotionSelected = function(selection) {
-        return selection && selection.emotion;
-    };
-
-    $scope.isQuestionSelected = function(selection) {
-        return selection && selection.question;
-    };
+app.controller('MainController', ['$scope', '$timeout', 'QR_DATA', 'QR_CONST', 'QuickrantFactory', function ($scope, $timeout, QR_DATA, QR_CONST, QuickrantFactory) {
 
     var _initQuickrant = function() {
-        $scope.quickrant = {
-            defaults: QR_CONST.DEFAULT_VALUES,
-            restrictions: QR_CONST.RESTRICTIONS
+
+        $scope.quickrant = {};
+
+        QuickrantFactory()
+            .done(function(quickrant) {
+                $timeout(function() {
+                    $scope.quickrant = quickrant;
+                });
+            });
+
+        $scope.isLoaded = function() {
+            return !_.isEmpty($scope.quickrant);
         };
 
-        $scope.view = QR_CONST.VIEWS.LIVE_STREAM;
-        $scope.views = QR_CONST.VIEWS;
-
-        $scope.emotions = QR_DATA.emotions;
-
-        $scope.selection = {};  // Holds user selections (e.g. emotion, question)
-        $scope.rant = {};       // Holds rant information (e.g name, location, commentsAllowed)
     };
 
     _initQuickrant();

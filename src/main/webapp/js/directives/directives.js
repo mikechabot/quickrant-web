@@ -207,52 +207,43 @@ app.directive('question', function () {
     }
 });
 
-app.directive('rants', ['$timeout', 'RantService', 'DialogService', function ($timeout, RantService, DialogService) {
+app.directive('rants', ['$timeout', 'QR_DATA', 'DialogService', 'RantService', function ($timeout, QR_DATA, DialogService, RantService) {
     return {
         restrict: 'E',
-        templateUrl: '/templates/directives/rants.html',
-        scope: true,
-        link: function (scope) {
+        templateUrl: '/templates/directives/rant-stream.html',
+        scope: {
+            page: '='
+        },
+        controller: function($scope) {
 
-            scope.rants = {};
-            var statsMap = {};
-
-            scope.hasNextPage = function(pageStats) {
-                if (!pageStats) return;
-                return true;
+            $scope.isLastRant = function(index) {
+                return index == $scope.page.getRantCount() - 1
             };
 
-            var _getRantsSize = function() {
-                return scope.rants.length
-            };
-
-            var _getRantsByPageNumber = function(pageNumber) {
-                return RantService.getRantsByPageNumber(pageNumber, _getRantsSize());
-            };
-
-            var _getFirstPage = function() {
-                return _getRantsByPageNumber(0);
-            };
-
-            var _initFirstPage = function(page) {
-                $timeout(function() {
-                    scope.rants = page.rants;
-                    statsMap = RantService.getPageStatisticsMap(page);
-                    scope.statsList = RantService.getPageStatistics(statsMap);
-                });
-            };
-
-            var _initQuickrant = function() {
-                _getFirstPage()
-                    .done(function (page) {
-                        _initFirstPage(page);
-                    })
-                    .fail(function(error) {
-                        DialogService.error(error.message);
+            $scope.getNextPage = function() {
+                $scope.page.getNextPage()
+                    .done(function(page) {
+                        $timeout(function() {
+                            $scope.page = page;
+                        });
                     });
             };
 
-            _initQuickrant();
+            $scope.openRant = function(rant) {
+                RantService.openRant(rant);
+            };
+
+            $scope.showPolledRants = function() {
+                $scope.page.applyPolledRants();
+            };
+
+            $scope.showShare = function() {
+                DialogService.open({
+                    templateUrl: '/templates/modals/share.html',
+                    scope: QR_DATA.shareUrls
+                });
+            };
+
         }
     }
 }]);
@@ -268,14 +259,11 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
         },
         controller: function ($scope) {
 
-            var validationWatch;
-            var emotions = $scope.emotions;
-
             $scope.rant.allowComments = false;
 
-            $scope.getPanelStyleForSelection = function(selection) {
+            $scope.getPanelStyleForEmotion = function(selection) {
                 var emotionKey = selection.emotion;
-                var emotion = emotions[emotionKey];
+                var emotion = $scope.emotions[emotionKey];
                 return emotion.styles.panel;
             };
 
@@ -285,9 +273,10 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
             };
 
             $scope.postRant = function(rant) {
+                if (!rant || !rant.text) return;
                 RantService.postRant(rant, $scope.selection)
-                    .done(function() {
-                        DialogService.notify('rant posted', 'success');
+                    .done(function(savedRant) {
+                        RantService.openRant(savedRant);
                     })
                     .fail(function(error) {
                         DialogService.error(error.message);
@@ -299,22 +288,15 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
                     });
             };
 
-            function _buildValidationWatch() {
-                if (validationWatch) {
-                    console.log('killing watch');
-                    validationWatch();
-                }
-                validationWatch = $scope.$watch('form.text.$error', function(properties) {
-                    $scope.error = {};
-                    _.each(properties, function(value, key) {
-                        if (value === true) {
-                            $scope.error[key] = true;
-                        }
-                    });
-                }, true);
-            }
+            $scope.$watch('form.text.$error', function(errors) {
+                $scope.error = {};
+                _.each(errors, function(value, key) {
+                    if (value === true) {
+                        $scope.error[key] = true;
+                    }
+                });
+            }, true);
 
-            _buildValidationWatch();
         }
     }
 }]);

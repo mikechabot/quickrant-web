@@ -24,12 +24,16 @@ app.constant('QR_CONST', {
         LIVE_STREAM: 'liveStream',
         POPULAR: 'popular'
     },
-    STATISTIC: {
+    STATISTICS: {
         TOTAL_RANTS: 'TOTAL_RANTS',
-        RANTS_VIEWED: 'RANTS_VIEWED',
+        RANT_COUNT: 'RANT_COUNT',
         RANTS_TO_VIEW: 'RANTS_TO_VIEW',
         CURRENT_PAGE: 'CURRENT_PAGE',
         PAGES_TO_VIEW: 'PAGES_TO_VIEW',
         TOTAL_PAGES: 'TOTAL_PAGES'
+    },
+    UPDATE_ACTIONS: {
+        ADD_PAGE: 'ADD_PAGE',
+        ADD_RANTS: 'ADD_RANTS'
     }
 });

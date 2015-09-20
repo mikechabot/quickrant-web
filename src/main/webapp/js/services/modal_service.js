@@ -19,10 +19,9 @@ app.service('DialogService', ['$rootScope', 'ModalService', function($rootScope,
 
             if (hasValue(options.scope)) {
                 if (options.scope.constructor.name !== 'Scope') {
-                    var data = options.scope;
-                    var scope = $rootScope.$new();
-                    options.scope = scope;
-                    copyObject(data, options.scope);
+                    var temp = options.scope;
+                    options.scope = $rootScope.$new();
+                    copyObject(temp, options.scope);
                 }
             }
 
