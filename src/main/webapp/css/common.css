@@ -3,15 +3,14 @@
   src: url('/fonts/Always%20Together.otf'),
   url('/fonts/Always%20Together.otf'); /* IE */
 }
+body.modal-open {
+  overflow: hidden;
+}
 
 body {
   font-family: Open Sans, Arial, sans serif;
   font-size: 12px;
   font-weight: 300;
-}
-
-body.modal-open {
-    overflow: hidden;
 }
 
 label.disabled {
