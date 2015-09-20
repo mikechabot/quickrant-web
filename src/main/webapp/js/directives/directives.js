@@ -294,14 +294,11 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
             $scope.postRant = function(rant) {
                 if (!rant || !rant.text) return;
                 RantService.postRant(rant, $scope.selection)
-                    .done(function(savedRant) {
+                    .done(function(postedRant) {
                         $timeout(function() {
-                            $scope.page.addRants([savedRant], false);
-                            $scope.page.incrementStatisticValueByType(QR_CONST.STATISTICS.TOTAL_RANTS, 1);
-                            $scope.page.incrementStatisticValueByType(QR_CONST.STATISTICS.RANT_COUNT, 1);
-                            $scope.page.setNewestRantDate(savedRant.createdDate);
+                            $scope.page.addPostedRant(postedRant);
+                            RantService.openRant(postedRant);
                         });
-                        RantService.openRant(savedRant);
                     })
                     .fail(function(error) {
                         DialogService.error(error.message);

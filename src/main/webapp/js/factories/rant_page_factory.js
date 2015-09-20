@@ -122,6 +122,15 @@ app.factory('RantPageFactory', ['$interval', 'QR_CONST', 'RantService', 'Statist
                 }, this);
             }
         },
+        addPostedRant: function(postedRant) {
+            if (this.hasPolledRants()) {
+                this.applyPolledRants();
+            }
+            this.unshiftRant(this, postedRant);
+            this.incrementStatisticValueByType(QR_CONST.STATISTICS.TOTAL_RANTS, 1);
+            this.incrementStatisticValueByType(QR_CONST.STATISTICS.RANT_COUNT, 1);
+            this.setNewestRantDate(postedRant.createdDate);
+        },
         getPolledRants: function() {
             return this.polledRants;
         },
