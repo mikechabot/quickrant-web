@@ -273,7 +273,8 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
         scope: {
             rant: '=',
             emotions: '=',
-            selection: '='
+            selection: '=',
+            page: '='
         },
         controller: function ($scope) {
 
@@ -294,6 +295,12 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
                 if (!rant || !rant.text) return;
                 RantService.postRant(rant, $scope.selection)
                     .done(function(savedRant) {
+                        $timeout(function() {
+                            $scope.page.addRants([savedRant], false);
+                            $scope.page.incrementStatisticValueByType(QR_CONST.STATISTICS.TOTAL_RANTS, 1);
+                            $scope.page.incrementStatisticValueByType(QR_CONST.STATISTICS.RANT_COUNT, 1);
+                            $scope.page.setNewestRantDate(savedRant.createdDate);
+                        });
                         RantService.openRant(savedRant);
                     })
                     .fail(function(error) {

@@ -55,7 +55,7 @@ app.factory('RantPageFactory', ['$interval', 'QR_CONST', 'RantService', 'Statist
             }
 
             this.addRants(rants, push);
-            this.newestRantDate = _.first(this.getRants()).createdDate;
+            this.setNewestRantDate(_.first(this.getRants()).createdDate);
 
             switch (updateAction) {
                 case QR_CONST.UPDATE_ACTIONS.ADD_PAGE: {
@@ -92,6 +92,9 @@ app.factory('RantPageFactory', ['$interval', 'QR_CONST', 'RantService', 'Statist
             var stats = StatisticsService.generateStatistics(this, data);
             this.statisticsMap = stats.statisticsMap;
             this.statisticsList = stats.statisticsList;
+        },
+        setNewestRantDate: function(date) {
+            this.newestRantDate = date;
         },
         getRants: function() {
             return this.rants;

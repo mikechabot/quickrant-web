@@ -8,6 +8,9 @@ db.getCollection('rant').find({}).forEach(
             delete doc.selection;
         }
 
+        var emotion = doc.emotion;
+        doc.emotion = emotion.toUpperCase();
+
         var ranter = doc.ranter;
         if (ranter) {
             doc.name = doc.ranter.name;

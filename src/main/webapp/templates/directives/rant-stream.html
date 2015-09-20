@@ -1,5 +1,5 @@
 <!-- Show new rants -->
-<div class="text-center">
+<div ng-show="activeView === views.LIVE_STREAM" class="text-center">
   <button ng-show="page.hasPolledRants()" class="btn btn-default btn-lg margin-bottom-sm" ng-click="showPolledRants()">
     <ng-pluralize count="page.getPolledRantCount()" when="{'0': 'Show 0 new rants', 'one': 'Show 1 new rant', 'other': 'Show {} new rants'}"></ng-pluralize>
   </button>
