@@ -82,7 +82,7 @@
       <questions ng-if="quickrant.isEmotionSelected()" emotions="quickrant.emotions" selection="quickrant.selection"></questions>
       <rant-form ng-if="quickrant.isQuestionSelected()" rant="quickrant.rant" emotions="quickrant.emotions" selection="quickrant.selection"></rant-form>
       <hr>
-      <rants page="quickrant.page"></rants>
+      <rants page="quickrant.page" active-view="quickrant.activeView" views="quickrant.views" popular-rants="quickrant.popularRants"></rants>
     </div>
   </div>
 

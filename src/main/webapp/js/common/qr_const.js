@@ -21,8 +21,8 @@ app.constant('QR_CONST', {
        RANTS: 10000
     },
     VIEWS: {
-        LIVE_STREAM: 'liveStream',
-        POPULAR: 'popular'
+        LIVE_STREAM: 'LIVE_STREAM',
+        POPULAR: 'POPULAR'
     },
     STATISTICS: {
         TOTAL_RANTS: 'TOTAL_RANTS',

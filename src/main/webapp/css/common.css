@@ -68,7 +68,11 @@ textarea {
 }
 
 .pointer {
-    cursor: pointer;
+   cursor: pointer;
+}
+
+.default-cursor {
+  cursor: default;
 }
 
 .always {

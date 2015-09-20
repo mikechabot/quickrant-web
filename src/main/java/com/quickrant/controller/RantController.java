@@ -137,7 +137,7 @@ public class RantController {
      */
     @RequestMapping(value = "/popular", method = RequestMethod.GET)
     public ResponseEntity getPopularRants() {
-        return ajaxResponse.success(null, getPopularRants());
+        return ajaxResponse.success(null, rantService.getPopularRants());
     }
 
 }

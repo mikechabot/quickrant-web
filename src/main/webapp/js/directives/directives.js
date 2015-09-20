@@ -207,17 +207,39 @@ app.directive('question', function () {
     }
 });
 
-app.directive('rants', ['$timeout', 'QR_DATA', 'DialogService', 'RantService', function ($timeout, QR_DATA, DialogService, RantService) {
+app.directive('rant', ['RantService',function(RantService) {
+    return {
+        restrict: 'E',
+        templateUrl: '/templates/directives/rant.html',
+        scope: {
+            rant: '='
+        },
+        controller: function ($scope) {
+            $scope.openRant = function(rant) {
+                RantService.openRant(rant);
+            };
+        }
+    }
+}]);
+
+app.directive('rants', ['$timeout', 'QR_DATA', 'DialogService', function ($timeout, QR_DATA, DialogService) {
     return {
         restrict: 'E',
         templateUrl: '/templates/directives/rant-stream.html',
         scope: {
-            page: '='
+            page: '=',
+            activeView: '=',
+            views: '=',
+            popularRants: '='
         },
         controller: function($scope) {
 
             $scope.isLastRant = function(index) {
                 return index == $scope.page.getRantCount() - 1
+            };
+
+            $scope.isLastPopularRant = function(index) {
+                return index === $scope.popularRants.length - 1;
             };
 
             $scope.getNextPage = function() {
@@ -227,10 +249,6 @@ app.directive('rants', ['$timeout', 'QR_DATA', 'DialogService', 'RantService', f
                             $scope.page = page;
                         });
                     });
-            };
-
-            $scope.openRant = function(rant) {
-                RantService.openRant(rant);
             };
 
             $scope.showPolledRants = function() {
@@ -300,3 +318,28 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
         }
     }
 }]);
+
+app.directive('verticalStatisticsList', function() {
+
+    var templateHtml =
+        '<div class="col-lg-2 col-md-2 col-sm-2 hidden-xs sidebar text-right">' +
+        '<div class="page-info">' +
+        '<div ng-repeat="stat in data" class="media">' +
+        '<div class="media-left"><h2>{{stat.value}}</h2></div>' +
+        '<div class="media-body">{{stat.label}}</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+
+    return {
+        restrict: 'E',
+        template: templateHtml,
+        scope: {
+            data: '='
+        },
+        link: function(scope) {
+
+        }
+    }
+
+});

@@ -2,12 +2,17 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
 
     function _initPage() {
         var deferred = $.Deferred();
-        RantPageFactory()
-            .done(function(page) {
-                deferred.resolve(page);
+
+        var promises = [];
+        promises.push(RantPageFactory());
+        promises.push(RantService.getPopularRants());
+
+        $.when.apply(this, promises)
+            .done(function(page, popularRants) {
+                deferred.resolve({ page: page, popularRants: popularRants });
             })
-            .fail(function(error){
-                deferred.reject(error);
+            .fail(function(errorPage, errorPopular){
+                deferred.reject(errorPage, errorPopular);
             });
         return deferred.promise();
     }
@@ -37,6 +42,7 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
             var deferred = $.Deferred();
 
             this.page = {};                 // Holds paginated user rants & page statistics
+            this.popularRants = []          // Array of popular user rants
             this.views = {};                // Map of toggleable views
             this.activeView = {};           // Active view presented to user
             this.selection = {};            // Holds user selections (e.g. emotion, question)
@@ -46,9 +52,10 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
             this.restrictions = {};         // Map of restrictions (e.g min/max length)
 
             _initPage(this)
-                .done(function(page) {
-                    quickrant.page = page;
-                    quickrant.views = QR_CONST.VIEWS.VIEWS;
+                .done(function(data) {
+                    quickrant.page = data.page;
+                    quickrant.popularRants = data.popularRants;
+                    quickrant.views = QR_CONST.VIEWS;
                     quickrant.activeView = QR_CONST.VIEWS.LIVE_STREAM;
                     quickrant.emotions = QR_DATA.emotions;
                     quickrant.defaults = QR_CONST.DEFAULT_VALUES;

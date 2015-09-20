@@ -4,7 +4,8 @@
       <div class="panel-heading">
         <h3 class="panel-title text-center" id="legend">{{selection.question}}</h3>
       </div>
-      <div class="panel-body">
+        <div class="panel-body">
+
         <form name="form" class="form-inline" role="form">
 
           <!-- Name and Location -->
@@ -52,7 +53,7 @@
 
             <!-- Submit -->
             <div class="btn-group btn-big text-center">
-              <label class="fa fa-1-5x pointer" ng-class="{disabled: !form.$valid }" ng-click="postRant(rant)">
+              <label class="fa fa-1-5x pointer" ng-class="{disabled: !form.$valid, 'default-cursor': !form.$valid }" ng-click="postRant(rant)">
                 <span class="fa-stack fa-lg">
                   <i class="fa fa-send fa-stack-1x"></i>
                   <i class="fa fa-stack-2x"></i>
