@@ -42,7 +42,7 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
                 });
             return deferred.promise();
         },
-        getPageByPageNumber: function getRants(pageNumber) {
+        getPageByPageNumber: function (pageNumber) {
             if (pageNumber < 0) throw new Error('Page number cannot be less than zero');
             var deferred = $.Deferred();
             DataAccessService.get(basePath + '/page/' + pageNumber)
@@ -57,14 +57,15 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
         getRantsCreatedAfter: function(date) {
             return DataAccessService.get(basePath + '/since/' + date);
         },
-        postRant: function postRant(rant, selection) {
+        postRant: function(rant, selection) {
             if (!rant || !selection) throw new Error('Rant and/or selection cannot be null');
-            return DataAccessService.post(basePath, _createNewRant(rant, selection))
+            var newRant =  _createNewRant(rant, selection);
+            return DataAccessService.post(basePath, newRant);
         },
-        getRantById: function getRantById(id) {
+        getRantById: function (id) {
             return DataAccessService.get(basePath + '/' + id);
         },
-        saveComment: function saveComment(comment, rantId) {
+        saveComment: function (comment, rantId) {
             var deferred = $.Deferred();
             if (!hasValue(comment.text)) {
                 deferred.reject("Comment cannot be empty");
@@ -74,10 +75,10 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
             return deferred.promise();
 
         },
-        getPopularRants: function getPopularRants() {
+        getPopularRants: function() {
             return DataAccessService.get(basePath + '/popular');
         },
-        getRantsByQuestion: function getRantsByQuestion(question) {
+        getRantsByQuestion: function(question) {
             return DataAccessService.get(basePath + '/question', question);
         },
         openRant: function(rant) {
@@ -92,6 +93,9 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
                 }
             };
             return DialogService.open(options)
+        },
+        createNewRant: function(rant,selection) {
+            return _createNewRant(rant, selection);
         },
         createNewComment: function(form) {
             return _createNewComment(form);

@@ -1,17 +1,17 @@
 var testData = {
+    getTestSelection: function() {
+        return {
+            emotion: 'HAPPY',
+            question: 'Test question'
+        }
+    },
     getTestRant: function() {
         return {
-            rant: 'This is a test rant.',
-            selection: {
-                emotion: 'happy',
-                question: 'You know what makes me smile?'
-            },
-            ranter: {
-                name: 'Anonymous',
-                location: 'Earth'
-            },
-            allowComments: false,
-            createdDate: '2015-05-31T23:27:24.494Z'
+            text: 'This is a test',
+            name: 'Anonymous',
+            location: 'Earth',
+            allowComments: true
+
         }
     }
 };
