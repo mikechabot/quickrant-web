@@ -58,6 +58,14 @@ textarea {
   min-height: 50px;
 }
 
+.grey-0 {
+  color: #555;
+}
+
+.grey-1 {
+  color: #777;
+}
+
 .inline-block {
   display: inline-block;
 }

@@ -42,7 +42,7 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
             var deferred = $.Deferred();
 
             this.page = {};                 // Holds paginated user rants & page statistics
-            this.popularRants = []          // Array of popular user rants
+            this.popularRants = [];         // Array of popular user rants
             this.views = {};                // Map of toggleable views
             this.activeView = {};           // Active view presented to user
             this.selection = {};            // Holds user selections (e.g. emotion, question)
@@ -50,6 +50,7 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
             this.emotions = {};             // Map of static emotion objects
             this.defaults = {};             // Map of default values
             this.restrictions = {};         // Map of restrictions (e.g min/max length)
+            this.replyToRant = {};          // Holds the rant being replied to
 
             _initPage(this)
                 .done(function(data) {
@@ -91,6 +92,9 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
         },
         getRestrictions: function() {
             return this.restrictions;
+        },
+        getReplyToRant: function() {
+            return this.replyToRant;
         },
         hasPage: function() {
             return !_.isEmpty(this.getPage());

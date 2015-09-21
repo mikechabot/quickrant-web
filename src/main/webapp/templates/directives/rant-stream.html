@@ -14,12 +14,11 @@
         <a class="list-group-item" href ng-class="{active: (activeView === views.POPULAR)}" ng-click="activeView = views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
         <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
       </div>
-      <hr>
     </div>
 
     <div class="col-lg-8 col-md-7 col-sm-7">
 
-      <div ng-show="activeView === views.LIVE_STREAM" ng-repeat="rant in page.getRants()" class="row">
+      <div ng-if="activeView === views.LIVE_STREAM" ng-repeat="rant in page.getRants()" class="row">
         <rant rant="rant"></rant>
 
         <!-- Footer buttons (START) -->
@@ -45,7 +44,7 @@
         </div>
       </div>
 
-      <div ng-show="activeView === views.POPULAR" ng-repeat="rant in popularRants" class="row">
+      <div ng-if="activeView === views.POPULAR" ng-repeat="rant in popularRants" class="row">
         <rant rant="rant"></rant>
         <!-- Footer buttons (START) -->
         <div ng-if="isLastPopularRant($index)" class="row margin-bottom-lg">
@@ -54,6 +53,8 @@
           </div>
         </div>
       </div>
+
+      <reply-to-rant ng-if="activeView === views.REPLY" rant="replyToRant"></reply-to-rant>
 
     </div>
 

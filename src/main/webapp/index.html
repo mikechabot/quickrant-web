@@ -56,8 +56,8 @@
   <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
   <link href="/css/font-awesome/font-awesome.min.css" rel="stylesheet">
 
-  <link href="/css/common.css?v=201506010111" rel="stylesheet">
-  <link href="/css/quickrant.css?v=201506010111" rel="stylesheet">
+  <link href="/css/common.css?v=201509200255" rel="stylesheet">
+  <link href="/css/quickrant.css?v=201509200255" rel="stylesheet">
 
   <link rel="image_src" type="image/gif" href="http://quickrant.com/img/thumbnail.gif"/>
 
@@ -72,13 +72,13 @@
   <link href="/ico/Icon-Small-50@2x.png" rel="apple-touch-icon" sizes="100x100">
 
 </head>
-<body ng-controller="AppController">
+<body>
 
   <navigation></navigation>
 
   <div ng-controller="MainController" class="container">
     <div ng-show="isLoaded()">
-      <emotions emotions="quickrant.emotions" selection="quickrant.selection" rant="rant"></emotions>
+      <emotions emotions="quickrant.emotions" selection="quickrant.selection" rant="quickrant.rant"></emotions>
       <questions ng-if="quickrant.isEmotionSelected()" emotions="quickrant.emotions" selection="quickrant.selection"></questions>
       <rant-form ng-if="quickrant.isQuestionSelected()" rant="quickrant.rant" emotions="quickrant.emotions" selection="quickrant.selection" page="quickrant.page"></rant-form>
       <hr>

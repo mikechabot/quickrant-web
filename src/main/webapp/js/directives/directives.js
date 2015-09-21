@@ -4,21 +4,31 @@
  *   scroll-element: DOM element(s) to be scrolled upon (comma-separated)
  *  scroll-to-pixel: Scroll to this number of pixels from the top of the scroll-element
  *     scroll-speed: Speed at which to scroll
+ *        scroll-to: Scroll to a location (e.g. "top", "bottom")
  *         focus-on: Focus on an element after scrolling
  */
-app.directive('scrollOnClick', function() {
+app.directive('scrollOnClick', ['$document', '$window', function($document, $window) {
     return {
         restrict: 'A',
         scope: {
             scrollElement: '@',
             scrollToPixel: '@',
             scrollSpeed: '@',
+            scrollTo: '@',
             focusOn: '@'
         },
         link: function(scope, element) {
             var context = scope.scrollElement || 'body, html';
             var pixels = scope.scrollToPixel || 0;
             var speed = scope.scrollSpeed || 'slow';
+            var scrollTo = scope.scrollTo;
+
+            if (scrollTo === 'top') {
+                pixels = 0;
+            } else if (scrollTo === 'bottom') {
+                pixels = $document.height() + $document.innerHeight() + $document.outerHeight();
+            }
+
             element.on('click', function() {
                 $(context).animate({scrollTop: pixels }, speed);
                 if (scope.focusOn) {
@@ -27,7 +37,7 @@ app.directive('scrollOnClick', function() {
             });
         }
     }
-});
+}]);
 
 /**
  * Directive that copies a scope variable to another
@@ -194,33 +204,18 @@ app.directive('question', function () {
     return {
         restrict: 'E',
         require: '^questions',
+        template: '<button class="btn btn-{{buttonStyle}} btn-question" type="button">{{::question}}</button>',
         scope: {
             question: '=',
             buttonStyle: '='
         },
-        template: '<button class="btn btn-{{buttonStyle}} btn-question" type="button">{{::question}}</button>',
-        link: function (scope, $element, $attrs, questionsCtrl) {
-            $element.bind('click', function () {
+        link: function (scope, element, attrs, questionsCtrl) {
+            element.bind('click', function () {
                 questionsCtrl.select(scope.question);
             });
         }
     }
 });
-
-app.directive('rant', ['RantService',function(RantService) {
-    return {
-        restrict: 'E',
-        templateUrl: '/templates/directives/rant.html',
-        scope: {
-            rant: '='
-        },
-        controller: function ($scope) {
-            $scope.openRant = function(rant) {
-                RantService.openRant(rant);
-            };
-        }
-    }
-}]);
 
 app.directive('rants', ['$timeout', 'QR_DATA', 'DialogService', function ($timeout, QR_DATA, DialogService) {
     return {
@@ -233,6 +228,15 @@ app.directive('rants', ['$timeout', 'QR_DATA', 'DialogService', function ($timeo
             popularRants: '='
         },
         controller: function($scope) {
+
+            $scope.replyToRant = {};
+
+            this.replyToRant = function(rant) {
+                $timeout(function() {
+                    $scope.activeView = $scope.views.REPLY;
+                    $scope.replyToRant = rant;
+                });
+            };
 
             $scope.isLastRant = function(index) {
                 return index == $scope.page.getRantCount() - 1
@@ -262,6 +266,23 @@ app.directive('rants', ['$timeout', 'QR_DATA', 'DialogService', function ($timeo
                 });
             };
 
+        }
+    }
+}]);
+
+
+app.directive('rant', ['RantService',function(RantService) {
+    return {
+        restrict: 'E',
+        require: '^rants',
+        templateUrl: '/templates/directives/rant.html',
+        scope: {
+            rant: '='
+        },
+        link: function (scope, element, attrs, rantsCtrl) {
+            scope.replyTo = function(rant) {
+                rantsCtrl.replyToRant(rant);
+            };
         }
     }
 }]);
@@ -297,7 +318,6 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
                     .done(function(postedRant) {
                         $timeout(function() {
                             $scope.page.addPostedRant(postedRant);
-                            RantService.openRant(postedRant);
                         });
                     })
                     .fail(function(error) {
@@ -319,6 +339,60 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
                 });
             }, true);
 
+        }
+    }
+}]);
+
+app.directive('replyToRant', ['$timeout', 'QR_CONST', 'RantService', 'DialogService', function ($timeout, QR_CONST, RantService, DialogService) {
+    return {
+        restrict: 'E',
+        templateUrl: '/templates/directives/rant-reply.html',
+        scope: {
+            rant: '='
+        },
+        controller: function ($scope) {
+
+            $scope.showForm = true;
+
+            function _addCommentToRant(comment) {
+                $scope.rant.comments.push(comment);
+                $scope.rant.commentCount += 1;
+            }
+
+            function _resetForm() {
+                $scope.form.location = undefined;
+                $scope.form.name = undefined;
+                $scope.form.text = undefined;
+            }
+
+            $scope.saveComment = function(form) {
+                var comment = RantService.createNewComment(form);
+                if (!comment || !comment.text) return;
+                RantService.saveComment(comment, $scope.rant.id)
+                    .done(function(comment) {
+                        _addCommentToRant(comment);
+                        _resetForm();
+                    })
+                    .always(function() {
+                        $timeout(function() {
+                            $scope.showForm = false;
+                        });
+                    });
+            };
+
+            $scope.getCharactersLeft = function(text) {
+                if (!text) return;
+                return QR_CONST.RESTRICTIONS.MAX_CHAR - text.length;
+            };
+
+            $scope.$watch('form.text.$error', function(errors) {
+                $scope.error = {};
+                _.each(errors, function(value, key) {
+                    if (value === true) {
+                        $scope.error[key] = true;
+                    }
+                });
+            }, true);
         }
     }
 }]);

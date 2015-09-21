@@ -83,7 +83,7 @@ app.service('RantService', ['$log', 'QR_CONST', 'QR_DATA', 'DataAccessService', 
         },
         openRant: function(rant) {
             var options = {
-                templateUrl: '/templates/directives/rant-modal.html',
+                templateUrl: '/templates/directives/rant-reply.html',
                 size: 'lg',
                 windowClass: 'rant-comment',
                 backdrop: 'static',
