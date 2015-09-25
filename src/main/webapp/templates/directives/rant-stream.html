@@ -19,7 +19,7 @@
     <div class="col-lg-8 col-md-7 col-sm-7">
 
       <div ng-if="activeView === views.LIVE_STREAM" ng-repeat="rant in page.getRants()" class="row">
-        <rant rant="rant"></rant>
+        <rant rant="rant" flash="$index == 0 && page.isRantPosted()"></rant>
 
         <!-- Footer buttons (START) -->
         <div ng-if="isLastRant($index)" class="row margin-bottom-lg">

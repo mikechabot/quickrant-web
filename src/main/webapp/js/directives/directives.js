@@ -277,7 +277,8 @@ app.directive('rant', ['RantService',function(RantService) {
         require: '^rants',
         templateUrl: '/templates/directives/rant.html',
         scope: {
-            rant: '='
+            rant: '=',
+            flash: '='
         },
         link: function (scope, element, attrs, rantsCtrl) {
             scope.replyTo = function(rant) {
@@ -318,16 +319,12 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
                     .done(function(postedRant) {
                         $timeout(function() {
                             $scope.page.addPostedRant(postedRant);
+                            $scope.selection.emotion = undefined;
+                            $scope.selection.question = undefined;
                         });
                     })
                     .fail(function(error) {
                         DialogService.error(error.message);
-                    })
-                    .always(function() {
-                        $timeout(function() {
-                            $scope.rant = {};
-                            $scope.rant.allowComments = true;
-                        });
                     });
             };
 
@@ -386,6 +383,7 @@ app.directive('replyToRant', ['$timeout', 'QR_CONST', 'RantService', 'DialogServ
             };
 
             $scope.showDirectionals = function() {
+                if (!$scope.rant.comments) return;
                 return $scope.rant.comments.length > 3;
             };
 

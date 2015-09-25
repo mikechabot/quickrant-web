@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="panel-body">
-      <blockquote>
+      <blockquote ng-class="{flash: flash}">
         <p class="margin-bottom-md">{{::rant.text}}</p>
         <small>
           <span class="mild-bold">{{::rant.name}}</span> // {{::rant.location}} // {{rant.createdDate | timeago}}

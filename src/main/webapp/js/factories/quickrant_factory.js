@@ -96,6 +96,9 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
         getReplyToRant: function() {
             return this.replyToRant;
         },
+        isRantPosted: function() {
+            return this.page.isRantPosted();
+        },
         hasPage: function() {
             return !_.isEmpty(this.getPage());
         },

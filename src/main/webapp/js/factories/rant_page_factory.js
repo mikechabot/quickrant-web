@@ -1,4 +1,4 @@
-app.factory('RantPageFactory', ['$interval', 'QR_CONST', 'RantService', 'StatisticsService', function($interval, QR_CONST, RantService, StatisticsService) {
+app.factory('RantPageFactory', ['$interval', '$timeout', 'QR_CONST', 'RantService', 'StatisticsService', function($interval, $timeout, QR_CONST, RantService, StatisticsService) {
 
     function RantPage() {};                     // Empty constructor
 
@@ -30,6 +30,7 @@ app.factory('RantPageFactory', ['$interval', 'QR_CONST', 'RantService', 'Statist
 
             this.lastPage = false;              // Determine if the current page is the last page
             this.newestRantDate = {};           // Date of the newest rate, used for polling
+            this.rantPosted = false;            // Inform the UI that a rant was recently posted
 
             RantService.getFirstPage()
                 .done(function(data) {
@@ -130,6 +131,12 @@ app.factory('RantPageFactory', ['$interval', 'QR_CONST', 'RantService', 'Statist
             this.incrementStatisticValueByType(QR_CONST.STATISTICS.TOTAL_RANTS, 1);
             this.incrementStatisticValueByType(QR_CONST.STATISTICS.RANT_COUNT, 1);
             this.setNewestRantDate(postedRant.createdDate);
+            this.rantPosted = true;
+
+            var page = this;
+            $timeout(function() {
+                page.rantPosted = false;
+            }, 1500);
         },
         getPolledRants: function() {
             return this.polledRants;
@@ -139,6 +146,9 @@ app.factory('RantPageFactory', ['$interval', 'QR_CONST', 'RantService', 'Statist
         },
         getPolledRantCount: function() {
             return this.polledRants.length
+        },
+        isRantPosted: function() {
+            return this.rantPosted;
         },
         getStatisticsList: function() {
             return this.statisticsList;
