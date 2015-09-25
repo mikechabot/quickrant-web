@@ -299,7 +299,7 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
         },
         controller: function ($scope) {
 
-            $scope.rant.allowComments = false;
+            $scope.rant.allowComments = true;
 
             $scope.getPanelStyleForEmotion = function(selection) {
                 var emotionKey = selection.emotion;
@@ -326,6 +326,7 @@ app.directive('rantForm', ['$timeout', 'QR_CONST', 'RantService', 'DialogService
                     .always(function() {
                         $timeout(function() {
                             $scope.rant = {};
+                            $scope.rant.allowComments = true;
                         });
                     });
             };
