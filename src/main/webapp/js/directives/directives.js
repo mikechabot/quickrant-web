@@ -380,6 +380,14 @@ app.directive('replyToRant', ['$timeout', 'QR_CONST', 'RantService', 'DialogServ
                     });
             };
 
+            $scope.hasComments = function() {
+                return $scope.rant.comments.length > 0;
+            };
+
+            $scope.showDirectionals = function() {
+                return $scope.rant.comments.length > 3;
+            };
+
             $scope.getCharactersLeft = function(text) {
                 if (!text) return;
                 return QR_CONST.RESTRICTIONS.MAX_CHAR - text.length;
