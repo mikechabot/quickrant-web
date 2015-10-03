@@ -485,7 +485,6 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
         template: '<div id="emotion-stats"></div>',
         link: function(scope, element, attrs) {
 
-
             // Dummy object for transitions
             var _data = [
                 { label: 'angry', value: 0 },
@@ -496,18 +495,6 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
             var margin = { top: 30, right: 30, bottom: 30, left: 30 };
             var height = 480 - margin.top - margin.bottom;
             var width = 640 - margin.left - margin.right;
-
-            var yScale = d3.scale.linear()
-                .domain([0, _getMaxDataValue()])
-                .range([0, height]);
-
-            var xScale = d3.scale.ordinal()
-                .domain(_getDataValues())
-                .rangeBands([0, width], 0.1, 0);
-
-            var colorScale = d3.scale.quantile()
-                .domain([0, _getDataLength()])
-                .range(['#CB3B37', '#3D9BCB', '#555555']);
 
             var canvas = d3.select('#emotion-stats')
                 .append('div')
@@ -539,22 +526,29 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
 
             StatisticsService.getEmotionStatistics()
                 .done(function(data) {
+
+                    // Update values values
+                    var values = [];
                     _.each(_data, function(datum, i) {
-                       datum.value = data[i].value;
+                        var value = data[i].value;
+                        datum.value = value;
+                        values.push(value);
                     });
 
-                    values = _.pluck(_data, 'value');
-                    max = d3.max(values);
-
-                    yScale = d3.scale.linear()
-                        .domain([0, max])
+                    // Set scaling
+                    var yScale = d3.scale.linear()
+                        .domain([0, d3.max(values)])
                         .range([0, height]);
 
-                    xScale = d3.scale.ordinal()
+                    var xScale = d3.scale.ordinal()
                         .domain(values)
                         .rangeBands([0, width], 0.1, 0);
 
-                    console.log(_data);
+                    var colorScale = d3.scale.quantile()
+                        .domain([0, _data.length])
+                        .range(['#CB3B37', '#3D9BCB', '#555555']);
+
+                    // Repaint canvas with updated data
                     canvas
                         .selectAll('rect')
                         .transition()
@@ -575,19 +569,8 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                             return colorScale(i);
                         })
                         .attr('fill-opacity', 1)
+
                 });
-
-            function _getDataLength() {
-                return _data.length;
-            }
-
-            function _getDataValues() {
-                return _.pluck(_data, 'value');
-            }
-
-            function _getMaxDataValue() {
-                return d3.max(_getDataValues());
-            }
         }
     }
 }]);
