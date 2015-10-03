@@ -428,3 +428,124 @@ app.directive('verticalStatisticsList', function() {
     }
 
 });
+
+app.directive('myVis', function($timeout) {
+    return {
+        restrict: 'E',
+        template: '<div id="my-vis"></div>',
+        scope: {
+            data: '='
+        },
+        link: function(scope, element, attrs) {
+            var data = _.map(_.range(50), function(i) {
+                return Math.random() * 50;
+            });
+
+            var w = 900, h = 400;
+
+            var yScale = d3.scale.linear()
+                .domain([0, d3.max(data) * 1.1])
+                .range([0, h]);
+
+            var xScale = d3.scale.ordinal()
+                .domain(data)
+                .rangeBands([0, w], 0.1, 0);
+
+            var colorScale = d3.scale.linear()
+                .domain([0, d3.max(data)])
+                .range(['black', 'blue']);
+
+            var svg = d3.select('#my-vis').append('svg')
+                .attr('width', w)
+                .attr('height', h);
+
+            svg.selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'vis-style')
+                .attr('x', function(d) {
+                    return xScale(d);
+                })
+                .attr('y', function(d) {
+                    return h - yScale(d);
+                })
+                .attr('width', xScale.rangeBand())
+                .attr('height', function(d) {
+                    return yScale(d);
+                })
+                .attr('fill', colorScale)
+        }
+    }
+});
+
+app.directive('emotionStatistics', ['$compile', 'StatisticsService', function($compile, StatisticsService) {
+    return {
+        restrict: 'E',
+        template: '<div id="emotion-stats"></div>',
+        link: function(scope, element, attrs) {
+
+            var margin = { top: 30, right: 30, bottom: 30, left: 30 };
+            var height = 400 - margin.top - margin.bottom;
+            var width = 700 - margin.left - margin.right;
+
+            StatisticsService.getEmotionStatistics()
+                .done(function(data) {
+
+                    var values = _.pluck(data, 'value');
+                    var max = d3.max(values);
+
+                    var yScale = d3.scale.linear()
+                        .domain([0, max])
+                        .range([0, height]);
+
+                    var xScale = d3.scale.ordinal()
+                        .domain(values)
+                        .rangeBands([0, width], 0.1, 0);
+
+                    var colorScale = d3.scale.quantile()
+                        .domain([0, data.length])
+                        .range(['red', 'blue', 'gray']);
+
+                    var canvas = d3.select('#emotion-stats')
+                        .append('div')
+                        .classed('svg-container', true)
+                        .append('svg')
+                        .attr('preserveAspectRatio', 'xMinYMin meet')
+                        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+                        .classed('svg-content-responsive', true)
+                        .append('g')
+                        .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+                    canvas
+                        .selectAll('rect')
+                        .data(data)
+                        .enter()
+                        .append('rect')
+                        .attr('class', 'emotion-statistics')
+                        .attr('x', function(d) {
+                            return xScale(d.value);
+                        })
+                        .attr('y', function(d) {
+                            return height - yScale(d.value);
+                        })
+                        .attr('width', xScale.rangeBand())
+                        .attr('height', function(d) {
+                            return yScale(d.value);
+                        })
+                        .attr('fill', function(d, i) {
+                            return colorScale(i);
+                        })
+                        .on('mouseover', function(d) {
+                            d3.select(this).classed('active-' + d.label, true);
+                        })
+                        .on('mouseout', function(d) {
+                            d3.select(this).classed('active-' + d.label, false);
+                        });
+
+                    $compile(element.contents())(scope);
+
+                });
+        }
+    }
+}]);

@@ -23,7 +23,8 @@ app.constant('QR_CONST', {
     VIEWS: {
         LIVE_STREAM: 'LIVE_STREAM',
         POPULAR: 'POPULAR',
-        REPLY: 'REPLY'
+        REPLY: 'REPLY',
+        STATISTICS: 'STATISTICS'
     },
     STATISTICS: {
         TOTAL_RANTS: 'TOTAL_RANTS',

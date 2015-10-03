@@ -12,6 +12,7 @@
       <div class="list-group">
         <a class="list-group-item" href ng-class="{active: (activeView === views.LIVE_STREAM)}" ng-click="activeView = views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
         <a class="list-group-item" href ng-class="{active: (activeView === views.POPULAR)}" ng-click="activeView = views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
+        <a class="list-group-item" href ng-class="{active: (activeView === views.STATISTICS)}" ng-click="activeView = views.STATISTICS"><i class="fa fa-line-chart fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Stats</span></a>
         <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
       </div>
     </div>
@@ -55,6 +56,8 @@
       </div>
 
       <reply-to-rant ng-if="activeView === views.REPLY" rant="replyToRant"></reply-to-rant>
+
+      <emotion-statistics ng-if="activeView === views.STATISTICS"></emotion-statistics>
 
     </div>
 

@@ -1,5 +1,6 @@
 package com.quickrant.service;
 
+import com.quickrant.domain.Emotion;
 import com.quickrant.model.Comment;
 import com.quickrant.model.Rant;
 import org.springframework.data.domain.Page;
@@ -15,5 +16,6 @@ public interface RantService {
     Rant getRantById(String id);
     void addCommentToRant(Rant rant, Comment comment);
     void saveRant(Rant rant);
+    Long getCountByEmotion(Emotion emotion);
 
 }

@@ -1,6 +1,9 @@
-app.service('StatisticsService', function() {
+app.service('StatisticsService', ['DataAccessService', function(DataAccessService) {
 
     return {
+        getEmotionStatistics: function() {
+            return DataAccessService.get('/statistics');
+        },
         generateStatistics: function(page, data) {
             var statisticsMap = this.generateStatisticsMap(page, data);
             var statisticsList = _.sortBy(statisticsMap, function(statistic) {
@@ -50,4 +53,4 @@ app.service('StatisticsService', function() {
         }
     }
 
-});
+}]);

@@ -1,5 +1,6 @@
 package com.quickrant.service;
 
+import com.quickrant.domain.Emotion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,11 @@ public class RantServiceImpl implements RantService {
     @Override
     public void saveRant(Rant rant) {
         rantRepository.save(rant);
+    }
+
+    @Override
+    public Long getCountByEmotion(Emotion emotion) {
+        return rantRepository.countByEmotion(emotion);
     }
 
 }
