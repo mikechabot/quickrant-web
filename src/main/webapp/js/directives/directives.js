@@ -538,7 +538,7 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                     var xAxis = d3.svg.axis()
                         .scale(_getXScale())
                         .orient('bottom');
-cl;
+
                     // Add x axis
                     canvas
                         .append('g')
@@ -550,6 +550,7 @@ cl;
                     canvas
                         .selectAll('rect')
                         .call(_paintBars);
+
 
                 });
 
