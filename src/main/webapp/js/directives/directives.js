@@ -515,7 +515,7 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                 .attr('y', height)
                 .attr('height', 0)
                 .attr('fill', 'gray')
-                .attr('fill-opacity', 0)
+                .attr('fill-opacity',0)
                 .on('mouseover', function(d) {
                     d3.select(this).classed('active-bar-' + d.label, true);
                 })
@@ -552,9 +552,11 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                     canvas
                         .selectAll('rect')
                         .transition()
-                        .duration(1250)
-                        .delay(250)
-                        .ease('bounce')
+                        .duration(250)
+                        .delay(function(d, i) {
+                            return i * 125;
+                        })
+                        .ease('quad')
                         .attr('x', function(d) {
                             return xScale(d.value);
                         })
