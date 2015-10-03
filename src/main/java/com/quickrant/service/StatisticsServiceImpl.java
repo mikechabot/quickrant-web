@@ -18,9 +18,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public List<Statistic> getEmotionStatistics() {
         List<Statistic> stats = new ArrayList<>();
+        stats.add(new Statistic(Emotion.ANGRY.name().toLowerCase(), rantService.getCountByEmotion(Emotion.ANGRY)));
         stats.add(new Statistic(Emotion.HAPPY.name().toLowerCase(), rantService.getCountByEmotion(Emotion.HAPPY)));
         stats.add(new Statistic(Emotion.SAD.name().toLowerCase(), rantService.getCountByEmotion(Emotion.SAD)));
-        stats.add(new Statistic(Emotion.ANGRY.name().toLowerCase(), rantService.getCountByEmotion(Emotion.ANGRY)));
         return stats;
     }
 

@@ -62,6 +62,10 @@ svg{
   color: #ffffff;
 }
 
+.active-bar-angry {
+  fill: #d5625e;
+}
+
 .btn-angry:hover {
   color: #ffffff;
   background-color: #F4534E;
@@ -77,6 +81,10 @@ svg{
   background-color: #3D9BCB;
   border-color: #ffffff;
   color: #ffffff;
+}
+
+.active-bar-happy {
+  fill: #63afd5;
 }
 
 .btn-happy:hover {
@@ -104,6 +112,10 @@ svg{
   background-color: #555555;
   border-color: #ffffff;
   color: #ffffff;
+}
+
+.active-bar-sad {
+  fill: #767676;
 }
 
 .btn-sad:hover {

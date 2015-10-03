@@ -479,50 +479,88 @@ app.directive('myVis', function($timeout) {
     }
 });
 
-app.directive('emotionStatistics', ['$compile', 'StatisticsService', function($compile, StatisticsService) {
+app.directive('emotionStatistics', ['StatisticsService', function(StatisticsService) {
     return {
         restrict: 'E',
         template: '<div id="emotion-stats"></div>',
         link: function(scope, element, attrs) {
 
+
+            // Dummy object for transitions
+            var _data = [
+                { label: 'angry', value: 0 },
+                { label: 'happy', value: 0 },
+                { label: 'sad', value: 0 }
+            ];
+
             var margin = { top: 30, right: 30, bottom: 30, left: 30 };
-            var height = 400 - margin.top - margin.bottom;
-            var width = 700 - margin.left - margin.right;
+            var height = 480 - margin.top - margin.bottom;
+            var width = 640 - margin.left - margin.right;
+
+            var yScale = d3.scale.linear()
+                .domain([0, _getMaxDataValue()])
+                .range([0, height]);
+
+            var xScale = d3.scale.ordinal()
+                .domain(_getDataValues())
+                .rangeBands([0, width], 0.1, 0);
+
+            var colorScale = d3.scale.quantile()
+                .domain([0, _getDataLength()])
+                .range(['#CB3B37', '#3D9BCB', '#555555']);
+
+            var canvas = d3.select('#emotion-stats')
+                .append('div')
+                .classed('svg-container', true)
+                .append('svg')
+                .attr('preserveAspectRatio', 'xMinYMin meet')
+                .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+                .classed('svg-content-responsive', true)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+            canvas
+                .selectAll('rect')
+                .data(_data)
+                .enter()
+                .append('rect')
+                .attr('class', 'emotion-statistics')
+                .attr('y', height)
+                .attr('height', 0)
+                .attr('fill', 'gray')
+                .attr('fill-opacity', 0)
+                .on('mouseover', function(d) {
+                    d3.select(this).classed('active-bar-' + d.label, true);
+                })
+                .on('mouseout', function(d) {
+                    d3.select(this).classed('active-bar-' + d.label, false);
+                });
+
 
             StatisticsService.getEmotionStatistics()
                 .done(function(data) {
+                    _.each(_data, function(datum, i) {
+                       datum.value = data[i].value;
+                    });
 
-                    var values = _.pluck(data, 'value');
-                    var max = d3.max(values);
+                    values = _.pluck(_data, 'value');
+                    max = d3.max(values);
 
-                    var yScale = d3.scale.linear()
+                    yScale = d3.scale.linear()
                         .domain([0, max])
                         .range([0, height]);
 
-                    var xScale = d3.scale.ordinal()
+                    xScale = d3.scale.ordinal()
                         .domain(values)
                         .rangeBands([0, width], 0.1, 0);
 
-                    var colorScale = d3.scale.quantile()
-                        .domain([0, data.length])
-                        .range(['red', 'blue', 'gray']);
-
-                    var canvas = d3.select('#emotion-stats')
-                        .append('div')
-                        .classed('svg-container', true)
-                        .append('svg')
-                        .attr('preserveAspectRatio', 'xMinYMin meet')
-                        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
-                        .classed('svg-content-responsive', true)
-                        .append('g')
-                        .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
-
+                    console.log(_data);
                     canvas
                         .selectAll('rect')
-                        .data(data)
-                        .enter()
-                        .append('rect')
-                        .attr('class', 'emotion-statistics')
+                        .transition()
+                        .duration(1250)
+                        .delay(250)
+                        .ease('bounce')
                         .attr('x', function(d) {
                             return xScale(d.value);
                         })
@@ -536,16 +574,20 @@ app.directive('emotionStatistics', ['$compile', 'StatisticsService', function($c
                         .attr('fill', function(d, i) {
                             return colorScale(i);
                         })
-                        .on('mouseover', function(d) {
-                            d3.select(this).classed('active-' + d.label, true);
-                        })
-                        .on('mouseout', function(d) {
-                            d3.select(this).classed('active-' + d.label, false);
-                        });
-
-                    $compile(element.contents())(scope);
-
+                        .attr('fill-opacity', 1)
                 });
+
+            function _getDataLength() {
+                return _data.length;
+            }
+
+            function _getDataValues() {
+                return _.pluck(_data, 'value');
+            }
+
+            function _getMaxDataValue() {
+                return d3.max(_getDataValues());
+            }
         }
     }
 }]);
