@@ -98,6 +98,34 @@ textarea {
   font-weight: 600;
 }
 
+.text-tiny {
+  font-size: 6px;
+}
+
+.text-small {
+  font-size: 10px;
+}
+
+.text-normal {
+  font-size: 12px;
+}
+
+.text-big {
+  font-size: 16px;
+}
+
+.text-large {
+  font-size: 22px;
+}
+
+.text-xlarge {
+  font-size: 30px;
+}
+
+.text-huge {
+  font-size: 36px;
+}
+
 .margin-top-xs {
   margin-top: 5px;
 }

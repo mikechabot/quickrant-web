@@ -4,7 +4,7 @@
  *   scroll-element: DOM element(s) to be scrolled upon (comma-separated)
  *  scroll-to-pixel: Scroll to this number of pixels from the top of the scroll-element
  *     scroll-speed: Speed at which to scroll
- *        scroll-to: Scroll to a location (e.g. "top", "bottom")
+ *        scroll-to: Scroll to a location (e.g. 'top", "bottom")
  *         focus-on: Focus on an element after scrolling
  */
 app.directive('scrollOnClick', ['$document', '$window', function($document, $window) {
@@ -482,7 +482,7 @@ app.directive('myVis', function($timeout) {
 app.directive('emotionStatistics', ['StatisticsService', function(StatisticsService) {
     return {
         restrict: 'E',
-        template: '<div id="emotion-stats"></div>',
+        template: '<span class="grey-1 always margin-bottom text-xlarge">Rants By Emotion</span><div id="emotion-stats"></div>',
         link: function(scope, element, attrs) {
 
             // Dummy object for transitions
@@ -492,7 +492,13 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                 { label: 'sad', value: 0 }
             ];
 
-            var margin = { top: 30, right: 30, bottom: 30, left: 30 };
+            var _legendData = [
+                ['angry','#CB3B37'],
+                ['happy', '#3D9BCB'],
+                ['sad', '#555555']
+            ];
+
+            var margin = { top: 30, right: 30, bottom: 40, left: 30 };
             var height = 480 - margin.top - margin.bottom;
             var width = 640 - margin.left - margin.right;
 
@@ -508,71 +514,141 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
 
             canvas
                 .selectAll('rect')
-                .data(_data)
-                .enter()
-                .append('rect')
-                .attr('class', 'emotion-statistics')
-                .attr('y', height)
-                .attr('height', 0)
-                .attr('fill', 'gray')
-                .attr('fill-opacity',0)
-                .on('mouseover', function(d) {
-                    d3.select(this).classed('active-bar-' + d.label, true);
-                })
-                .on('mouseout', function(d) {
-                    d3.select(this).classed('active-bar-' + d.label, false);
-                });
+                .call(_initCanvas);
+
+            // Generate legend
+            var legend = canvas.append('g')
+                .attr('class', 'stat-emotion-legend')
+                .attr('height', 50)
+                .attr('width', 50)
+                .attr('transform', 'translate(-5,5)');
+
+            legend.selectAll('circle').call(_initLegendCircles);
+            legend.selectAll('text').call(_initLegendText);
 
 
             StatisticsService.getEmotionStatistics()
                 .done(function(data) {
 
-                    // Update values values
-                    var values = [];
                     _.each(_data, function(datum, i) {
                         var value = data[i].value;
                         datum.value = value;
-                        values.push(value);
                     });
 
-                    // Set scaling
-                    var yScale = d3.scale.linear()
-                        .domain([0, d3.max(values)])
-                        .range([0, height]);
+                    var xAxis = d3.svg.axis()
+                        .scale(_getXScale())
+                        .orient('bottom');
+cl;
+                    // Add x axis
+                    canvas
+                        .append('g')
+                        .attr('class', 'stat-emotion-xAxis')
+                        .attr('transform', 'translate(0, ' + (height + 5) + ')')
+                        .call(xAxis);
 
-                    var xScale = d3.scale.ordinal()
-                        .domain(values)
-                        .rangeBands([0, width], 0.1, 0);
-
-                    var colorScale = d3.scale.quantile()
-                        .domain([0, _data.length])
-                        .range(['#CB3B37', '#3D9BCB', '#555555']);
-
-                    // Repaint canvas with updated data
+                    // Regenerate bar chart with updated data
                     canvas
                         .selectAll('rect')
-                        .transition()
-                        .duration(250)
-                        .delay(function(d, i) {
-                            return i * 125;
-                        })
-                        .ease('quad')
-                        .attr('x', function(d) {
-                            return xScale(d.value);
-                        })
-                        .attr('y', function(d) {
-                            return height - yScale(d.value);
-                        })
-                        .attr('width', xScale.rangeBand())
-                        .attr('height', function(d) {
-                            return yScale(d.value);
-                        })
-                        .attr('fill', function(d, i) {
-                            return colorScale(i);
-                        })
-                        .attr('fill-opacity', 1)
+                        .call(_paintBars);
 
                 });
+
+            function _paintBars(selection) {
+
+                var values = _getDataValues();
+
+                // Set scaling
+                var yScale = d3.scale.linear()
+                    .domain([0, d3.max(values)])
+                    .range([0, height]);
+
+                var xScale = d3.scale.ordinal()
+                    .domain(values)
+                    .rangeBands([0, width], 0.1, 0);
+
+                var colorScale = d3.scale.quantile()
+                    .domain([0, _data.length])
+                    .range(['#CB3B37', '#3D9BCB', '#555555']);
+
+                selection
+                    .transition()
+                    .duration(250)
+                    .delay(function(d, i) {
+                        return i * 125;
+                    })
+                    .ease('quad')
+                    .attr('x', function(d) {
+                        return xScale(d.value);
+                    })
+                    .attr('y', function(d) {
+                        return height - yScale(d.value);
+                    })
+                    .attr('width', xScale.rangeBand())
+                    .attr('height', function(d) {
+                        return yScale(d.value);
+                    })
+                    .attr('fill', function(d, i) {
+                        return colorScale(i);
+                    })
+                    .attr('fill-opacity', 1);
+            }
+
+            function _initCanvas(selection) {
+                selection
+                    .data(_data)
+                    .enter()
+                    .append('rect')
+                    .attr('class', 'stat-emotion')
+                    .attr('y', height)
+                    .attr('height', 0)
+                    .attr('fill', 'gray')
+                    .attr('fill-opacity',0)
+                    .on('mouseover', function(d) {
+                        d3.select(this).classed('active-bar-' + d.label, true);
+                    })
+                    .on('mouseout', function(d) {
+                        d3.select(this).classed('active-bar-' + d.label, false);
+                    });
+            }
+
+            function _initLegendCircles(selection) {
+                selection
+                    .data(_legendData)
+                    .enter()
+                    .append('circle')
+                    .attr('cx', width - 65)
+                    .attr('r', 5)
+                    .attr('cy', function(d, i) {
+                        return i * 22;
+                    })
+                    .style('fill', function(d) {
+                        return d[1];
+                    });
+            }
+
+            function _initLegendText(selection) {
+                selection
+                    .data(_legendData)
+                    .enter()
+                    .append('text')
+                    .attr('x', width - 52)
+                    .attr('y', function(d, i) {
+                        return i * 22 + 4;
+                    })
+                    .text(function(d) {
+                        return d[0];
+                    });
+            }
+
+            function _getXScale() {
+                return d3.scale.ordinal()
+                    .domain(_getDataValues())
+                    .rangeBands([0, width], 0.1, 0);
+            }
+
+            function _getDataValues() {
+                return _.pluck(_data, 'value');
+            }
         }
     }
 }]);

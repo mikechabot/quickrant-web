@@ -13,8 +13,25 @@
   font-size: 20px;
 }
 
-svg{
+svg {
   background-color: #ededed;
+}
+
+.stat-emotion-xAxis path {
+  fill: #555;
+  fill-opacity: .5;
+}
+
+.stat-emotion-xAxis text {
+  fill: #555;
+  font-family: "Always Together";
+  font-size: 26px;
+}
+
+.stat-emotion-legend {
+  font-family: "Always Together";
+  font-size: 20px;
+  fill: #555;
 }
 
 .svg-container {
