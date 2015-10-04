@@ -20,12 +20,13 @@ svg {
 .stat-emotion-xAxis path {
   fill: #555;
   fill-opacity: .5;
+  margin-bottom: 30px;
 }
 
 .stat-emotion-xAxis text {
   fill: #555;
   font-family: "Always Together";
-  font-size: 26px;
+  font-size: 28px;
 }
 
 .stat-emotion-legend {

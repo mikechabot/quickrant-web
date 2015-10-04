@@ -482,14 +482,14 @@ app.directive('myVis', function($timeout) {
 app.directive('emotionStatistics', ['StatisticsService', function(StatisticsService) {
     return {
         restrict: 'E',
-        template: '<span class="grey-1 always margin-bottom text-xlarge">Rants By Emotion</span><div id="emotion-stats"></div>',
+        template: '<code class="grey-0 margin-bottom text-large">Rants By Emotion</code><div id="emotion-stats"></div>',
         link: function(scope, element, attrs) {
 
             // Dummy object for transitions
             var _data = [
-                { label: 'angry', value: 0 },
-                { label: 'happy', value: 0 },
-                { label: 'sad', value: 0 }
+                { label: 'angry', value: 8 },
+                { label: 'happy', value: 9 },
+                { label: 'sad', value: 10 }
             ];
 
             var _legendData = [
@@ -498,7 +498,7 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                 ['sad', '#555555']
             ];
 
-            var margin = { top: 30, right: 30, bottom: 40, left: 30 };
+            var margin = { top: 55, right: 40, bottom: 55, left: 40 };
             var height = 480 - margin.top - margin.bottom;
             var width = 640 - margin.left - margin.right;
 
@@ -521,7 +521,7 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                 .attr('class', 'stat-emotion-legend')
                 .attr('height', 50)
                 .attr('width', 50)
-                .attr('transform', 'translate(-5,5)');
+                .attr('transform', 'translate(' + margin.right + ', -' + (margin.top - 15) + ')');
 
             legend.selectAll('circle').call(_initLegendCircles);
             legend.selectAll('text').call(_initLegendText);
@@ -530,10 +530,10 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
             StatisticsService.getEmotionStatistics()
                 .done(function(data) {
 
-                    _.each(_data, function(datum, i) {
-                        var value = data[i].value;
-                        datum.value = value;
-                    });
+                    //_.each(_data, function(datum, i) {
+                    //    var value = data[i].value;
+                    //    datum.value = value;
+                    //});
 
                     var xAxis = d3.svg.axis()
                         .scale(_getXScale())
@@ -617,11 +617,11 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                     .data(_legendData)
                     .enter()
                     .append('circle')
-                    .attr('cx', width - 65)
-                    .attr('r', 5)
-                    .attr('cy', function(d, i) {
-                        return i * 22;
+                    .attr('cx', function(d, i) {
+                        return margin.left + ((i/_legendData.length) * width);
                     })
+                    .attr('cy', 5)
+                    .attr('r', 5)
                     .style('fill', function(d) {
                         return d[1];
                     });
@@ -632,10 +632,10 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                     .data(_legendData)
                     .enter()
                     .append('text')
-                    .attr('x', width - 52)
-                    .attr('y', function(d, i) {
-                        return i * 22 + 4;
+                    .attr('x', function(d, i){
+                        return margin.left + ((i/_legendData.length) * width) + 10;
                     })
+                    .attr('y', 10)
                     .text(function(d) {
                         return d[0];
                     });
