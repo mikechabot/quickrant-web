@@ -17,16 +17,16 @@ svg {
   background-color: #ededed;
 }
 
-.stat-emotion-xAxis path {
+.stat-emotion-axis path {
   fill: #555;
   fill-opacity: .5;
   margin-bottom: 30px;
 }
 
-.stat-emotion-xAxis text {
-  fill: #555;
+.stat-emotion-axis text {
   font-family: "Always Together";
-  font-size: 28px;
+  font-size: 20px;
+  fill: #555;
 }
 
 .stat-emotion-legend {

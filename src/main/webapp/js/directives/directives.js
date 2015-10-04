@@ -542,9 +542,19 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                     // Add x axis
                     canvas
                         .append('g')
-                        .attr('class', 'stat-emotion-xAxis')
+                        .attr('class', 'stat-emotion-axis')
                         .attr('transform', 'translate(0, ' + (height + 5) + ')')
                         .call(xAxis);
+
+                    var yAxis = d3.svg.axis()
+                        .scale(_getYScale())
+                        .orient('left');
+
+                    canvas
+                        .append('g')
+                        .attr('class', 'stat-emotion-axis')
+                        .attr('transform', 'translate(-5,0)')
+                        .call(yAxis);
 
                     // Regenerate bar chart with updated data
                     canvas
@@ -556,20 +566,9 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
 
             function _paintBars(selection) {
 
-                var values = _getDataValues();
-
-                // Set scaling
-                var yScale = d3.scale.linear()
-                    .domain([0, d3.max(values)])
-                    .range([0, height]);
-
-                var xScale = d3.scale.ordinal()
-                    .domain(values)
-                    .rangeBands([0, width], 0.1, 0);
-
-                var colorScale = d3.scale.quantile()
-                    .domain([0, _data.length])
-                    .range(['#CB3B37', '#3D9BCB', '#555555']);
+                var xScale = _getXScale();
+                var yScale = _getYScale();
+                var colorScale = _getColorScale();
 
                 selection
                     .transition()
@@ -582,11 +581,11 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                         return xScale(d.value);
                     })
                     .attr('y', function(d) {
-                        return height - yScale(d.value);
+                        return yScale(d.value);
                     })
                     .attr('width', xScale.rangeBand())
                     .attr('height', function(d) {
-                        return yScale(d.value);
+                        return height - yScale(d.value);
                     })
                     .attr('fill', function(d, i) {
                         return colorScale(i);
@@ -645,6 +644,18 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                 return d3.scale.ordinal()
                     .domain(_getDataValues())
                     .rangeBands([0, width], 0.1, 0);
+            }
+
+            function _getYScale() {
+                return d3.scale.linear()
+                    .domain([0, d3.max(_getDataValues())])
+                    .range([height, 0]);
+            }
+
+            function _getColorScale() {
+                return d3.scale.quantile()
+                    .domain([0, _data.length])
+                    .range(['#CB3B37', '#3D9BCB', '#555555']);
             }
 
             function _getDataValues() {
