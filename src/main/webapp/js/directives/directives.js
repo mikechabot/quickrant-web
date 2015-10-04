@@ -498,10 +498,11 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                 ['sad', '#555555']
             ];
 
-            var margin = { top: 55, right: 40, bottom: 55, left: 40 };
+            var margin = { top: 55, right: 40, bottom: 35, left: 40 };
             var height = 480 - margin.top - margin.bottom;
             var width = 640 - margin.left - margin.right;
 
+            // Initialize the svg canvas
             var canvas = d3.select('#emotion-stats')
                 .append('div')
                 .classed('svg-container', true)
@@ -512,15 +513,14 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                 .append('g')
                 .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
+            // Initialize the chart
             canvas
                 .selectAll('rect')
-                .call(_initCanvas);
+                .call(_initBars);
 
             // Generate legend
             var legend = canvas.append('g')
                 .attr('class', 'stat-emotion-legend')
-                .attr('height', 50)
-                .attr('width', 50)
                 .attr('transform', 'translate(' + margin.right + ', -' + (margin.top - 15) + ')');
 
             legend.selectAll('circle').call(_initLegendCircles);
@@ -535,35 +535,24 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                         datum.value = value;
                     });
 
-                    var xAxis = d3.svg.axis()
-                        .scale(_getXScale())
-                        .tickSize(2)
-                        .orient('bottom');
-
-                    // Add x axis
+                    // Add X axis
                     canvas
                         .append('g')
                         .attr('class', 'stat-emotion-axis')
                         .attr('transform', 'translate(0, ' + (height) + ')')
-                        .call(xAxis);
+                        .call(_getXAxis());
 
-                    // Add y axis
-                    var yAxis = d3.svg.axis()
-                        .scale(_getYScale())
-                        .tickSize(2)
-                        .orient('left');
-
+                    // Add Y axis
                     canvas
                         .append('g')
                         .attr('class', 'stat-emotion-axis')
                         .attr('transform', 'translate(0,0)')
-                        .call(yAxis);
+                        .call(_getYAxis());
 
                     // Regenerate bar chart with updated data
                     canvas
                         .selectAll('rect')
                         .call(_paintBars);
-
 
                 });
 
@@ -594,9 +583,10 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                         return colorScale(i);
                     })
                     .attr('fill-opacity', 1);
+
             }
 
-            function _initCanvas(selection) {
+            function _initBars(selection) {
                 selection
                     .data(_data)
                     .enter()
@@ -641,6 +631,20 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
                     .text(function(d) {
                         return d[0];
                     });
+            }
+
+            function _getXAxis() {
+                return d3.svg.axis()
+                    .scale(_getXScale())
+                    .tickSize(2)
+                    .orient('bottom');
+            }
+
+            function _getYAxis() {
+                return d3.svg.axis()
+                    .scale(_getYScale())
+                    .tickSize(2)
+                    .orient('left')
             }
 
             function _getXScale() {
