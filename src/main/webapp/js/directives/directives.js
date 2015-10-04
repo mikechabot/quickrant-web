@@ -487,9 +487,9 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
 
             // Dummy object for transitions
             var _data = [
-                { label: 'angry', value: 8 },
-                { label: 'happy', value: 9 },
-                { label: 'sad', value: 10 }
+                { label: 'angry', value: 0 },
+                { label: 'happy', value: 0 },
+                { label: 'sad', value: 0 }
             ];
 
             var _legendData = [
@@ -530,10 +530,10 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
             StatisticsService.getEmotionStatistics()
                 .done(function(data) {
 
-                    //_.each(_data, function(datum, i) {
-                    //    var value = data[i].value;
-                    //    datum.value = value;
-                    //});
+                    _.each(_data, function(datum, i) {
+                        var value = data[i].value;
+                        datum.value = value;
+                    });
 
                     var xAxis = d3.svg.axis()
                         .scale(_getXScale())
