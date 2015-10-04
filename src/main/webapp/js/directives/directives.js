@@ -537,23 +537,26 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
 
                     var xAxis = d3.svg.axis()
                         .scale(_getXScale())
+                        .tickSize(2)
                         .orient('bottom');
 
                     // Add x axis
                     canvas
                         .append('g')
                         .attr('class', 'stat-emotion-axis')
-                        .attr('transform', 'translate(0, ' + (height + 5) + ')')
+                        .attr('transform', 'translate(0, ' + (height) + ')')
                         .call(xAxis);
 
+                    // Add y axis
                     var yAxis = d3.svg.axis()
                         .scale(_getYScale())
+                        .tickSize(2)
                         .orient('left');
 
                     canvas
                         .append('g')
                         .attr('class', 'stat-emotion-axis')
-                        .attr('transform', 'translate(-5,0)')
+                        .attr('transform', 'translate(0,0)')
                         .call(yAxis);
 
                     // Regenerate bar chart with updated data
