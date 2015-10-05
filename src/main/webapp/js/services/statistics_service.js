@@ -2,7 +2,10 @@ app.service('StatisticsService', ['DataAccessService', function(DataAccessServic
 
     return {
         getEmotionStatistics: function() {
-            return DataAccessService.get('/statistics');
+            return DataAccessService.get('/statistics/emotion');
+        },
+        getQuestionStatistics: function() {
+            return DataAccessService.get('/statistics/question');
         },
         generateStatistics: function(page, data) {
             var statisticsMap = this.generateStatisticsMap(page, data);

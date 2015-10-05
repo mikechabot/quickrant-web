@@ -19,9 +19,14 @@ public class StatisticsController {
     @Autowired
     private AjaxResponseFactory ajaxResponse;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity getRantsSince() {
+    @RequestMapping(value = "/emotion", method = RequestMethod.GET)
+    public ResponseEntity getEmotionStatistics() {
         return ajaxResponse.success(null, statisticsService.getEmotionStatistics());
+    }
+
+    @RequestMapping(value = "/question", method = RequestMethod.GET)
+    public ResponseEntity getQuestionStatistics() {
+        return ajaxResponse.success(null, statisticsService.getQuestionStatistics());
     }
 
 }

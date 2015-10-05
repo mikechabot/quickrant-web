@@ -4,6 +4,7 @@ public abstract class AbstractStatistic {
 
     private String label;
     private Long value;
+    private Integer sortOrder;
 
     public AbstractStatistic(String label, Long value) {
         this.label = label;
@@ -24,5 +25,13 @@ public abstract class AbstractStatistic {
 
     public void setValue(Long value) {
         this.value = value;
+    }
+
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

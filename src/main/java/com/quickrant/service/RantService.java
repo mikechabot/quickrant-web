@@ -17,5 +17,6 @@ public interface RantService {
     void addCommentToRant(Rant rant, Comment comment);
     void saveRant(Rant rant);
     Long getCountByEmotion(Emotion emotion);
+    Long getCountByQuestion(String question);
 
 }

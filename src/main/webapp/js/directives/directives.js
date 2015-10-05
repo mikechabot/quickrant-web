@@ -432,32 +432,42 @@ app.directive('verticalStatisticsList', function() {
 app.directive('myVis', function($timeout) {
     return {
         restrict: 'E',
-        template: '<div id="my-vis"></div>',
+        template: '<div id="stat"></div>',
         scope: {
             data: '='
         },
         link: function(scope, element, attrs) {
-            var data = _.map(_.range(50), function(i) {
+
+            var data = _.map(_.range(200), function(i) {
                 return Math.random() * 50;
             });
 
-            var w = 900, h = 400;
+            var margin = { top: 55, right: 40, bottom: 35, left: 40 };
+            var height = 480 - margin.top - margin.bottom;
+            var width = 640 - margin.left - margin.right;
 
             var yScale = d3.scale.linear()
                 .domain([0, d3.max(data) * 1.1])
-                .range([0, h]);
+                .range([0, height]);
 
             var xScale = d3.scale.ordinal()
                 .domain(data)
-                .rangeBands([0, w], 0.1, 0);
+                .rangeBands([0, width], 0.1, 0);
 
             var colorScale = d3.scale.linear()
                 .domain([0, d3.max(data)])
                 .range(['black', 'blue']);
 
-            var svg = d3.select('#my-vis').append('svg')
-                .attr('width', w)
-                .attr('height', h);
+            // Initialize the svg canvas
+            var svg = d3.select('#stat')
+                .append('div')
+                .classed('svg-container', true)
+                .append('svg')
+                .attr('preserveAspectRatio', 'xMinYMin meet')
+                .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+                .classed('svg-content-responsive', true)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
             svg.selectAll('rect')
                 .data(data)
@@ -468,16 +478,172 @@ app.directive('myVis', function($timeout) {
                     return xScale(d);
                 })
                 .attr('y', function(d) {
-                    return h - yScale(d);
+                    return height - yScale(d);
                 })
                 .attr('width', xScale.rangeBand())
                 .attr('height', function(d) {
                     return yScale(d);
                 })
                 .attr('fill', colorScale)
+
+
         }
     }
 });
+
+app.directive('questionStatistics', ['StatisticsService', function(StatisticsService) {
+    return {
+        restrict: 'E',
+        template: '<code class="grey-0 margin-bottom text-large">Rants By Question</code><div id="question-stats"></div>',
+        scope: {
+            data: '='
+        },
+        link: function(scope, element, attrs) {
+
+            var margin = { top: 30, right: 40, bottom: 220, left: 75 };
+            var height = 480 - margin.top - margin.bottom;
+            var width = 640 - margin.left - margin.right;
+
+            var _legendData = [
+                ['angry','#CB3B37'],
+                ['happy', '#3D9BCB'],
+                ['sad', '#555555']
+            ];
+
+            StatisticsService.getQuestionStatistics()
+                .done(function(data) {
+
+                    var numAngry  = _.filter(data, function(d) {
+                        return d.emotion === 'ANGRY';
+                    }).length;
+
+                    var numSad  = _.filter(data, function(d) {
+                        return d.emotion === 'SAD';
+                    }).length;
+
+                    var yScale = d3.scale.linear()
+                        .domain([0, d3.max(data, function(d) {
+                            return d.value;
+                        }) * 1.1])
+                        .range([height, 0]);
+
+                    var xScale = d3.scale.linear()
+                        .domain([0, data.length])
+                        .range([0, width]);
+
+                    var colorScale = d3.scale.quantile()
+                        .domain([0, numAngry, data.length-numSad, data.length])
+                        .range(['#CB3B37', '#3D9BCB', '#555555']);
+
+                    // Initialize the svg canvas
+                    var svg = d3.select('#question-stats')
+                        .append('div')
+                        .classed('svg-container', true)
+                        .append('svg')
+                        .attr('preserveAspectRatio', 'xMinYMin meet')
+                        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+                        .classed('svg-content-responsive', true)
+                        .append('g')
+                        .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+                    // Generate legend
+                    var legend = svg.append('g')
+                        .attr('class', 'stat-emotion-legend')
+                        .attr('transform', 'translate(' + margin.right + ', -' + (margin.top - 15) + ')');
+
+                    legend.selectAll('circle').call(_initLegendCircles);
+                    legend.selectAll('text').call(_initLegendText);
+
+
+                    var xAxis = d3.svg.axis()
+                        .scale(xScale)
+                        .tickSize(2)
+                        .ticks(data.length-1)
+                        .orient('bottom');
+
+                    // Add X axis
+                    svg
+                        .append('g')
+                        .attr('class', 'stat-emotion-axis')
+                        .attr('transform', 'translate(0, ' + (height) + ')')
+                        .call(xAxis)
+                        .selectAll("text")
+                        .style("text-anchor", "end")
+                        .attr("dx", "-.1em")
+                        .attr("transform", "rotate(-65)" )
+                        .text(function(i) {
+                            return data[i] ? data[i].label : '';
+                        });
+
+                    var yAxis = d3.svg.axis()
+                        .scale(yScale)
+                        .tickSize(2)
+                        .orient('left');
+
+                    // Add Y axis
+                    svg
+                        .append('g')
+                        .attr('class', 'stat-emotion-axis')
+                        .attr('transform', 'translate(0,0)')
+                        .call(yAxis);
+
+                    svg.selectAll('rect')
+                        .data(data)
+                        .enter()
+                        .append('rect')
+                        .attr('class', 'vis-style')
+                        .attr('x', function(d, i) {
+                            return xScale(i);
+                        })
+                        .attr('y', function(d) {
+                            return yScale(d.value);
+                        })
+                        .attr('width', function(d) {
+                            return (width / data.length) - 1;
+                        })
+                        .attr('height', function(d) {
+                            return height - yScale(d.value);
+                        })
+                        .attr('fill', function(d, i) {
+                            return colorScale(i)
+                        })
+
+                })
+
+            function _initLegendCircles(selection) {
+                selection
+                    .data(_legendData)
+                    .enter()
+                    .append('circle')
+                    .attr('cx', function(d, i) {
+                        return margin.left + ((i/_legendData.length) * width);
+                    })
+                    .attr('cy', 5)
+                    .attr('r', 5)
+                    .style('fill', function(d) {
+                        return d[1];
+                    });
+            }
+
+            function _initLegendText(selection) {
+                selection
+                    .data(_legendData)
+                    .enter()
+                    .append('text')
+                    .attr('x', function(d, i){
+                        return margin.left + ((i/_legendData.length) * width) + 10;
+                    })
+                    .attr('y', 10)
+                    .text(function(d) {
+                        return d[0];
+                    });
+            }
+
+        }
+    }
+}]);
+
+
 
 app.directive('emotionStatistics', ['StatisticsService', function(StatisticsService) {
     return {
@@ -526,13 +692,11 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
             legend.selectAll('circle').call(_initLegendCircles);
             legend.selectAll('text').call(_initLegendText);
 
-
             StatisticsService.getEmotionStatistics()
                 .done(function(data) {
 
                     _.each(_data, function(datum, i) {
-                        var value = data[i].value;
-                        datum.value = value;
+                        datum.value = data[i].value;
                     });
 
                     // Add X axis
@@ -668,6 +832,7 @@ app.directive('emotionStatistics', ['StatisticsService', function(StatisticsServ
             function _getDataValues() {
                 return _.pluck(_data, 'value');
             }
+
         }
     }
 }]);

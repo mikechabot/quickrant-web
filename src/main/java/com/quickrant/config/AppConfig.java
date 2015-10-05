@@ -2,6 +2,7 @@ package com.quickrant.config;
 
 import com.mongodb.WriteConcern;
 import com.quickrant.beans.MongoProperties;
+import com.quickrant.beans.StaticData;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,11 @@ class AppConfig {
 
     @Autowired
     private Environment environment;
+
+    @Bean
+    public StaticData staticData() {
+        return new StaticData();
+    }
 
     @Bean
     public MongoProperties mongoProperties() {

@@ -78,4 +78,9 @@ public class RantServiceImpl implements RantService {
         return rantRepository.countByEmotion(emotion);
     }
 
+    @Override
+    public Long getCountByQuestion(String question) {
+        return rantRepository.countByQuestion(question);
+    }
+
 }

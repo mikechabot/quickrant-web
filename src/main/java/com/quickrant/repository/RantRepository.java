@@ -11,6 +11,8 @@ public interface RantRepository extends MongoRepository<Rant, String> {
 
     List<Rant> findByCommentCountGreaterThan(long count);
     List<Rant> findByCreatedDateGreaterThan(Date date);
+    List<Rant> findByEmotion(Emotion emotion);
     Long countByEmotion(Emotion emotion);
+    Long countByQuestion(String question);
 
 }
