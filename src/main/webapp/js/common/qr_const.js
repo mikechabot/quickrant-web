@@ -32,7 +32,9 @@ app.constant('QR_CONST', {
         RANTS_TO_VIEW: 'RANTS_TO_VIEW',
         CURRENT_PAGE: 'CURRENT_PAGE',
         PAGES_TO_VIEW: 'PAGES_TO_VIEW',
-        TOTAL_PAGES: 'TOTAL_PAGES'
+        TOTAL_PAGES: 'TOTAL_PAGES',
+        EMOTION: 'EMOTION',
+        QUESTION: 'QUESTION'
     },
     UPDATE_ACTIONS: {
         ADD_PAGE: 'ADD_PAGE',

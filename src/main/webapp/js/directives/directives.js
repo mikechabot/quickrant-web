@@ -460,6 +460,239 @@ app.directive('myVis', function($timeout) {
     }
 });
 
+app.directive('statistic', ['ArrayService', function(ArrayService) {
+    return {
+        restrict: 'E',
+        template: '<code class="grey-0 margin-bottom text-large">{{title}} | <button ng-click="toggleData()">Update</button></code><div id="{{id}}"></div>',
+        scope: {
+            data: '=',
+            margin: '@',
+            id: '@',
+            title: '@'
+        },
+        link: function (scope, element, attrs) {
+            if (!scope.data || !scope.id) return;
+
+            var _data = angular.copy(scope.data);
+            var _keys = _.keys(_data);
+            var _activeData = _data[_.last(_keys)];
+
+            scope.toggleData = function() {
+                var i = Math.floor(Math.random() * _keys.length);
+                var random = scope.data[_keys[i]];
+                if (random) {
+                    ArrayService.popUntil(_getActiveData(), random.length);
+                    _.each(random, function(d, i) {
+                        var existing = _getActiveData()[i];
+                        if (existing) {
+                            existing.label = d.label;
+                            existing.value = d.value;
+                        } else {
+                            _getActiveData().push(d);
+                        }
+                    });
+                    svg
+                        .selectAll('rect')
+                        .call(_renderBars);
+                    _renderXAxis(svg);
+                    _renderYAxis(svg);
+                }
+            };
+
+            // Set margins
+            var margin = { top: 0, right: 0, bottom: 0, left: 0 };
+            if (scope.margin) {
+                var keys = _.keys(margin);
+                var margins = scope.margin.split(" ");
+                _.each(margins, function(each, i) {
+                    margin[keys[i]] = each;
+                });
+            }
+
+            var margin = { top: 30, right: 40, bottom: 220, left: 75 };
+            var height = 480 - margin.top - margin.bottom;
+            var width = 640 - margin.left - margin.right;
+
+            //var _legendData = [
+            //    ['angry','#CB3B37'],
+            //    ['happy', '#3D9BCB'],
+            //    ['sad', '#555555']
+            //];
+
+            //var colorScale = d3.scale.quantile()
+            //    .domain([0, numAngry, data.length-numSad, data.length])
+            //    .range(['#CB3B37', '#3D9BCB', '#555555']);
+
+            // Initialize the svg canvas
+            var svg = d3.select('#' + scope.id)
+                .append('div')
+                .classed('svg-container', true)
+                .append('svg')
+                .attr('preserveAspectRatio', 'xMinYMin meet')
+                .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+                .classed('svg-content-responsive', true)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+            //// Generate legend
+            //var legend = svg.append('g')
+            //    .attr('class', 'stat-emotion-legend')
+            //    .attr('transform', 'translate(' + margin.right + ', -' + (margin.top - 15) + ')');
+            //
+            //legend.selectAll('circle').call(_initLegendCircles);
+            //legend.selectAll('text').call(_initLegendText);
+
+            _initXAxis(svg);
+            _initYAxis(svg);
+
+            _renderXAxis(svg);
+            _renderYAxis(svg);
+
+            svg
+                .selectAll('rect')
+                .call(_initBars);
+
+            svg
+                .selectAll('rect')
+                .call(_renderBars);
+
+                //.attr('fill', function(d, i) {
+                //    return colorScale(i)
+                //});
+
+            //function _initLegendCircles(selection) {
+            //    selection
+            //        .data(_legendData)
+            //        .enter()
+            //        .append('circle')
+            //        .attr('cx', function(d, i) {
+            //            return margin.left + ((i/_legendData.length) * width);
+            //        })
+            //        .attr('cy', 5)
+            //        .attr('r', 5)
+            //        .style('fill', function(d) {
+            //            return d[1];
+            //        });
+            //}
+
+            //function _initLegendText(selection) {
+            //    selection
+            //        .data(_legendData)
+            //        .enter()
+            //        .append('text')
+            //        .attr('x', function(d, i){
+            //            return margin.left + ((i/_legendData.length) * width) + 10;
+            //        })
+            //        .attr('y', 10)
+            //        .text(function(d) {
+            //            return d[0];
+            //        });
+            //}
+
+            function _renderBars(selection) {
+                var xScale = _XScale();
+                var yScale = _YScale();
+                selection
+                    .transition()
+                    .duration(750)
+                    .attr('x', function(d, i) {
+                        return xScale(i);
+                    })
+                    .attr('y', function(d) {
+                        return yScale(d.value);
+                    })
+                    .attr('width', function(d) {
+                        return (width / _getActiveDataLength()) - 1;
+                    })
+                    .attr('height', function(d) {
+                        return height - yScale(d.value);
+                    });
+            }
+
+            function _initBars(selection) {
+                selection
+                    .data(_getActiveData())
+                    .enter()
+                    .append('rect')
+                    .attr('class', 'stat' + scope.id)
+            }
+
+            function _initYAxis(svg) {
+                svg
+                    .append('g')
+                    .attr('class', 'y axis')
+                    .attr('transform', 'translate(0,0)');
+            }
+
+            function _renderYAxis(svg) {
+                svg.select('.y.axis')
+                    .call(_YAxis());
+            }
+
+            function _initXAxis(svg) {
+                svg
+                    .append('g')
+                    .attr('class', 'x axis')
+                    .attr('transform', 'translate(0, ' + (height) + ')');
+            }
+
+            function _renderXAxis(svg) {
+                svg.select('.x.axis')
+                    .call(_XAxis())
+                    .selectAll("text")
+                    .style("text-anchor", "end")
+                    .attr("dx", "-.1em")
+                    .attr("transform", "rotate(-65)" )
+                    .text(function(i) {
+                        return _getActiveData()[i] ? _getActiveData()[i].label : '';
+                    });
+            }
+
+            function _XScale() {
+                return d3.scale.linear()
+                    .domain([0, _getActiveDataLength()])
+                    .range([0, width]);
+            }
+
+            function _YScale() {
+                return d3.scale.linear()
+                    .domain([0, _getMax(_getActiveData()) * 1.1])
+                    .range([height, 0]);
+            }
+
+            function _XAxis() {
+                return d3.svg.axis()
+                    .scale(_XScale())
+                    .tickSize(2)
+                    .ticks(_getActiveDataLength())
+                    .orient('bottom');
+            }
+
+            function _YAxis() {
+                return d3.svg.axis()
+                    .scale(_YScale())
+                    .tickSize(2)
+                    .orient('left');
+            }
+
+            function _getActiveData() {
+                return _activeData;
+            }
+
+            function _getActiveDataLength() {
+                return _getActiveData().length;
+            }
+
+            function _getMax(data) {
+                return d3.max(data, function(d) {
+                    return d.value;
+                });
+            }
+
+        }
+    }
+}]);
+
 app.directive('questionStatistics', ['StatisticsService', function(StatisticsService) {
     return {
         restrict: 'E',

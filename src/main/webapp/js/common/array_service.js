@@ -1,7 +1,9 @@
 app.service('ArrayService', function () {
     return {
-        push: function (array, items) {
-
+        popUntil: function (array, length) {
+            while (array.length > length) {
+                array.pop();
+            }
         },
         unshift: function (array, items) {
             _.each(items, function(item) {

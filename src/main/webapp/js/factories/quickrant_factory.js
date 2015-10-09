@@ -1,4 +1,4 @@
-app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'RantService', function(QR_CONST, QR_DATA, RantPageFactory, RantService) {
+app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'RantService', 'StatisticsService', function(QR_CONST, QR_DATA, RantPageFactory, RantService, StatisticsService) {
 
     function _initPage() {
         var deferred = $.Deferred();
@@ -6,15 +6,24 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
         var promises = [];
         promises.push(RantPageFactory());
         promises.push(RantService.getPopularRants());
+        promises.push(StatisticsService.getEmotionStatistics());
+        promises.push(StatisticsService.getQuestionStatistics());
 
         $.when.apply(this, promises)
-            .done(function(page, popularRants) {
-                deferred.resolve({ page: page, popularRants: popularRants });
+            .done(function(page, popularRants, emotionStatistics, questionStatistics) {
+                deferred.resolve({ page: page, popularRants: popularRants, statistics: _initStatistics(emotionStatistics, questionStatistics) });
             })
             .fail(function(errorPage, errorPopular){
                 deferred.reject(errorPage, errorPopular);
             });
         return deferred.promise();
+    }
+
+    function _initStatistics(emotions, questions) {
+        var statistics = {};
+        statistics[QR_CONST.STATISTICS.EMOTION] = emotions;
+        statistics[QR_CONST.STATISTICS.QUESTION] = questions;
+        return statistics;
     }
 
     function newQuickrant() {
@@ -51,11 +60,13 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
             this.defaults = {};             // Map of default values
             this.restrictions = {};         // Map of restrictions (e.g min/max length)
             this.replyToRant = {};          // Holds the rant being replied to
+            this.statistics = {};           // Map of statistics keyed by statistics type;
 
             _initPage(this)
                 .done(function(data) {
                     quickrant.page = data.page;
                     quickrant.popularRants = data.popularRants;
+                    quickrant.statistics = data.statistics;
                     quickrant.views = QR_CONST.VIEWS;
                     quickrant.activeView = QR_CONST.VIEWS.LIVE_STREAM;
                     quickrant.emotions = QR_DATA.emotions;
@@ -98,6 +109,15 @@ app.factory('QuickrantFactory', ['QR_CONST', 'QR_DATA', 'RantPageFactory', 'Rant
         },
         isRantPosted: function() {
             return this.page.isRantPosted();
+        },
+        getStatistics: function() {
+            return this.statistics;
+        },
+        getEmotionStatistics: function() {
+            return this.getStatistics()[QR_CONST.STATISTICS.EMOTION];
+        },
+        getQuestionStatistics: function() {
+            return this.getStatistics()[QR_CONST.STATISTICS.QUESTION];
         },
         hasPage: function() {
             return !_.isEmpty(this.getPage());
