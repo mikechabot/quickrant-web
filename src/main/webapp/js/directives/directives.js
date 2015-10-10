@@ -485,20 +485,11 @@ app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService
             }
 
             var margin = { top: 30, right: 40, bottom: 220, left: 75 };
-            var height = 480 - margin.top - margin.bottom;
-            var width = 640 - margin.left - margin.right;
+            var height = 600 - margin.top - margin.bottom;
+            var width = 650 - margin.left - margin.right;
 
             var svg = d3Service.getResponsiveCanvas(scope.id, margin, height, width);
-
-            svg
-                .append('g')
-                .attr('class', 'x axis')
-                .attr('transform', 'translate(0, ' + (height) + ')');
-
-            svg
-                .append('g')
-                .attr('class', 'y axis')
-                .attr('transform', 'translate(0,0)');
+            d3Service.addAxes(svg, height);
 
             var toggle = true;
 
