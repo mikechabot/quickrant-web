@@ -259,13 +259,6 @@ app.directive('rants', ['$timeout', 'QR_DATA', 'DialogService', function ($timeo
                 $scope.page.applyPolledRants();
             };
 
-            $scope.showShare = function() {
-                DialogService.open({
-                    templateUrl: '/templates/modals/share.html',
-                    scope: QR_DATA.shareUrls
-                });
-            };
-
         }
     }
 }]);
@@ -404,30 +397,6 @@ app.directive('replyToRant', ['$timeout', 'QR_CONST', 'RantService', 'DialogServ
     }
 }]);
 
-app.directive('verticalStatisticsList', function() {
-
-    var templateHtml =
-        '<div class="col-lg-2 col-md-2 col-sm-2 hidden-xs sidebar text-right">' +
-        '<div class="page-info">' +
-        '<div ng-repeat="stat in data" class="media">' +
-        '<div class="media-left"><h2>{{stat.value}}</h2></div>' +
-        '<div class="media-body">{{stat.label}}</div>' +
-        '</div>' +
-        '</div>' +
-        '</div>';
-
-    return {
-        restrict: 'E',
-        template: templateHtml,
-        scope: {
-            data: '='
-        },
-        link: function(scope) {
-
-        }
-    }
-
-});
 
 app.directive('myVis', function($timeout) {
     return {

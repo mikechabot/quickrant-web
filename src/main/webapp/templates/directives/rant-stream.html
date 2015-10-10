@@ -5,67 +5,40 @@
   </button>
 </div>
 
-<div class="rants-container">
-  <div class="row">
+<div ng-if="activeView === views.LIVE_STREAM" ng-repeat="rant in page.getRants()" class="row">
+  <rant rant="rant" flash="$index == 0 && page.isRantPosted()"></rant>
 
-    <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
-      <div class="list-group">
-        <a class="list-group-item" href ng-class="{active: (activeView === views.LIVE_STREAM)}" ng-click="activeView = views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
-        <a class="list-group-item" href ng-class="{active: (activeView === views.POPULAR)}" ng-click="activeView = views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
-        <a class="list-group-item" href ng-class="{active: (activeView === views.STATISTICS)}" ng-click="activeView = views.STATISTICS"><i class="fa fa-line-chart fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Stats</span></a>
-        <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
+  <!-- Footer buttons (START) -->
+  <div ng-if="isLastRant($index)" class="row margin-bottom-lg">
+    <div class="text-center col-lg-offset-1 col-lg-11 col-md-offset-1 col-md-11">
+
+      <!-- Up and down -->
+      <div ng-show="page.hasNextPage()">
+       <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
+       <div class="inline-block spacer-lg"></div>
+       <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="getNextPage()"></button>
       </div>
-    </div>
 
-    <div class="col-lg-8 col-md-7 col-sm-7">
-
-      <div ng-if="activeView === views.LIVE_STREAM" ng-repeat="rant in page.getRants()" class="row">
-        <rant rant="rant" flash="$index == 0 && page.isRantPosted()"></rant>
-
-        <!-- Footer buttons (START) -->
-        <div ng-if="isLastRant($index)" class="row margin-bottom-lg">
-          <div class="text-center col-lg-offset-1 col-lg-11 col-md-offset-1 col-md-11">
-
-            <!-- Up and down -->
-            <div ng-show="page.hasNextPage()">
-             <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
-             <div class="inline-block spacer-lg"></div>
-             <button class="btn btn-default fa fa-chevron-down fa-4x pointer" ng-click="getNextPage()"></button>
-            </div>
-
-            <!-- End of the interwebz -->
-            <div ng-show="!page.hasNextPage()">
-              <div class="help-block">
-                <i class="fa fa-child fa-2x"></i><em>Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i>
-              </div>
-              <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
-            </div>
-
-          </div>
+      <!-- End of the interwebz -->
+      <div ng-show="!page.hasNextPage()">
+        <div class="help-block">
+          <i class="fa fa-child fa-2x"></i><em>Congrats, you've reached the end of the Internet. </em><i class="fa fa-child fa-2x"></i>
         </div>
+        <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
       </div>
-
-      <div ng-if="activeView === views.POPULAR" ng-repeat="rant in popularRants" class="row">
-        <rant rant="rant"></rant>
-        <!-- Footer buttons (START) -->
-        <div ng-if="isLastPopularRant($index)" class="row margin-bottom-lg">
-          <div class="text-center col-lg-offset-1 col-lg-11 col-md-offset-1 col-md-11">
-            <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
-          </div>
-        </div>
-      </div>
-
-      <reply-to-rant ng-if="activeView === views.REPLY" rant="replyToRant"></reply-to-rant>
-
-      <!--<my-vis ng-if="activeView === views.STATISTICS"></my-vis>-->
-      <emotion-statistics ng-if="activeView === views.STATISTICS"></emotion-statistics>
-      <question-statistics ng-if="activeView === views.STATISTICS"></question-statistics>
-      <!--<question-statistics ng-if="activeView === views.STATISTICS"></question-statistics>-->
-
 
     </div>
-
-    <vertical-statistics-list data="page.getStatisticsList()"></vertical-statistics-list>
-
   </div>
 </div>
+
+<div ng-if="activeView === views.POPULAR" ng-repeat="rant in popularRants" class="row">
+  <rant rant="rant"></rant>
+  <!-- Footer buttons (START) -->
+  <div ng-if="isLastPopularRant($index)" class="row margin-bottom-lg">
+    <div class="text-center col-lg-offset-1 col-lg-11 col-md-offset-1 col-md-11">
+      <button class="btn btn-default fa fa-chevron-up fa-4x pointer" scroll-on-click></button>
+    </div>
+  </div>
+</div>
+
+<reply-to-rant ng-if="activeView === views.REPLY" rant="replyToRant"></reply-to-rant>

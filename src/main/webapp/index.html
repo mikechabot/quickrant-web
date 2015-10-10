@@ -78,15 +78,37 @@
   <navigation></navigation>
 
   <div ng-controller="MainController" class="container">
-
     <div ng-show="isLoaded()">
       <emotions emotions="quickrant.emotions" selection="quickrant.selection" rant="quickrant.rant"></emotions>
       <questions ng-if="quickrant.isEmotionSelected()" emotions="quickrant.emotions" selection="quickrant.selection"></questions>
       <rant-form ng-if="quickrant.isQuestionSelected()" rant="quickrant.rant" emotions="quickrant.emotions" selection="quickrant.selection" page="quickrant.page"></rant-form>
       <hr>
-      <rants page="quickrant.page" active-view="quickrant.activeView" views="quickrant.views" popular-rants="quickrant.popularRants"></rants>
+      <div class="rants-container">
+        <div class="row">
+          <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
+            <div class="list-group">
+              <a class="list-group-item" href ng-class="{active: (quickrant.activeView === quickrant.views.LIVE_STREAM)}" ng-click="quickrant.activeView = quickrant.views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
+              <a class="list-group-item" href ng-class="{active: (quickrant.activeView === quickrant.views.POPULAR)}" ng-click="quickrant.activeView = quickrant.views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
+              <a class="list-group-item" href ng-class="{active: (quickrant.activeView === quickrant.views.STATISTICS)}" ng-click="quickrant.activeView = quickrant.views.STATISTICS"><i class="fa fa-line-chart fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Stats</span></a>
+              <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
+            </div>
+          </div>
+          <div class="col-lg-8 col-md-7 col-sm-7">
+            <rants page="quickrant.page" active-view="quickrant.activeView" views="quickrant.views" popular-rants="quickrant.popularRants"></rants>
+            <emotion-statistics ng-if="quickrant.activeView === quickrant.views.STATISTICS"></emotion-statistics>
+            <question-statistics ng-if="quickrant.activeView === quickrant.views.STATISTICS"></question-statistics>
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-2 hidden-xs sidebar text-right">
+            <div class="page-info">
+            <div ng-repeat="stat in page.getStatisticsList()" class="media">
+              <div class="media-left"><h2>{{stat.value}}</h2></div>
+              <div class="media-body">{{stat.label}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
   </div>
 
 </div>
