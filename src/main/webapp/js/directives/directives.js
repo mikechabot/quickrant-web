@@ -460,7 +460,7 @@ app.directive('myVis', function($timeout) {
     }
 });
 
-app.directive('myStatistic', ['ArrayService', function(ArrayService) {
+app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService, d3Service) {
     return {
         restrict: 'E',
         template: '<code class="grey-0 margin-bottom text-large">{{title}} | <button ng-click="toggleData()">Update</button></code><div id="{{id}}"></div>',
@@ -473,8 +473,6 @@ app.directive('myStatistic', ['ArrayService', function(ArrayService) {
         link: function (scope, element, attrs) {
 
             if (!scope.data) return;
-
-            var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 
             // Set margins
             var margin = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -490,15 +488,17 @@ app.directive('myStatistic', ['ArrayService', function(ArrayService) {
             var height = 480 - margin.top - margin.bottom;
             var width = 640 - margin.left - margin.right;
 
-            var svg = d3.select('#' + scope.id)
-                .append('div')
-                .classed('svg-container', true)
-                .append('svg')
-                .attr('preserveAspectRatio', 'xMinYMin meet')
-                .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
-                .classed('svg-content-responsive', true)
+            var svg = d3Service.getResponsiveCanvas(scope.id, margin, height, width);
+
+            svg
                 .append('g')
-                .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0, ' + (height) + ')');
+
+            svg
+                .append('g')
+                .attr('class', 'y axis')
+                .attr('transform', 'translate(0,0)');
 
             var toggle = true;
 
@@ -527,14 +527,34 @@ app.directive('myStatistic', ['ArrayService', function(ArrayService) {
                     .domain([0, _getMax(data) * 1.1])
                     .range([height, 0]);
 
-                // DATA JOIN
-                // Join new data with old elements, if any.
-                var text = svg.selectAll("rect")
-                    .data(data);
+                var xAxis = d3.svg.axis()
+                    .scale(xScale)
+                    .tickSize(2)
+                    .ticks(data.length)
+                    .orient('bottom');
 
+                var yAxis = d3.svg.axis()
+                    .scale(yScale)
+                    .tickSize(2)
+                    .orient('left');
 
-                // UPDATE
-                // Update old elements as needed.
+                svg.select('.x.axis')
+                    .call(xAxis)
+                    .selectAll("text")
+                    .style("text-anchor", "end")
+                    .attr("dx", "-.1em")
+                    .attr("transform", "rotate(-65)" )
+                    .text(function(i) {
+                        return data[i] ? data[i].label : '';
+                    });
+
+                svg.select('.y.axis')
+                    .call(yAxis);
+
+                // Join data with elements
+                var text = svg.selectAll("rect").data(data);
+
+                // Update existing elements
                 text.attr("class", "update")
                     .transition()
                     .duration(750)
@@ -555,10 +575,20 @@ app.directive('myStatistic', ['ArrayService', function(ArrayService) {
                         return height - yScale(d.value);
                     });
 
-                // ENTER
-                // Create new elements as needed.
+                // Create new elements
                 text.enter().append("rect")
                     .attr("class", "enter")
+                    .attr('x', width)
+                    .attr('y', height)
+                    .attr('width', 0)
+                    .attr('height', 0)
+                    .style("fill-opacity", 1e-6)
+                    .transition()
+                    .duration(300)
+                    .delay(function(d,i) {
+                        return i * 50;
+                    })
+                    .style("fill-opacity", 1)
                     .attr('x', function(d, i) {
                         return xScale(i);
                     })
@@ -570,21 +600,17 @@ app.directive('myStatistic', ['ArrayService', function(ArrayService) {
                     })
                     .attr('height', function(d) {
                         return height - yScale(d.value);
-                    })
-                    .style("fill-opacity", 1e-6)
-                    .transition()
-                    .duration(750)
-                    .style("fill-opacity", 1);
+                    });
 
-                // EXIT
-                // Remove old elements as needed.
+                // Remove old elements
                 text.exit()
                     .attr("class", "exit")
                     .transition()
                     .duration(750)
-                    .attr("y", 60)
+                    .attr("y", 0)
                     .style("fill-opacity", 1e-6)
                     .remove();
+
             }
 
             function _getMax(data) {
