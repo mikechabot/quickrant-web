@@ -460,6 +460,149 @@ app.directive('myVis', function($timeout) {
     }
 });
 
+app.directive('myStatistic', ['ArrayService', function(ArrayService) {
+    return {
+        restrict: 'E',
+        template: '<code class="grey-0 margin-bottom text-large">{{title}} | <button ng-click="toggleData()">Update</button></code><div id="{{id}}"></div>',
+        scope: {
+            data: '=',
+            margin: '@',
+            id: '@',
+            title: '@'
+        },
+        link: function (scope, element, attrs) {
+
+            if (!scope.data) return;
+
+            var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+
+            // Set margins
+            var margin = { top: 0, right: 0, bottom: 0, left: 0 };
+            if (scope.margin) {
+                var keys = _.keys(margin);
+                var margins = scope.margin.split(" ");
+                _.each(margins, function(each, i) {
+                    margin[keys[i]] = each;
+                });
+            }
+
+            var margin = { top: 30, right: 40, bottom: 220, left: 75 };
+            var height = 480 - margin.top - margin.bottom;
+            var width = 640 - margin.left - margin.right;
+
+            var svg = d3.select('#' + scope.id)
+                .append('div')
+                .classed('svg-container', true)
+                .append('svg')
+                .attr('preserveAspectRatio', 'xMinYMin meet')
+                .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
+                .classed('svg-content-responsive', true)
+                .append('g')
+                .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
+
+            var toggle = true;
+
+            scope.toggleData = function() {
+
+                var i;
+                if (toggle) {
+                    toggle = false;
+                    i = 0;
+                } else {
+                    toggle = true;
+                    i = 1;
+                }
+
+                update(scope.data[_keys[i]]);
+
+            };
+
+            function update(data) {
+
+                var xScale = d3.scale.linear()
+                    .domain([0, _.keys(data).length])
+                    .range([0, width]);
+
+                var yScale = d3.scale.linear()
+                    .domain([0, _getMax(data) * 1.1])
+                    .range([height, 0]);
+
+                // DATA JOIN
+                // Join new data with old elements, if any.
+                var text = svg.selectAll("rect")
+                    .data(data);
+
+
+                // UPDATE
+                // Update old elements as needed.
+                text.attr("class", "update")
+                    .transition()
+                    .duration(750)
+                    .delay(function(d,i) {
+                        return i * 50;
+                    })
+                    .ease('bounce')
+                    .attr('x', function(d, i) {
+                        return xScale(i);
+                    })
+                    .attr('y', function(d) {
+                        return yScale(d.value);
+                    })
+                    .attr('width', function(d) {
+                        return (width / data.length) - 1;
+                    })
+                    .attr('height', function(d) {
+                        return height - yScale(d.value);
+                    });
+
+                // ENTER
+                // Create new elements as needed.
+                text.enter().append("rect")
+                    .attr("class", "enter")
+                    .attr('x', function(d, i) {
+                        return xScale(i);
+                    })
+                    .attr('y', function(d) {
+                        return yScale(d.value);
+                    })
+                    .attr('width', function(d) {
+                        return (width / data.length) - 1;
+                    })
+                    .attr('height', function(d) {
+                        return height - yScale(d.value);
+                    })
+                    .style("fill-opacity", 1e-6)
+                    .transition()
+                    .duration(750)
+                    .style("fill-opacity", 1);
+
+                // EXIT
+                // Remove old elements as needed.
+                text.exit()
+                    .attr("class", "exit")
+                    .transition()
+                    .duration(750)
+                    .attr("y", 60)
+                    .style("fill-opacity", 1e-6)
+                    .remove();
+            }
+
+            function _getMax(data) {
+                return d3.max(data, function(d) {
+                    return d.value;
+                });
+            }
+
+            var _data = angular.copy(scope.data);
+            var _keys = _.keys(_data);
+            var _activeData = _data[_.last(_keys)];
+
+            update(_activeData);
+
+        }
+    }
+}]);
+
 app.directive('statistic', ['ArrayService', function(ArrayService) {
     return {
         restrict: 'E',
@@ -477,26 +620,18 @@ app.directive('statistic', ['ArrayService', function(ArrayService) {
             var _keys = _.keys(_data);
             var _activeData = _data[_.last(_keys)];
 
+            var toggle = true;
+
             scope.toggleData = function() {
-                var i = Math.floor(Math.random() * _keys.length);
-                var random = scope.data[_keys[i]];
-                if (random) {
-                    ArrayService.popUntil(_getActiveData(), random.length);
-                    _.each(random, function(d, i) {
-                        var existing = _getActiveData()[i];
-                        if (existing) {
-                            existing.label = d.label;
-                            existing.value = d.value;
-                        } else {
-                            _getActiveData().push(d);
-                        }
-                    });
-                    svg
-                        .selectAll('rect')
-                        .call(_renderBars);
-                    _renderXAxis(svg);
-                    _renderYAxis(svg);
+                var i;
+                if (toggle) {
+                    toggle = false;
+                    i = 0;
+                } else {
+                    toggle = true;
+                    i = 1;
                 }
+                update(scope.data[_keys[i]]);
             };
 
             // Set margins
@@ -542,19 +677,91 @@ app.directive('statistic', ['ArrayService', function(ArrayService) {
             //legend.selectAll('circle').call(_initLegendCircles);
             //legend.selectAll('text').call(_initLegendText);
 
-            _initXAxis(svg);
-            _initYAxis(svg);
+            update(_activeData);
 
-            _renderXAxis(svg);
-            _renderYAxis(svg);
+            function update(data) {
 
-            svg
-                .selectAll('rect')
-                .call(_initBars);
+                console.log(data);
 
-            svg
-                .selectAll('rect')
-                .call(_renderBars);
+                //_initXAxis(svg);
+                //_initYAxis(svg);
+                //
+                //_renderXAxis(svg);
+                //_renderYAxis(svg);
+
+                var xScale = d3.scale.linear()
+                    .domain([0, data.length])
+                    .range([0, width]);
+
+                var yScale = d3.scale.linear()
+                    .domain([0, _getMax(data) * 1.1])
+                    .range([height, 0]);
+
+                var bars = svg.selectAll('rect').data(data);
+                updateData(bars);
+
+                bars.enter().append('rect');
+                newData(bars);
+
+                bars.exit().remove();
+
+                function updateData(selection) {
+                    selection
+                        .attr('class', 'stat' + scope.id)
+                        .attr('x', function(d, i) {
+                            return xScale(i);
+                        })
+                        .attr('y', function(d) {
+                            return yScale(d.value);
+                        })
+                        .attr('width', function(d) {
+                            return (width / data.length) - 1;
+                        })
+                        .attr('height', function(d) {
+                            return height - yScale(d.value);
+                        });
+                }
+
+                function newData(selection) {
+                    selection
+                        //.attr('class', 'stat' + scope.id)
+                        .attr('x', function(d, i) {
+                            return xScale(i);
+                        })
+                        .attr('y', function(d) {
+                            return yScale(d.value);
+                        })
+                        .attr('width', function(d) {
+                            return (width / data.length) - 1;
+                        })
+                        .attr('height', function(d) {
+                            return height - yScale(d.value);
+                        });
+                }
+
+            }
+
+            //
+            //
+            ////svg
+            ////    .selectAll('rect')
+            ////    .call(_initBars);
+            //
+            //var xScale = _XScale();
+            //var yScale = _YScale();
+            //
+            //var selection = svg
+            //    .selectAll('rect')
+            //    .data(_getActiveData())
+            //    .enter()
+            //
+            //svg
+            //    .append('rect')
+            //    .attr('class', )
+            //    //.transition()
+            //    //.duration(750)
+
+
 
                 //.attr('fill', function(d, i) {
                 //    return colorScale(i)
@@ -589,33 +796,10 @@ app.directive('statistic', ['ArrayService', function(ArrayService) {
             //        });
             //}
 
-            function _renderBars(selection) {
-                var xScale = _XScale();
-                var yScale = _YScale();
-                selection
-                    .transition()
-                    .duration(750)
-                    .attr('x', function(d, i) {
-                        return xScale(i);
-                    })
-                    .attr('y', function(d) {
-                        return yScale(d.value);
-                    })
-                    .attr('width', function(d) {
-                        return (width / _getActiveDataLength()) - 1;
-                    })
-                    .attr('height', function(d) {
-                        return height - yScale(d.value);
-                    });
-            }
-
-            function _initBars(selection) {
-                selection
-                    .data(_getActiveData())
-                    .enter()
-                    .append('rect')
-                    .attr('class', 'stat' + scope.id)
-            }
+            //function _renderBars(selection) {
+            //
+            //
+            //}
 
             function _initYAxis(svg) {
                 svg

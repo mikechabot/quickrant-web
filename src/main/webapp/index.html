@@ -95,15 +95,16 @@
           </div>
           <div class="col-lg-8 col-md-7 col-sm-7">
             <rants page="quickrant.page" active-view="quickrant.activeView" views="quickrant.views" popular-rants="quickrant.popularRants"></rants>
-            <statistic
+            <!--<my-statistic ng-if="quickrant.activeView === quickrant.views.STATISTICS"></my-statistic>-->
+            <my-statistic
                 ng-if="quickrant.activeView === quickrant.views.STATISTICS"
                 id="svg-emotion"
                 title="Rants By ??"
                 margin="30 40 220 75"
                 data="quickrant.statistics">
-            </statistic>
-            <emotion-statistics ng-if="quickrant.activeView === quickrant.views.STATISTICS"></emotion-statistics>
-            <question-statistics ng-if="quickrant.activeView === quickrant.views.STATISTICS"></question-statistics>
+            </my-statistic>
+            <!--<emotion-statistics ng-if="quickrant.activeView === quickrant.views.STATISTICS"></emotion-statistics>-->
+            <!--<question-statistics ng-if="quickrant.activeView === quickrant.views.STATISTICS"></question-statistics>-->
           </div>
           <div class="col-lg-2 col-md-2 col-sm-2 hidden-xs sidebar text-right">
             <div class="page-info">
