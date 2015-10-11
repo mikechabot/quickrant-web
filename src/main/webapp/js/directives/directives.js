@@ -432,20 +432,9 @@ app.directive('qrStatistic', ['ArrayService', 'd3Service', function(ArrayService
             var toggle = true;
 
             scope.toggleData = function() {
-
-                var i;
-                if (toggle) {
-                    toggle = false;
-                    i = 0;
-                } else {
-                    toggle = true;
-                    i = 1;
-                }
-
-                scope.key = _keys[i];
-
-                update(scope.data[_keys[i]]);
-
+                scope.key = _keys[toggle ? 1 : 0];
+                update(scope.data[scope.key]);
+                toggle = toggle ? false : true;
             };
 
             function update(data) {
@@ -567,7 +556,7 @@ app.directive('qrStatistic', ['ArrayService', 'd3Service', function(ArrayService
 
             var _data = angular.copy(scope.data);
             var _keys = _.keys(_data);
-            scope.key = _.last(_keys);
+            scope.key = _.first(_keys);
             var _activeData = _data[scope.key];
 
             update(_activeData);
