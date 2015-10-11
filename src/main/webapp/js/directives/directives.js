@@ -397,73 +397,11 @@ app.directive('replyToRant', ['$timeout', 'QR_CONST', 'RantService', 'DialogServ
     }
 }]);
 
-
-app.directive('myVis', function($timeout) {
+app.directive('qrStatistic', ['ArrayService', 'd3Service', function(ArrayService, d3Service) {
     return {
         restrict: 'E',
-        template: '<div id="stat"></div>',
-        scope: {
-            data: '='
-        },
-        link: function(scope, element, attrs) {
-
-            var data = _.map(_.range(200), function(i) {
-                return Math.random() * 50;
-            });
-
-            var margin = { top: 55, right: 40, bottom: 35, left: 40 };
-            var height = 480 - margin.top - margin.bottom;
-            var width = 640 - margin.left - margin.right;
-
-            var yScale = d3.scale.linear()
-                .domain([0, d3.max(data) * 1.1])
-                .range([0, height]);
-
-            var xScale = d3.scale.ordinal()
-                .domain(data)
-                .rangeBands([0, width], 0.1, 0);
-
-            var colorScale = d3.scale.linear()
-                .domain([0, d3.max(data)])
-                .range(['black', 'blue']);
-
-            // Initialize the svg canvas
-            var svg = d3.select('#stat')
-                .append('div')
-                .classed('svg-container', true)
-                .append('svg')
-                .attr('preserveAspectRatio', 'xMinYMin meet')
-                .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
-                .classed('svg-content-responsive', true)
-                .append('g')
-                .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
-
-            svg.selectAll('rect')
-                .data(data)
-                .enter()
-                .append('rect')
-                .attr('class', 'vis-style')
-                .attr('x', function(d) {
-                    return xScale(d);
-                })
-                .attr('y', function(d) {
-                    return height - yScale(d);
-                })
-                .attr('width', xScale.rangeBand())
-                .attr('height', function(d) {
-                    return yScale(d);
-                })
-                .attr('fill', colorScale)
-
-
-        }
-    }
-});
-
-app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService, d3Service) {
-    return {
-        restrict: 'E',
-        template: '<code class="grey-0 margin-bottom text-large">{{title}} | <button ng-click="toggleData()">Update</button></code><div id="{{id}}"></div>',
+        template: '<code class="grey-0 margin-bottom text-big">{{title}} {{key}} <button class="btn btn-sm btn-default" ng-click="toggleData()">Toggle Data</button></code>' +
+        '<div id="{{id}}"></div>',
         scope: {
             data: '=',
             margin: '@',
@@ -504,11 +442,15 @@ app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService
                     i = 1;
                 }
 
+                scope.key = _keys[i];
+
                 update(scope.data[_keys[i]]);
 
             };
 
             function update(data) {
+
+                console.log(data);
 
                 var xScale = d3.scale.linear()
                     .domain([0, _.keys(data).length])
@@ -527,14 +469,15 @@ app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService
                 var yAxis = d3.svg.axis()
                     .scale(yScale)
                     .tickSize(2)
+                    .innerTickSize(4)
                     .orient('left');
 
                 svg.select('.x.axis')
                     .call(xAxis)
-                    .selectAll("text")
-                    .style("text-anchor", "end")
-                    .attr("dx", "-.1em")
-                    .attr("transform", "rotate(-65)" )
+                    .selectAll('text')
+                    .style('text-anchor', 'end')
+                    .attr('dx', '-.1em')
+                    .attr('transform', 'rotate(-65)' )
                     .text(function(i) {
                         return data[i] ? data[i].label : '';
                     });
@@ -543,10 +486,12 @@ app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService
                     .call(yAxis);
 
                 // Join data with elements
-                var text = svg.selectAll("rect").data(data);
+                var text = svg.selectAll('rect').data(data);
 
                 // Update existing elements
-                text.attr("class", "update")
+                text.attr('class', function(d) {
+                        return 'update bar-' + d.emotion;
+                    })
                     .transition()
                     .duration(750)
                     .delay(function(d,i) {
@@ -567,19 +512,27 @@ app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService
                     });
 
                 // Create new elements
-                text.enter().append("rect")
-                    .attr("class", "enter")
+                text.enter().append('rect')
+                    .attr('class', function(d) {
+                        return 'enter bar-' + d.emotion;
+                    })
                     .attr('x', width)
                     .attr('y', height)
                     .attr('width', 0)
                     .attr('height', 0)
-                    .style("fill-opacity", 1e-6)
+                    .on('mouseover', function(d) {
+                        d3.select(this).classed('active-bar-' + d.emotion, true);
+                    })
+                    .on('mouseout', function(d) {
+                        d3.select(this).classed('active-bar-' + d.emotion, false);
+                    })
+                    .style('fill-opacity', 0)
                     .transition()
                     .duration(300)
                     .delay(function(d,i) {
                         return i * 50;
                     })
-                    .style("fill-opacity", 1)
+                    .style('fill-opacity', 1)
                     .attr('x', function(d, i) {
                         return xScale(i);
                     })
@@ -595,11 +548,13 @@ app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService
 
                 // Remove old elements
                 text.exit()
-                    .attr("class", "exit")
+                    .attr('class', function(d) {
+                        return 'exit bar-' + d.emotion;
+                    })
                     .transition()
                     .duration(750)
-                    .attr("y", 0)
-                    .style("fill-opacity", 1e-6)
+                    .attr('y', 0)
+                    .style('fill-opacity', 0)
                     .remove();
 
             }
@@ -612,7 +567,8 @@ app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService
 
             var _data = angular.copy(scope.data);
             var _keys = _.keys(_data);
-            var _activeData = _data[_.last(_keys)];
+            scope.key = _.last(_keys);
+            var _activeData = _data[scope.key];
 
             update(_activeData);
 
@@ -620,622 +576,4 @@ app.directive('myStatistic', ['ArrayService', 'd3Service', function(ArrayService
     }
 }]);
 
-app.directive('statistic', ['ArrayService', function(ArrayService) {
-    return {
-        restrict: 'E',
-        template: '<code class="grey-0 margin-bottom text-large">{{title}} | <button ng-click="toggleData()">Update</button></code><div id="{{id}}"></div>',
-        scope: {
-            data: '=',
-            margin: '@',
-            id: '@',
-            title: '@'
-        },
-        link: function (scope, element, attrs) {
-            if (!scope.data || !scope.id) return;
 
-            var _data = angular.copy(scope.data);
-            var _keys = _.keys(_data);
-            var _activeData = _data[_.last(_keys)];
-
-            var toggle = true;
-
-            scope.toggleData = function() {
-                var i;
-                if (toggle) {
-                    toggle = false;
-                    i = 0;
-                } else {
-                    toggle = true;
-                    i = 1;
-                }
-                update(scope.data[_keys[i]]);
-            };
-
-            // Set margins
-            var margin = { top: 0, right: 0, bottom: 0, left: 0 };
-            if (scope.margin) {
-                var keys = _.keys(margin);
-                var margins = scope.margin.split(" ");
-                _.each(margins, function(each, i) {
-                    margin[keys[i]] = each;
-                });
-            }
-
-            var margin = { top: 30, right: 40, bottom: 220, left: 75 };
-            var height = 480 - margin.top - margin.bottom;
-            var width = 640 - margin.left - margin.right;
-
-            //var _legendData = [
-            //    ['angry','#CB3B37'],
-            //    ['happy', '#3D9BCB'],
-            //    ['sad', '#555555']
-            //];
-
-            //var colorScale = d3.scale.quantile()
-            //    .domain([0, numAngry, data.length-numSad, data.length])
-            //    .range(['#CB3B37', '#3D9BCB', '#555555']);
-
-            // Initialize the svg canvas
-            var svg = d3.select('#' + scope.id)
-                .append('div')
-                .classed('svg-container', true)
-                .append('svg')
-                .attr('preserveAspectRatio', 'xMinYMin meet')
-                .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
-                .classed('svg-content-responsive', true)
-                .append('g')
-                .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
-
-            //// Generate legend
-            //var legend = svg.append('g')
-            //    .attr('class', 'stat-emotion-legend')
-            //    .attr('transform', 'translate(' + margin.right + ', -' + (margin.top - 15) + ')');
-            //
-            //legend.selectAll('circle').call(_initLegendCircles);
-            //legend.selectAll('text').call(_initLegendText);
-
-            update(_activeData);
-
-            function update(data) {
-
-                console.log(data);
-
-                //_initXAxis(svg);
-                //_initYAxis(svg);
-                //
-                //_renderXAxis(svg);
-                //_renderYAxis(svg);
-
-                var xScale = d3.scale.linear()
-                    .domain([0, data.length])
-                    .range([0, width]);
-
-                var yScale = d3.scale.linear()
-                    .domain([0, _getMax(data) * 1.1])
-                    .range([height, 0]);
-
-                var bars = svg.selectAll('rect').data(data);
-                updateData(bars);
-
-                bars.enter().append('rect');
-                newData(bars);
-
-                bars.exit().remove();
-
-                function updateData(selection) {
-                    selection
-                        .attr('class', 'stat' + scope.id)
-                        .attr('x', function(d, i) {
-                            return xScale(i);
-                        })
-                        .attr('y', function(d) {
-                            return yScale(d.value);
-                        })
-                        .attr('width', function(d) {
-                            return (width / data.length) - 1;
-                        })
-                        .attr('height', function(d) {
-                            return height - yScale(d.value);
-                        });
-                }
-
-                function newData(selection) {
-                    selection
-                        //.attr('class', 'stat' + scope.id)
-                        .attr('x', function(d, i) {
-                            return xScale(i);
-                        })
-                        .attr('y', function(d) {
-                            return yScale(d.value);
-                        })
-                        .attr('width', function(d) {
-                            return (width / data.length) - 1;
-                        })
-                        .attr('height', function(d) {
-                            return height - yScale(d.value);
-                        });
-                }
-
-            }
-
-            //
-            //
-            ////svg
-            ////    .selectAll('rect')
-            ////    .call(_initBars);
-            //
-            //var xScale = _XScale();
-            //var yScale = _YScale();
-            //
-            //var selection = svg
-            //    .selectAll('rect')
-            //    .data(_getActiveData())
-            //    .enter()
-            //
-            //svg
-            //    .append('rect')
-            //    .attr('class', )
-            //    //.transition()
-            //    //.duration(750)
-
-
-
-                //.attr('fill', function(d, i) {
-                //    return colorScale(i)
-                //});
-
-            //function _initLegendCircles(selection) {
-            //    selection
-            //        .data(_legendData)
-            //        .enter()
-            //        .append('circle')
-            //        .attr('cx', function(d, i) {
-            //            return margin.left + ((i/_legendData.length) * width);
-            //        })
-            //        .attr('cy', 5)
-            //        .attr('r', 5)
-            //        .style('fill', function(d) {
-            //            return d[1];
-            //        });
-            //}
-
-            //function _initLegendText(selection) {
-            //    selection
-            //        .data(_legendData)
-            //        .enter()
-            //        .append('text')
-            //        .attr('x', function(d, i){
-            //            return margin.left + ((i/_legendData.length) * width) + 10;
-            //        })
-            //        .attr('y', 10)
-            //        .text(function(d) {
-            //            return d[0];
-            //        });
-            //}
-
-            //function _renderBars(selection) {
-            //
-            //
-            //}
-
-            function _initYAxis(svg) {
-                svg
-                    .append('g')
-                    .attr('class', 'y axis')
-                    .attr('transform', 'translate(0,0)');
-            }
-
-            function _renderYAxis(svg) {
-                svg.select('.y.axis')
-                    .call(_YAxis());
-            }
-
-            function _initXAxis(svg) {
-                svg
-                    .append('g')
-                    .attr('class', 'x axis')
-                    .attr('transform', 'translate(0, ' + (height) + ')');
-            }
-
-            function _renderXAxis(svg) {
-                svg.select('.x.axis')
-                    .call(_XAxis())
-                    .selectAll("text")
-                    .style("text-anchor", "end")
-                    .attr("dx", "-.1em")
-                    .attr("transform", "rotate(-65)" )
-                    .text(function(i) {
-                        return _getActiveData()[i] ? _getActiveData()[i].label : '';
-                    });
-            }
-
-            function _XScale() {
-                return d3.scale.linear()
-                    .domain([0, _getActiveDataLength()])
-                    .range([0, width]);
-            }
-
-            function _YScale() {
-                return d3.scale.linear()
-                    .domain([0, _getMax(_getActiveData()) * 1.1])
-                    .range([height, 0]);
-            }
-
-            function _XAxis() {
-                return d3.svg.axis()
-                    .scale(_XScale())
-                    .tickSize(2)
-                    .ticks(_getActiveDataLength())
-                    .orient('bottom');
-            }
-
-            function _YAxis() {
-                return d3.svg.axis()
-                    .scale(_YScale())
-                    .tickSize(2)
-                    .orient('left');
-            }
-
-            function _getActiveData() {
-                return _activeData;
-            }
-
-            function _getActiveDataLength() {
-                return _getActiveData().length;
-            }
-
-            function _getMax(data) {
-                return d3.max(data, function(d) {
-                    return d.value;
-                });
-            }
-
-        }
-    }
-}]);
-
-app.directive('questionStatistics', ['StatisticsService', function(StatisticsService) {
-    return {
-        restrict: 'E',
-        template: '<code class="grey-0 margin-bottom text-large">Rants By Question</code><div id="question-stats"></div>',
-        scope: {
-            data: '='
-        },
-        link: function(scope, element, attrs) {
-
-            var margin = { top: 30, right: 40, bottom: 220, left: 75 };
-            var height = 480 - margin.top - margin.bottom;
-            var width = 640 - margin.left - margin.right;
-
-            var _legendData = [
-                ['angry','#CB3B37'],
-                ['happy', '#3D9BCB'],
-                ['sad', '#555555']
-            ];
-
-            StatisticsService.getQuestionStatistics()
-                .done(function(data) {
-
-                    var numAngry  = _.filter(data, function(d) {
-                        return d.emotion === 'ANGRY';
-                    }).length;
-
-                    var numSad  = _.filter(data, function(d) {
-                        return d.emotion === 'SAD';
-                    }).length;
-
-                    var yScale = d3.scale.linear()
-                        .domain([0, d3.max(data, function(d) {
-                            return d.value;
-                        }) * 1.1])
-                        .range([height, 0]);
-
-                    var xScale = d3.scale.linear()
-                        .domain([0, data.length])
-                        .range([0, width]);
-
-                    var colorScale = d3.scale.quantile()
-                        .domain([0, numAngry, data.length-numSad, data.length])
-                        .range(['#CB3B37', '#3D9BCB', '#555555']);
-
-                    // Initialize the svg canvas
-                    var svg = d3.select('#question-stats')
-                        .append('div')
-                        .classed('svg-container', true)
-                        .append('svg')
-                        .attr('preserveAspectRatio', 'xMinYMin meet')
-                        .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
-                        .classed('svg-content-responsive', true)
-                        .append('g')
-                        .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
-
-                    // Generate legend
-                    var legend = svg.append('g')
-                        .attr('class', 'stat-emotion-legend')
-                        .attr('transform', 'translate(' + margin.right + ', -' + (margin.top - 15) + ')');
-
-                    legend.selectAll('circle').call(_initLegendCircles);
-                    legend.selectAll('text').call(_initLegendText);
-
-
-                    var xAxis = d3.svg.axis()
-                        .scale(xScale)
-                        .tickSize(2)
-                        .ticks(data.length-1)
-                        .orient('bottom');
-
-                    // Add X axis
-                    svg
-                        .append('g')
-                        .attr('class', 'stat-emotion-axis')
-                        .attr('transform', 'translate(0, ' + (height) + ')')
-                        .call(xAxis)
-                        .selectAll("text")
-                        .style("text-anchor", "end")
-                        .attr("dx", "-.1em")
-                        .attr("transform", "rotate(-65)" )
-                        .text(function(i) {
-                            return data[i] ? data[i].label : '';
-                        });
-
-                    var yAxis = d3.svg.axis()
-                        .scale(yScale)
-                        .tickSize(2)
-                        .orient('left');
-
-                    // Add Y axis
-                    svg
-                        .append('g')
-                        .attr('class', 'stat-emotion-axis')
-                        .attr('transform', 'translate(0,0)')
-                        .call(yAxis);
-
-                    svg.selectAll('rect')
-                        .data(data)
-                        .enter()
-                        .append('rect')
-                        .attr('class', 'vis-style')
-                        .attr('x', function(d, i) {
-                            return xScale(i);
-                        })
-                        .attr('y', function(d) {
-                            return yScale(d.value);
-                        })
-                        .attr('width', function(d) {
-                            return (width / data.length) - 1;
-                        })
-                        .attr('height', function(d) {
-                            return height - yScale(d.value);
-                        })
-                        .attr('fill', function(d, i) {
-                            return colorScale(i)
-                        })
-
-                })
-
-            function _initLegendCircles(selection) {
-                selection
-                    .data(_legendData)
-                    .enter()
-                    .append('circle')
-                    .attr('cx', function(d, i) {
-                        return margin.left + ((i/_legendData.length) * width);
-                    })
-                    .attr('cy', 5)
-                    .attr('r', 5)
-                    .style('fill', function(d) {
-                        return d[1];
-                    });
-            }
-
-            function _initLegendText(selection) {
-                selection
-                    .data(_legendData)
-                    .enter()
-                    .append('text')
-                    .attr('x', function(d, i){
-                        return margin.left + ((i/_legendData.length) * width) + 10;
-                    })
-                    .attr('y', 10)
-                    .text(function(d) {
-                        return d[0];
-                    });
-            }
-
-        }
-    }
-}]);
-
-
-
-app.directive('emotionStatistics', ['StatisticsService', function(StatisticsService) {
-    return {
-        restrict: 'E',
-        template: '<code class="grey-0 margin-bottom text-large">Rants By Emotion</code><div id="emotion-stats"></div>',
-        link: function(scope, element, attrs) {
-
-            // Dummy object for transitions
-            var _data = [
-                { label: 'angry', value: 0 },
-                { label: 'happy', value: 0 },
-                { label: 'sad', value: 0 }
-            ];
-
-            var _legendData = [
-                ['angry','#CB3B37'],
-                ['happy', '#3D9BCB'],
-                ['sad', '#555555']
-            ];
-
-            var margin = { top: 55, right: 40, bottom: 35, left: 40 };
-            var height = 480 - margin.top - margin.bottom;
-            var width = 640 - margin.left - margin.right;
-
-            // Initialize the svg canvas
-            var canvas = d3.select('#emotion-stats')
-                .append('div')
-                .classed('svg-container', true)
-                .append('svg')
-                .attr('preserveAspectRatio', 'xMinYMin meet')
-                .attr('viewBox', '0 0 ' + (width + margin.left + margin.right) + ' ' + (height + margin.top + margin.bottom))
-                .classed('svg-content-responsive', true)
-                .append('g')
-                .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
-
-            // Initialize the chart
-            canvas
-                .selectAll('rect')
-                .call(_initBars);
-
-            // Generate legend
-            var legend = canvas.append('g')
-                .attr('class', 'stat-emotion-legend')
-                .attr('transform', 'translate(' + margin.right + ', -' + (margin.top - 15) + ')');
-
-            legend.selectAll('circle').call(_initLegendCircles);
-            legend.selectAll('text').call(_initLegendText);
-
-            StatisticsService.getEmotionStatistics()
-                .done(function(data) {
-
-                    _.each(_data, function(datum, i) {
-                        datum.value = data[i].value;
-                    });
-
-                    // Add X axis
-                    canvas
-                        .append('g')
-                        .attr('class', 'stat-emotion-axis')
-                        .attr('transform', 'translate(0, ' + (height) + ')')
-                        .call(_getXAxis());
-
-                    // Add Y axis
-                    canvas
-                        .append('g')
-                        .attr('class', 'stat-emotion-axis')
-                        .attr('transform', 'translate(0,0)')
-                        .call(_getYAxis());
-
-                    // Regenerate bar chart with updated data
-                    canvas
-                        .selectAll('rect')
-                        .call(_paintBars);
-
-                });
-
-            function _paintBars(selection) {
-
-                var xScale = _getXScale();
-                var yScale = _getYScale();
-                var colorScale = _getColorScale();
-
-                selection
-                    .transition()
-                    .duration(250)
-                    .delay(function(d, i) {
-                        return i * 125;
-                    })
-                    .ease('quad')
-                    .attr('x', function(d) {
-                        return xScale(d.value);
-                    })
-                    .attr('y', function(d) {
-                        return yScale(d.value);
-                    })
-                    .attr('width', xScale.rangeBand())
-                    .attr('height', function(d) {
-                        return height - yScale(d.value);
-                    })
-                    .attr('fill', function(d, i) {
-                        return colorScale(i);
-                    })
-                    .attr('fill-opacity', 1);
-
-            }
-
-            function _initBars(selection) {
-                selection
-                    .data(_data)
-                    .enter()
-                    .append('rect')
-                    .attr('class', 'stat-emotion')
-                    .attr('y', height)
-                    .attr('height', 0)
-                    .attr('fill', 'gray')
-                    .attr('fill-opacity',0)
-                    .on('mouseover', function(d) {
-                        d3.select(this).classed('active-bar-' + d.label, true);
-                    })
-                    .on('mouseout', function(d) {
-                        d3.select(this).classed('active-bar-' + d.label, false);
-                    });
-            }
-
-            function _initLegendCircles(selection) {
-                selection
-                    .data(_legendData)
-                    .enter()
-                    .append('circle')
-                    .attr('cx', function(d, i) {
-                        return margin.left + ((i/_legendData.length) * width);
-                    })
-                    .attr('cy', 5)
-                    .attr('r', 5)
-                    .style('fill', function(d) {
-                        return d[1];
-                    });
-            }
-
-            function _initLegendText(selection) {
-                selection
-                    .data(_legendData)
-                    .enter()
-                    .append('text')
-                    .attr('x', function(d, i){
-                        return margin.left + ((i/_legendData.length) * width) + 10;
-                    })
-                    .attr('y', 10)
-                    .text(function(d) {
-                        return d[0];
-                    });
-            }
-
-            function _getXAxis() {
-                return d3.svg.axis()
-                    .scale(_getXScale())
-                    .tickSize(2)
-                    .orient('bottom');
-            }
-
-            function _getYAxis() {
-                return d3.svg.axis()
-                    .scale(_getYScale())
-                    .tickSize(2)
-                    .orient('left')
-            }
-
-            function _getXScale() {
-                return d3.scale.ordinal()
-                    .domain(_getDataValues())
-                    .rangeBands([0, width], 0.1, 0);
-            }
-
-            function _getYScale() {
-                return d3.scale.linear()
-                    .domain([0, d3.max(_getDataValues())])
-                    .range([height, 0]);
-            }
-
-            function _getColorScale() {
-                return d3.scale.quantile()
-                    .domain([0, _data.length])
-                    .range(['#CB3B37', '#3D9BCB', '#555555']);
-            }
-
-            function _getDataValues() {
-                return _.pluck(_data, 'value');
-            }
-
-        }
-    }
-}]);

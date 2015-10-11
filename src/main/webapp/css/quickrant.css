@@ -13,6 +13,30 @@
   font-size: 20px;
 }
 
+.active-bar-angry {
+  fill: #d5625e;
+}
+
+.bar-angry {
+  fill: #CB3B37;
+}
+
+.active-bar-happy {
+  fill: #63afd5;
+}
+
+.bar-happy {
+  fill: #3D9BCB;
+}
+
+.active-bar-sad {
+  fill: #767676;
+}
+
+.bar-sad {
+  fill: #555555;
+}
+
 .axis path {
   fill: #555;
   fill-opacity: .5;
@@ -76,10 +100,6 @@
   color: #ffffff;
 }
 
-.active-bar-angry {
-  fill: #d5625e;
-}
-
 .btn-angry:hover {
   color: #ffffff;
   background-color: #F4534E;
@@ -95,10 +115,6 @@
   background-color: #3D9BCB;
   border-color: #ffffff;
   color: #ffffff;
-}
-
-.active-bar-happy {
-  fill: #63afd5;
 }
 
 .btn-happy:hover {
@@ -126,10 +142,6 @@
   background-color: #555555;
   border-color: #ffffff;
   color: #ffffff;
-}
-
-.active-bar-sad {
-  fill: #767676;
 }
 
 .btn-sad:hover {

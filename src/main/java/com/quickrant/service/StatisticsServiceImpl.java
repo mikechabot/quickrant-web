@@ -2,7 +2,7 @@ package com.quickrant.service;
 
 import com.quickrant.beans.StaticData;
 import com.quickrant.domain.AbstractStatistic;
-import com.quickrant.domain.QuestionStatistic;
+import com.quickrant.domain.EmotionStatistic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +24,9 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public List<AbstractStatistic> getEmotionStatistics() {
         List<AbstractStatistic> stats = new ArrayList<>();
-        stats.add(new Statistic(Emotion.ANGRY.name().toLowerCase(), rantService.getCountByEmotion(Emotion.ANGRY)));
-        stats.add(new Statistic(Emotion.HAPPY.name().toLowerCase(), rantService.getCountByEmotion(Emotion.HAPPY)));
-        stats.add(new Statistic(Emotion.SAD.name().toLowerCase(), rantService.getCountByEmotion(Emotion.SAD)));
+        for (Emotion emotion : Emotion.values()) {
+            stats.add(new EmotionStatistic(emotion.name().toLowerCase(), rantService.getCountByEmotion(emotion), emotion));
+        }
         return stats;
     }
 
@@ -39,7 +39,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             for (String question : questions) {
                 long count = rantService.getCountByQuestion(question);
                 if (count > 0) {
-                    statistics.add(new QuestionStatistic(question, count, emotion, sortOrder++));
+                    statistics.add(new EmotionStatistic(question, count, emotion, sortOrder++));
                 }
             }
         }

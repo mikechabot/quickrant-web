@@ -32,24 +32,24 @@
   <script src="/js/third-party/google/google-analytics.js"></script>
 
   <!-- scripts (versioned) -->
-  <script src="/js/angular_qr.js?v=201510030928"></script>
-  <script src="/js/common/data_service.js?v=201510030928"></script>
-  <script src="/js/services/rant_service.js?v=201510030928"></script>
-  <script src="/js/services/session_service.js?v=201510030928"></script>
-  <script src="/js/services/modal_service.js?v=201510030928"></script>
-  <script src="/js/services/promise_service.js?v=201510030928"></script>
-  <script src="/js/services/statistics_service.js?v=201510030928"></script>
-  <script src="/js/services/d3_service.js?v=201510030928"></script>
-  <script src="/js/factories/quickrant_factory.js?v=201510030928"></script>
-  <script src="/js/factories/rant_page_factory.js?v=201510030928"></script>
-  <script src="/js/controllers/rant_dialog_controller.js?v=201510030928"></script>
-  <script src="/js/directives/directives.js?v=201510030928"></script>
-  <script src="/js/filters/filters.js?v=201510030928"></script>
-  <script src="/js/common/qr_data.js?v=201510030928"></script>
-  <script src="/js/common/qr_const.js?v=201510030928"></script>
-  <script src="/js/common/http_const.js?v=201510030928"></script>
-  <script src="/js/common/array_service.js?v=201510030928"></script>
-  <script src="/js/common/common.js?v=201510030928"></script>
+  <script src="/js/angular_qr.js?v=201510101010"></script>
+  <script src="/js/common/data_service.js?v=201510101010"></script>
+  <script src="/js/services/rant_service.js?v=201510101010"></script>
+  <script src="/js/services/session_service.js?v=201510101010"></script>
+  <script src="/js/services/modal_service.js?v=201510101010"></script>
+  <script src="/js/services/promise_service.js?v=201510101010"></script>
+  <script src="/js/services/statistics_service.js?v=201510101010"></script>
+  <script src="/js/services/d3_service.js?v=201510101010"></script>
+  <script src="/js/factories/quickrant_factory.js?v=201510101010"></script>
+  <script src="/js/factories/rant_page_factory.js?v=201510101010"></script>
+  <script src="/js/controllers/rant_dialog_controller.js?v=201510101010"></script>
+  <script src="/js/directives/directives.js?v=201510101010"></script>
+  <script src="/js/filters/filters.js?v=201510101010"></script>
+  <script src="/js/common/qr_data.js?v=201510101010"></script>
+  <script src="/js/common/qr_const.js?v=201510101010"></script>
+  <script src="/js/common/http_const.js?v=201510101010"></script>
+  <script src="/js/common/array_service.js?v=201510101010"></script>
+  <script src="/js/common/common.js?v=201510101010"></script>
 
   <!-- fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
@@ -96,16 +96,13 @@
           </div>
           <div class="col-lg-8 col-md-7 col-sm-7">
             <rants page="quickrant.page" active-view="quickrant.activeView" views="quickrant.views" popular-rants="quickrant.popularRants"></rants>
-            <!--<my-statistic ng-if="quickrant.activeView === quickrant.views.STATISTICS"></my-statistic>-->
-            <my-statistic
+            <qr-statistic
                 ng-if="quickrant.activeView === quickrant.views.STATISTICS"
                 id="qr-stats"
-                title="Rants By ??"
+                title="RANTS BY"
                 margin="30 40 220 75"
                 data="quickrant.statistics">
-            </my-statistic>
-            <!--<emotion-statistics ng-if="quickrant.activeView === quickrant.views.STATISTICS"></emotion-statistics>-->
-            <!--<question-statistics ng-if="quickrant.activeView === quickrant.views.STATISTICS"></question-statistics>-->
+            </qr-statistic>
           </div>
           <div class="col-lg-2 col-md-2 col-sm-2 hidden-xs sidebar text-right">
             <div class="page-info">

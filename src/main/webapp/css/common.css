@@ -110,12 +110,16 @@ textarea {
   font-size: 12px;
 }
 
-.text-big {
+.text-medium {
   font-size: 16px;
 }
 
+.text-big {
+  font-size: 20px;
+}
+
 .text-large {
-  font-size: 22px;
+  font-size: 26px;
 }
 
 .text-xlarge {
