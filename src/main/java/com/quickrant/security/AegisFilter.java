@@ -35,18 +35,10 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
         RequestWrapper wrapper = new RequestWrapper(request, response);
         wrapper.setNoCacheResponse();
 
-        HttpStatus status = getStatusOfRequest(wrapper);
+        HttpStatus status = getRequestStatus(wrapper);
 
-        switch(status) {
-            case OK:
-                // Do nothing
-                break;
-            case FORBIDDEN:
-                response.sendError(status.value());
-                break;
-            default:
-                response.sendError(status.value());
-
+        if (status != HttpStatus.OK) {
+            response.sendError(status.value());
         }
 
         filterChain.doFilter(request, response);
@@ -57,7 +49,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
      * @param wrapper
      * @return the status of the request
      */
-    private HttpStatus getStatusOfRequest(RequestWrapper wrapper) {
+    private HttpStatus getRequestStatus(RequestWrapper wrapper) {
         HttpMethod method = wrapper.getMethod();
         HttpStatus status;
         switch(method) {
@@ -102,8 +94,7 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
      * @return
      */
     public boolean hasSession(RequestWrapper wrapper) {
-        Cookie cookie = wrapper.getCookie(sessionService.getCacheName());
-        return cookie != null ?  isValid(cookie) : false;
+        return isValid(wrapper.getCookie(sessionService.getCacheName()));
     }
 
     /**
@@ -112,7 +103,9 @@ public class AegisFilter extends OncePerRequestFilter implements Filter {
      * @return
      */
     private boolean isValid(Cookie cookie) {
-        return sessionService.exists(cookie.getValue());
+        return cookie == null
+                ? false
+                : sessionService.exists(cookie.getValue());
     }
 
 }

@@ -58,6 +58,10 @@ textarea {
   min-height: 50px;
 }
 
+.btn {
+  font-weight: 200;
+}
+
 .grey-0 {
   color: #555;
 }

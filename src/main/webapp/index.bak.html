@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html ng-app="quickrant" lang="en">
+<head>
+  <!-- meta standard -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Cache-Control" content="no-cache" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Express yourself without yourself. Say anything to everyone. No login required.">
+
+  <!-- meta og -->
+  <meta property="og:type" name="og:type" content="website"/>
+  <meta property="og:image" name="og:image" content="http://quickrant.com/img/thumbnail.gif"/>
+  <meta property="og:url" name="og:url" content="http://quickrant.com/"/>
+  <meta property="og:title" name="og:title" content="quickrant | express yourself without yourself"/>
+  <meta property="og:description" name="og:description" content="Express yourself without yourself. Say anything to everyone. No login required."/>
+
+  <title>quickrant | express yourself without yourself</title>
+
+  <!-- scripts -->
+  <script src="/js/third-party/jquery/jquery-2.1.3.min.js"></script>
+  <script src="/js/third-party/angular/angular.js"></script>
+  <script src="/js/third-party/d3js/d3.min.js"></script>
+  <script src="/js/third-party/ng-animate/angular-animate.min.js"></script>
+  <script src="/js/third-party/ui-bootstrap/ui-bootstrap-0.12.0.min.js"></script>
+  <script src="/js/third-party/bootstrap/bootstrap.min.js"></script>
+  <script src="/js/third-party/underscore/underscore-min.js"></script>
+  <script src="/js/third-party/ng-timeago/ngtimeago.js"></script>
+  <script src="/js/third-party/moment/moment.js"></script>
+  <script src="/js/third-party/google/google-analytics.js"></script>
+
+  <!-- scripts (versioned) -->
+  <script src="/js/angular_qr.js?v=201510101010"></script>
+  <script src="/js/common/data_service.js?v=201510101010"></script>
+  <script src="/js/services/rant_service.js?v=201510101010"></script>
+  <script src="/js/services/session_service.js?v=201510101010"></script>
+  <script src="/js/services/modal_service.js?v=201510101010"></script>
+  <script src="/js/services/promise_service.js?v=201510101010"></script>
+  <script src="/js/services/statistics_service.js?v=201510101010"></script>
+  <script src="/js/services/d3_service.js?v=201510101010"></script>
+  <script src="/js/factories/quickrant_factory.js?v=201510101010"></script>
+  <script src="/js/factories/rant_page_factory.js?v=201510101010"></script>
+  <script src="/js/controllers/rant_dialog_controller.js?v=201510101010"></script>
+  <script src="/js/directives/directives.js?v=201510101010"></script>
+  <script src="/js/filters/filters.js?v=201510101010"></script>
+  <script src="/js/common/qr_data.js?v=201510101010"></script>
+  <script src="/js/common/qr_const.js?v=201510101010"></script>
+  <script src="/js/common/http_const.js?v=201510101010"></script>
+  <script src="/js/common/array_service.js?v=201510101010"></script>
+  <script src="/js/common/common.js?v=201510101010"></script>
+
+  <!-- fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" type="text/css">
+
+  <!-- styles -->
+  <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/font-awesome/font-awesome.min.css" rel="stylesheet">
+
+  <link href="/css/common.css?v=201509200255" rel="stylesheet">
+  <link href="/css/quickrant.css?v=201509200255" rel="stylesheet">
+
+  <link rel="image_src" type="image/gif" href="http://quickrant.com/img/thumbnail.gif"/>
+
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/ico/favicon.png">
+
+  <!-- touch icons -->
+  <link href="/ico/Icon.png" rel="apple-touch-icon" sizes="57x57">
+  <link href="/ico/Icon-60.png" rel="apple-touch-icon" sizes="60x60">
+  <link href="/ico/Icon-72.png" rel="apple-touch-icon" sizes="72x72">
+  <link href="/ico/Icon-72@2x.png" rel="apple-touch-icon" sizes="144x144">
+  <link href="/ico/Icon-Small-50@2x.png" rel="apple-touch-icon" sizes="100x100">
+
+</head>
+<body>
+
+  <navigation></navigation>
+
+  <div ng-controller="MainController" class="container">
+    <div ng-show="isLoaded()">
+      <emotions emotions="quickrant.emotions" selection="quickrant.selection" rant="quickrant.rant"></emotions>
+      <questions ng-if="quickrant.isEmotionSelected()" emotions="quickrant.emotions" selection="quickrant.selection"></questions>
+      <rant-form ng-if="quickrant.isQuestionSelected()" rant="quickrant.rant" emotions="quickrant.emotions" selection="quickrant.selection" page="quickrant.page"></rant-form>
+      <hr>
+      <div class="rants-container">
+        <div class="row">
+          <div class="col-lg-2 col-md-3 col-sm-3 sidebar">
+            <div class="list-group">
+              <a class="list-group-item" href ng-class="{active: (quickrant.activeView === quickrant.views.LIVE_STREAM)}" ng-click="quickrant.activeView = quickrant.views.LIVE_STREAM"><i class="fa fa-globe fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Live Stream</span></a>
+              <a class="list-group-item" href ng-class="{active: (quickrant.activeView === quickrant.views.POPULAR)}" ng-click="quickrant.activeView = quickrant.views.POPULAR"><i class="fa fa-star fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Popular</span></a>
+              <a class="list-group-item" href ng-class="{active: (quickrant.activeView === quickrant.views.STATISTICS)}" ng-click="quickrant.activeView = quickrant.views.STATISTICS"><i class="fa fa-line-chart fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Stats</span></a>
+              <a class="list-group-item" href ng-click="showShare()"><i class="fa fa-share-alt fa-fw fa-1-5x"></i>&nbsp; <span class="sidebar-label">Share</span></a>
+            </div>
+          </div>
+          <div class="col-lg-8 col-md-7 col-sm-7">
+            <rants page="quickrant.page" active-view="quickrant.activeView" views="quickrant.views" popular-rants="quickrant.popularRants"></rants>
+            <qr-statistic
+                ng-if="quickrant.activeView === quickrant.views.STATISTICS"
+                id="qr-stats"
+                title="RANTS BY"
+                margin="30 40 220 75"
+                data="quickrant.statistics">
+            </qr-statistic>
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-2 hidden-xs sidebar text-right">
+            <div class="page-info">
+            <div ng-repeat="stat in page.getStatisticsList()" class="media">
+              <div class="media-left"><h2>{{stat.value}}</h2></div>
+              <div class="media-body">{{stat.label}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
