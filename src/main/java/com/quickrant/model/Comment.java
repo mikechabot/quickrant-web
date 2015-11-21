@@ -3,7 +3,7 @@ package com.quickrant.model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class Comment extends MongoDocument {
+public class Comment extends AbstractEntity {
 
     public String name;
     public String location;

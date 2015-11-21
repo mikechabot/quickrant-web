@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.servlet.http.Cookie;
 
 @Document
-public class Session extends MongoDocument {
+public class Session extends AbstractEntity {
 
     private Cookie cookie;
     private String ipAddress;

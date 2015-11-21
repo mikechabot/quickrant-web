@@ -1,203 +1,24 @@
-@font-face{
-  font-family: "Always Together";
-  src: url('/fonts/Always%20Together.otf'),
-  url('/fonts/Always%20Together.otf'); /* IE */
+.text-left {
+    text-align: left;
 }
-body.modal-open {
-  overflow: hidden;
+.text-right {
+    text-align: right;
 }
-
-body {
-  font-family: Open Sans, Arial, sans serif;
-  font-size: 12px;
-  font-weight: 300;
+.text-center {
+    text-align: center;
 }
-
-label.disabled {
-    opacity: .65
+.text-justify {
+    text-align: justify;
 }
-
-a:hover {
-  text-decoration: none;
+.text-nowrap {
+    white-space: nowrap;
 }
-
-code {
-  background-color: #f1f1f1;
-  color: #777777;
+.text-lowercase {
+    text-transform: lowercase;
 }
-
-hr {
-  padding: 0px;
-  margin: 20px 0px;
-  border: none;
-  font-family: 'Always Together' !important;
-  font-size: 14px !important;
-  border-top: 1px solid #999999;
-  color: #999999;
-  text-align: center;
+.text-uppercase {
+    text-transform: uppercase;
 }
-
-hr:after {
-  content: "//";
-  display: inline-block;
-  position: relative;
-  top: -0.7em;
-  font-size: 1.5em;
-  padding: 0 0.25em;
-  background: white;
-}
-
-blockquote {
-  padding: 10px 20px 10px;
-  margin-left: 15px;
-  border-left: 4px solid #777777;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 50px;
-}
-
-.btn {
-  font-weight: 200;
-}
-
-.grey-0 {
-  color: #555;
-}
-
-.grey-1 {
-  color: #777;
-}
-
-.inline-block {
-  display: inline-block;
-}
-
-.spacer-lg {
-  width: 25%;
-}
-
-.pointer {
-   cursor: pointer;
-}
-
-.default-cursor {
-  cursor: default;
-}
-
-.always {
-  font-family: 'Always Together';
-}
-
-.fa-1-5x {
-  font-size: 1.5em;
-}
-
-.light-bold {
-  font-weight: 400;
-}
-
-.mild-bold {
-  font-weight: 600;
-}
-
-.text-tiny {
-  font-size: 6px;
-}
-
-.text-small {
-  font-size: 10px;
-}
-
-.text-normal {
-  font-size: 12px;
-}
-
-.text-medium {
-  font-size: 16px;
-}
-
-.text-big {
-  font-size: 20px;
-}
-
-.text-large {
-  font-size: 26px;
-}
-
-.text-xlarge {
-  font-size: 30px;
-}
-
-.text-huge {
-  font-size: 36px;
-}
-
-.margin-top-xs {
-  margin-top: 5px;
-}
-
-.margin-bottom-xs {
-  margin-bottom: 5px;
-}
-
-.margin-bottom-sm {
-  margin-bottom: 10px;
-}
-
-.margin-bottom-md {
-  margin-bottom: 15px;
-}
-
-.margin-bottom-lg {
-  margin-bottom: 25px;
-}
-
-.margin-bottom-xl {
-  margin-bottom: 35px;
-}
-
-.margin-left-xs {
-  margin-bottom: 5px;
-}
-
-.margin-left-sm {
-  margin-bottom: 10px;
-}
-
-.margin-left-md {
-  margin-bottom: 15px;
-}
-
-.margin-left-lg {
-  margin-bottom: 25px;
-}
-
-.margin-left-xlg {
-  margin-bottom: 35px;
-}
-
-.margin-right-xs {
-  margin-bottom: 5px;
-}
-
-.margin-right-sm {
-  margin-bottom: 10px;
-}
-
-.margin-right-md {
-  margin-bottom: 15px;
-}
-
-.margin-right-lg {
-  margin-bottom: 25px;
-}
-
-.margin-right-xlg {
-  margin-bottom: 35px;
-}
-
-.half-width {
-  width: 50%;
+.text-capitalize {
+    text-transform: capitalize;
 }

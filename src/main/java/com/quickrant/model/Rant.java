@@ -4,13 +4,11 @@ import com.quickrant.domain.Emotion;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Document
-public class Rant extends MongoDocument {
+public class Rant extends AbstractEntity {
 
     private String name;
     private String location;

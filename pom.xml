@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>quickrant-web</name>
-  <url>http://www.quickrant.com</url>
+  <url>https://www.quickrant.com</url>
 
   <groupId>com.quickrant</groupId>
   <artifactId>quickrant-web</artifactId>
@@ -18,14 +18,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.9.5</version>
-    </dependency>
-    <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.8.7</version>
+      <version>6.8.21</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -35,9 +36,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.9.1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -45,24 +46,24 @@
       <version>1.7.7</version>
     </dependency>
     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>2.7</version>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>5.2.1.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-rest-webmvc</artifactId>
-      <version>2.2.2.RELEASE</version>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>4.2.2.RELEASE</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-mongodb</artifactId>
-      <version>1.6.2.RELEASE</version>
+      <version>1.8.0.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-rest-webmvc</artifactId>
+      <version>2.4.0.RELEASE</version>
     </dependency>
   </dependencies>
 
@@ -75,8 +76,8 @@
         <version>3.1</version>
         <configuration>
           <encoding>UTF-8</encoding>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <compilerArgument>-Werror</compilerArgument>
         </configuration>
       </plugin>
@@ -95,18 +96,19 @@
           <jsSrcDir>${project.basedir}${file.separator}src${file.separator}main${file.separator}webapp${file.separator}js</jsSrcDir>
           <jsTestSrcDir>${project.basedir}${file.separator}src${file.separator}test${file.separator}webapp${file.separator}js</jsTestSrcDir>
           <preloadSources>
-            <source>third-party/jquery/jquery-2.1.3.js</source>
+            <source>third-party/jquery/jquery-2.1.4.min.js</source>
             <source>third-party/underscore/underscore-min.js</source>
-            <source>third-party/angular/angular.js</source>
-            <source>third-party/moment/moment.js</source>
-            <source>test_init.js</source>
-            <source>test_utils.js</source>
+            <source>third-party/angular/angular.min.js</source>
             <source>test_data.js</source>
+            <source>test_init_angular.js</source>
+            <source>test_utils.js</source>
           </preloadSources>
           <sourceIncludes>
             <include>common/common.js</include>
-            <include>common/data_service.js</include>
-            <include>services/rant_service.js</include>
+            <include>common/data_services.js</include>
+            <include>service/example_service.js</include>
+            <include>factory/ajax_request_factory.js</include>
+            <include>factory/ajax_response_factory.js</include>
           </sourceIncludes>
         </configuration>
       </plugin>

@@ -1,7 +1,6 @@
 package com.quickrant.service;
 
 import com.quickrant.beans.SessionCacheProperties;
-import com.quickrant.factory.SessionCookieFactory;
 import com.quickrant.repository.SessionRepository;
 import com.quickrant.model.Session;
 
@@ -15,6 +14,7 @@ import org.joda.time.DateTime;
 import javax.servlet.http.Cookie;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -25,9 +25,6 @@ public class SessionServiceImpl extends ConcurrentMapCache implements SessionSer
 
     @Autowired
     private SessionRepository sessionRepository;
-
-    @Autowired
-    private SessionCookieFactory sessionCookieFactory;
 
     @Autowired
     private SessionCacheProperties sessionCacheProperties;
@@ -43,7 +40,7 @@ public class SessionServiceImpl extends ConcurrentMapCache implements SessionSer
 
     @Override
     public Session createSession(String ipAddress, String userAgent) {
-        Cookie cookie = sessionCookieFactory.getSessionCookie();
+        Cookie cookie = createSessionCookie();
         Session session = new Session(cookie, ipAddress, userAgent);
         sessionRepository.save(session);
         addSessionToCache(session);
@@ -110,6 +107,13 @@ public class SessionServiceImpl extends ConcurrentMapCache implements SessionSer
     @Override
     public int getCacheEntryExpiryInDays() {
         return sessionCacheProperties.getCacheEntryExpiry();
+    }
+
+    private Cookie createSessionCookie() {
+        Cookie cookie = new Cookie(sessionCacheProperties.getCacheName(), String.valueOf(UUID.randomUUID()));
+        cookie.setMaxAge(sessionCacheProperties.getCacheEntryExpiry()*24*60*60);
+        cookie.setPath("/");
+        return cookie;
     }
 
 }

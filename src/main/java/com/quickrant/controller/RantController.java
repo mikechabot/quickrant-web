@@ -1,27 +1,25 @@
 package com.quickrant.controller;
 
+import com.quickrant.ajax.AjaxResponseFactory;
 import com.quickrant.http.RequestWrapper;
 import com.quickrant.service.SessionService;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.quickrant.factory.AjaxResponseFactory;
 import com.quickrant.model.Rant;
 import com.quickrant.model.Comment;
 import com.quickrant.service.RantService;
 import com.quickrant.util.StringUtil;
-
 
 import org.apache.log4j.Logger;
 
@@ -51,12 +49,12 @@ public class RantController {
     @RequestMapping(value = "/page/{pageNumber}", method = RequestMethod.GET)
     public ResponseEntity getPage(@PathVariable int pageNumber) {
         if (pageNumber < 0) {
-            return ajaxResponse.fail("Page number cannot be less than zero");
+            return ajaxResponse.failWithMessage("Page number cannot be less than zero");
         }
         Page page = rantService.getPageByPageNumber(pageNumber);
         return page != null
-                ? ajaxResponse.success(null, page)
-                : ajaxResponse.fail("Unable to locate rant page with page number '" + pageNumber + "'");
+                ? ajaxResponse.successWithData(page)
+                : ajaxResponse.failWithMessage("Unable to locate rant page with page number '" + pageNumber + "'");
     }
 
     /**
@@ -67,10 +65,10 @@ public class RantController {
     @RequestMapping(value = "/since/{date}", method = RequestMethod.GET)
     public ResponseEntity getRantsSince(@PathVariable Long date) {
         if (date == null) {
-            return ajaxResponse.fail("Date cannot be null");
+            return ajaxResponse.failWithMessage("Date cannot be null");
         }
         List<Rant> rants = rantService.getRantsCreatedAfter(new Date(date));
-        return ajaxResponse.success(null, rants);
+        return ajaxResponse.successWithData(rants);
     }
 
     /**
@@ -81,12 +79,12 @@ public class RantController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getRantById(@PathVariable String id) {
         if (StringUtil.isEmpty(id)) {
-            return ajaxResponse.fail("Rant id cannot be null");
+            return ajaxResponse.failWithMessage("Rant id cannot be null");
         }
         Rant rant = rantService.getRantById(id);
         return rant != null
-                ? ajaxResponse.success(null, rant)
-                : ajaxResponse.fail("Unable to locate rant with id '" + id + "'");
+                ? ajaxResponse.successWithData(rant)
+                : ajaxResponse.failWithMessage("Unable to locate rant with id '" + id + "'");
     }
 
     /**
@@ -97,7 +95,7 @@ public class RantController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity saveRant(@RequestBody Rant rant, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         if (rant == null) {
-            ajaxResponse.fail("Rant cannot be null");
+            ajaxResponse.failWithMessage("Rant cannot be null");
         }
 
         RequestWrapper request = new RequestWrapper(httpRequest, httpResponse);
@@ -108,8 +106,8 @@ public class RantController {
 
         rantService.saveRant(rant);
         return rant.getId() != null
-                ? ajaxResponse.success("Rant saved", rant)
-                : ajaxResponse.error("Failed to save rant");
+                ? ajaxResponse.successWithMessageAndData("Rant saved", rant)
+                : ajaxResponse.errorWithMessage("Failed to save rant");
     }
 
     /**
@@ -121,14 +119,14 @@ public class RantController {
     @RequestMapping(value = "/comment/{rantId}", method = RequestMethod.POST)
     public ResponseEntity saveComment(@PathVariable String rantId, @RequestBody Comment comment) {
         if (comment == null) {
-            return ajaxResponse.fail("Save comment failed: Comment cannot be null");
+            return ajaxResponse.failWithMessage("Save comment failed: Comment cannot be null");
         }
         Rant rant = rantService.getRantById(rantId);
         if (rant ==  null) {
-            return ajaxResponse.fail("Save comment failed: Unable to locate rant (" + rantId + ")");
+            return ajaxResponse.failWithMessage("Save comment failed: Unable to locate rant (" + rantId + ")");
         }
         rantService.addCommentToRant(rant, comment);
-        return ajaxResponse.success("Comment saved", comment);
+        return ajaxResponse.successWithMessageAndData("Comment saved", comment);
     }
 
     /**
@@ -137,7 +135,7 @@ public class RantController {
      */
     @RequestMapping(value = "/popular", method = RequestMethod.GET)
     public ResponseEntity getPopularRants() {
-        return ajaxResponse.success(null, rantService.getPopularRants());
+        return ajaxResponse.successWithData(rantService.getPopularRants());
     }
 
 }
