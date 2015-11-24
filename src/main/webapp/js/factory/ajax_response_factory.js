@@ -1,4 +1,15 @@
-app.factory('AjaxResponseFactory', ['DATA_CONST', 'AjaxService', function(DATA_CONST, AjaxService) {
+app.factory('AjaxResponseFactory', ['AJAX_CONST', function(AJAX_CONST) {
+
+    var _getRequestStatusFromJqXHRStatus = function(jqXHR) {
+        if (!jqXHR) return;
+        var status = jqXHR.status;
+        if (status === AJAX_CONST.JQXHR_STATUS.SUCCESS) {
+            return AJAX_CONST.REQUEST_STATUS.SUCCESS;
+        } else if (status === AJAX_CONST.JQXHR_STATUS.SUCCESS) {
+            return AJAX_CONST.REQUEST_STATUS.ERROR;
+        }
+        return 'Unable to map jqXHR status to request status: ' + status;
+    };
 
     function AjaxResponse() { }
 
@@ -17,7 +28,7 @@ app.factory('AjaxResponseFactory', ['DATA_CONST', 'AjaxService', function(DATA_C
             this.statusCode = jqXHR.status;
 
             if (error && !response) {
-                this.status = DATA_CONST.REQUEST_STATUS.ERROR;
+                this.status = AJAX_CONST.REQUEST_STATUS.ERROR;
                 this.message = error;
                 return this;
             }
@@ -31,7 +42,7 @@ app.factory('AjaxResponseFactory', ['DATA_CONST', 'AjaxService', function(DATA_C
                         ? error
                         : 'Failed with no additional detail from the server';
             } else {
-                this.status = AjaxService.getStatusFromJqXHR(jqXHR);
+                this.status = _getRequestStatusFromJqXHRStatus(jqXHR);
                 this.message = error || jqXHR.statusText;
             }
 
@@ -56,13 +67,13 @@ app.factory('AjaxResponseFactory', ['DATA_CONST', 'AjaxService', function(DATA_C
             return angular.hasValue(this.getData());
         },
         isSuccess: function() {
-            return this.getStatus() === DATA_CONST.REQUEST_STATUS.SUCCESS;
+            return this.getStatus() === AJAX_CONST.REQUEST_STATUS.SUCCESS;
         },
         isFail: function() {
-            return this.getStatus() === DATA_CONST.REQUEST_STATUS.FAIL;
+            return this.getStatus() === AJAX_CONST.REQUEST_STATUS.FAIL;
         },
         isError: function() {
-            return this.getStatus() === DATA_CONST.REQUEST_STATUS.ERROR;
+            return this.getStatus() === AJAX_CONST.REQUEST_STATUS.ERROR;
         }
     });
 

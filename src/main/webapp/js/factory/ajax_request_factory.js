@@ -1,4 +1,4 @@
-app.factory('AjaxRequestFactory', ['DATA_CONST', 'AjaxResponseFactory', 'AjaxService', function(DATA_CONST, AjaxResponseFactory, AjaxService) {
+app.factory('AjaxRequestFactory', ['AJAX_CONST', 'AjaxResponseFactory', 'AjaxService', function(AJAX_CONST, AjaxResponseFactory, AjaxService) {
 
     function _request(request) {
         var deferred = $.Deferred();
@@ -64,7 +64,7 @@ app.factory('AjaxRequestFactory', ['DATA_CONST', 'AjaxResponseFactory', 'AjaxSer
             this.options = {
                 type: type,
                 dataType: 'json',
-                url: DATA_CONST.BASE_SPRING_URL + url
+                url: AJAX_CONST.BASE_SPRING_URL + url
             };
             if (data) {
                 this.options.data = _.isObject(data) ? JSON.stringify(data) : data;

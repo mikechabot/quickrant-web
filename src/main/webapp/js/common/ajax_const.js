@@ -1,4 +1,4 @@
-app.constant('DATA_CONST', {
+app.constant('AJAX_CONST', {
     BASE_SPRING_URL: '/spring',
     REQUEST_STATUS: {
         SUCCESS: 'SUCCESS',
