@@ -1,3 +1,7 @@
+a {
+    color: #555555;
+}
+
 .section {
     padding: 8rem 0 7rem;
     text-align: center;
@@ -7,6 +11,179 @@
     margin-bottom: 1.2rem;
 }
 
+.rants {
+    background-color: #f6f6f6;
+}
+
+.rant-form-section {
+    margin: 1rem;
+}
+
+.facial-emotion img:hover {
+    opacity: .5;
+}
+
+.question {
+    margin: .50rem;
+}
+
+.view.ng-enter {
+    -webkit-animation: fade-in 0.5s linear;
+    -moz-animation: fade-in 0.5s linear;
+    -o-animation: fade-in 0.5s linear;
+    animation: fade-in 0.5s linear;
+}
+
+.view.ng-enter.ng-enter-active {
+    opacity: 1;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@-webkit-keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@-webkit-keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@-moz-keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@-o-keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Larger than mobile */
+@media (min-width: 400px) {
+    .container {
+        width: 100%;
+    }
+    .decline-rant-sm {
+        margin-top: 1rem;
+    }
+    .back-to-intro {
+        margin-top: 2em;
+    }
+    .mobile-toggle-lg {
+        display: none;
+        visibility: hidden;
+    }
+    .mobile-toggle-sm {
+        display: block;
+        visibility: visible;
+    }
+}
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+    .section {
+        padding: 12rem 0 11rem;
+    }
+    .introduction {
+        padding-bottom: 10rem;
+        height: 165px;
+    }
+    .intro-heading {
+        font-size: 2.4rem;
+        padding-top: 3.5rem;
+    }
+    .facial-emotion {
+        padding: 0rem .5rem;
+    }
+    h4 {
+        margin-bottom: 2rem;
+    }
+    .decline-rant-lg {
+        margin-bottom: 2rem;
+    }
+    .mobile-toggle-lg {
+        display: block;
+        visibility: visible;
+    }
+    .mobile-toggle-sm {
+        display: none;
+        visibility: hidden;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+    .section {
+        padding: 14rem 0 15rem;
+    }
+    .intro-heading {
+        font-size: 2.6rem;
+    }
+    .rant-form-section {
+        padding: 20rem 7rem;
+    }
+    .facial-emotion {
+        padding: 0rem 1rem;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+    .container {
+        width: 85%;
+    }
+    .section {
+        padding: 20rem 0rem;
+    }
+    .rant-form-section {
+        padding: 20rem 10rem;
+    }
+    .intro-heading {
+        font-size: 3.0rem;
+    }
+    .facial-emotion {
+        padding: 0rem 1.5rem;
+    }
+}
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {
+    .rant-form-section {
+        padding: 20rem 16rem;
+    }
+}
+
+/* Larger than Desktop HD MD */
+@media (min-width: 1400px) {
+    .rant-form-section {
+        padding: 20rem 26rem;
+    }
+}
+
+
+/* Larger than Desktop HD XL */
+@media (min-width: 1600px) {
+    .rant-form-section {
+        padding: 20rem 30rem;
+    }
+}
+
+/* Larger than Desktop HD XL */
+@media (min-width: 1800px) {
+    .rant-form-section {
+        padding: 20rem 45rem;
+    }
+}
+
+
+
+
+/** Rant stream **/
 blockquote {
     width: 65%;
     margin: 8rem auto;
@@ -54,74 +231,3 @@ blockquote span.rant-details-xs {
     margin-top: -2rem;
     font-size: 1.2rem;
 }
-
-.rants {
-    /*width: 90%;*/
-    /*margin: 0 auto;*/
-    background-color: #D1D1D1;
-}
-
-.facial-emotion img:hover {
-    opacity: .5;
-}
-
-.question {
-    margin: .50rem;
-}
-
-/* Larger than mobile */
-@media (min-width: 400px) {
-    .container {
-        width: 100%;
-    }
-}
-
-/* Larger than phablet */
-@media (min-width: 550px) {
-    .section {
-        padding: 12rem 0 11rem;
-    }
-    .hero {
-        padding-bottom: 10rem;
-        height: 165px;
-    }
-    .hero-heading {
-        font-size: 2.4rem;
-        padding-top: 3.5rem;
-    }
-    .facial-emotion {
-        padding: 0rem .5rem;
-    }
-}
-
-/* Larger than tablet */
-@media (min-width: 750px) {
-    .section {
-        padding: 14rem 0 15rem;
-    }
-    .hero-heading {
-        font-size: 2.6rem;
-    }
-    .facial-emotion {
-        padding: 0rem 1rem;
-    }
-}
-
-/* Larger than desktop */
-@media (min-width: 1000px) {
-    .container {
-        width: 85%;
-    }
-    .section {
-        padding: 20rem 0 19rem;
-    }
-    .hero-heading {
-        font-size: 3.0rem;
-    }
-    .facial-emotion {
-        padding: 0rem 1.5rem;
-    }
-}
-
-/* Larger than Desktop HD */
-@media (min-width: 1200px) {}
